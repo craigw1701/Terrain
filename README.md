@@ -17,7 +17,9 @@ The plan is to spend 4-8 hours on each area beofre moving on, allowing me to get
 
 
 Looking at tutorials from:
+
 https://www.youtube.com/user/ThinMatrix
+
 http://www.opengl-tutorial.org/
 
 http://nehe.gamedev.net/
