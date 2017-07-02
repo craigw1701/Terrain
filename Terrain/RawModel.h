@@ -15,8 +15,8 @@ class RawModel
 public:
 	RawModel(GLuint aVAOID, int aVertexCount) : myVAOID(aVAOID), myVertexCount(aVertexCount) {}
 
-	GLuint GetVAOID() { return myVAOID; }
-	int GetVertexCount() { return myVertexCount; }
+	GLuint GetVAOID()		const	{ return myVAOID; }
+	int GetVertexCount()	const	{ return myVertexCount; }
 private:
 	GLuint myVAOID;
 	int myVertexCount;

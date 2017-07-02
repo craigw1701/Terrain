@@ -9,7 +9,7 @@ public:
 
 	}
 
-	GLuint GetTextureID() { return myTextureID;  }
+	GLuint GetTextureID()	const	{ return myTextureID;  }
 
 public:
 	float myShineDamper = 1;

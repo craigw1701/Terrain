@@ -11,8 +11,8 @@ public:
 	{
 	}
 
-	RawModel& GetRawModel() { return myRawModel; }
-	ModelTexture& GetTexture() { return myTexture; }
+	RawModel& GetRawModel()		const	{ return myRawModel; }
+	ModelTexture& GetTexture()	const	{ return myTexture; }
 private:
 	RawModel& myRawModel;
 	ModelTexture& myTexture;

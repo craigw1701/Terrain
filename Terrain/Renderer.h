@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 #include "RawModel.h"
 #include "TexturedModel.h"
 #include "Entity.h"
@@ -7,6 +9,8 @@
 #include "Maths.h"
 
 #include "glm/gtx/transform.hpp"
+
+using namespace std;
 
 static float locToRadians(float aDegree)
 {
@@ -17,11 +21,18 @@ class Renderer
 {
 public:
 	Renderer(StaticShader& aShader)
+		:myShader(aShader)
 	{
-		myProjectionMatrix = glm::perspectiveFov(myFOV, 1024.0f, 768.0f, myNearPlane, myFarPlane);
-		aShader.Start();
-		aShader.LoadProjectionMatrix(myProjectionMatrix);
-		aShader.Stop();
+	}
+
+	void Setup()
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		myProjectionMatrix = glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane);
+		myShader.Start();
+		myShader.LoadProjectionMatrix(myProjectionMatrix);
+		myShader.Stop();
 	}
 	
 	void Prepare()
@@ -31,53 +42,50 @@ public:
 		glClearColor(0, 0, 0, 1);
 	}
 
-	void Render(RawModel& aModel)
+	void Render(map<TexturedModel*, vector<Entity*>>& someEntities)
 	{
-		glBindVertexArray(aModel.GetVAOID());
-		glEnableVertexAttribArray(0);
-		//glDrawArrays(GL_TRIANGLES, 0, aModel.GetVertexCount());
-		glDrawElements(GL_TRIANGLES, aModel.GetVertexCount(), GL_UNSIGNED_INT, nullptr);
-		glDisableVertexAttribArray(0);
-		glBindVertexArray(0);
+		for (auto& iter = someEntities.begin(); iter != someEntities.end(); iter++)
+		{
+			PrepareTexturedModel(*iter->first);
+			for (Entity const* entity : iter->second)
+			{
+				PrepareInstance(*entity);
+				glDrawElements(GL_TRIANGLES, iter->first->GetRawModel().GetVertexCount(), GL_UNSIGNED_INT, nullptr);
+
+			}
+			UnbindTexturedModel();
+		}
+
 	}
 
-	void Render(TexturedModel& aModel)
+	void PrepareTexturedModel(TexturedModel const& aModel)
 	{
-		glBindVertexArray(aModel.GetRawModel().GetVAOID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, aModel.GetTexture().GetTextureID());
-		glDrawElements(GL_TRIANGLES, aModel.GetRawModel().GetVertexCount(), GL_UNSIGNED_INT, nullptr);
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
-	}
-
-
-	void Render(Entity& anEntity, StaticShader& aShader)
-	{
-		TexturedModel& texturedModel = anEntity.GetModel();
-		RawModel& model = texturedModel.GetRawModel();
+		RawModel& model = aModel.GetRawModel();
 		glBindVertexArray(model.GetVAOID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		glm::mat4 transformationMatrix = CreateTransformMatrix(anEntity.myPosition, anEntity.myRotation, anEntity.myScale);
-		aShader.LoadTransformationMatrix(transformationMatrix);
-
-		ModelTexture& texture = texturedModel.GetTexture();
-		aShader.LoadShineVariables(texture.myShineDamper, texture.myReflectivity);
+		ModelTexture const& texture = aModel.GetTexture();
+		myShader.LoadShineVariables(texture.myShineDamper, texture.myReflectivity);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture.GetTextureID());
-		glDrawElements(GL_TRIANGLES, model.GetVertexCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void UnbindTexturedModel()
+	{
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(3);
 		glBindVertexArray(0);
+	}
+
+	void PrepareInstance(Entity const& anEntity)
+	{
+		glm::mat4 transformationMatrix = CreateTransformMatrix(anEntity.myPosition, anEntity.myRotation, anEntity.myScale);
+		myShader.LoadTransformationMatrix(transformationMatrix);
+
 	}
 
 private:
@@ -85,5 +93,6 @@ private:
 	float myNearPlane = 0.1f;
 	float myFarPlane = 1000.0f;
 	glm::mat4 myProjectionMatrix;
+	StaticShader& myShader;
 
 };

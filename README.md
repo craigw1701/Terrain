@@ -14,6 +14,8 @@ The plan is to spend 4-8 hours on each area beofre moving on, allowing me to get
 * Roads
 * Cities/Houses
 * Rain/Snow
+* Day/Night
+* Waterfalls
 
 
 Looking at tutorials from:

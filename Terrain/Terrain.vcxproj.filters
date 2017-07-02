@@ -25,6 +25,9 @@
     <Filter Include="Entities">
       <UniqueIdentifier>{56872c08-87ee-4bfe-bfa6-856a2ddbec2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{81e73b05-554e-4f2f-a0c0-07178712dfed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,9 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShaderBase.h">
@@ -76,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="Light.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterRenderer.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
