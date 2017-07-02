@@ -14,6 +14,12 @@ using namespace glm;
 
 #include "Loader.h"
 #include "Renderer.h"
+#include "StaticShader.h"
+#include "ModelTexture.h"
+#include "TexturedModel.h"
+#include "GameInfo.h"
+#include "Camera.h"
+#include "ObjLoader.h"
 
 int main()
 {
@@ -49,15 +55,57 @@ int main()
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	Loader loader;
-	Renderer renderer;
+	StaticShader staticShader;
+	staticShader.Setup();
+	Renderer renderer(staticShader);
 
+#pragma region old
 	//float vertices[] = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f, -0.5f, 0.5f, 0.f };
-	vector<float> vertices = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f, -0.5f, 0.5f, 0.f };
-	RawModel model = loader.LoadToVAO(vertices);
+	//vector<float> vertices = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f, -0.5f, 0.5f, 0.f };
+	vector<float> vertices = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f};
+	vector<int> indices = { 0, 1, 3, 3, 1, 2 };
+	vector<float> textureCoords = { 0,0, 0,1, 1,1, 1,0 };
+	//RawModel model = loader.LoadToVAO(vertices, textureCoords, indices);
+	//ModelTexture texture(loader.LoadTexture("data/image.bmp"));
+#pragma endregion
+
+	std::vector<glm::vec3> out_vertices;
+	std::vector<glm::vec2> out_uvs;
+	std::vector<glm::vec3> out_normals;
+	std::vector<int> out_indices;
+	LoadOBJ("data/dragon.obj", out_vertices, out_uvs, out_normals, out_indices);
+	RawModel model = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
+
+	ModelTexture texture(loader.LoadTexture("data/white.bmp"));
+	TexturedModel texturedModel(model, texture);
+
+	texturedModel.GetTexture().myReflectivity = 1;
+	texturedModel.GetTexture().myShineDamper = 10;
+
+	Entity entity(texturedModel, glm::vec3(0, 0, -25), glm::vec3(0, -5, 0), 1);
+
+	double currentFrame = glfwGetTime();
+	double lastFrame = currentFrame;
+	
+	Camera camera(*window);
+	Light light(vec3(0, 0, -20), vec3(1, 1, 1));
+	
 
 	do {
+		currentFrame = glfwGetTime();
+		GameInfo::ourDeltaTime = (float)(currentFrame - lastFrame);
+		lastFrame = currentFrame;
+
+		camera.Move();
+
 		renderer.Prepare();
-		renderer.Render(model);
+		staticShader.Start();
+		staticShader.LoadLight(light);
+		staticShader.LoadViewMatrix(camera);
+		entity.myPosition += vec3(0, 0, -0.002f);
+		entity.myRotation += vec3(0, 1.0f*GameInfo::ourDeltaTime, 0);
+		renderer.Render(entity, staticShader);
+		staticShader.Stop();
 
 		// Swap buffers
 		glfwSwapBuffers(window);

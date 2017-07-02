@@ -148,11 +148,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="GameInfo.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="Maths.h" />
+    <ClInclude Include="ModelTexture.h" />
+    <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="RawModel.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="ShaderBase.h" />
+    <ClInclude Include="StaticShader.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="TexturedModel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fragmentShader.fragmentshader" />
+    <None Include="Shaders\vertexShader.vertexshader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
