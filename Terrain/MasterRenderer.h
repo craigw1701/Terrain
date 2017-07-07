@@ -1,9 +1,24 @@
 #pragma once
 
+// TODO:CW FIX HACK:
+void EnableCulling()
+{
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+}
+
+void DisableCulling()
+{
+	glDisable(GL_CULL_FACE);
+}
+
+
 #include "StaticShader.h"
 #include "Renderer.h"
 #include "TexturedModel.h"
 #include "Entity.h"
+#include "TerrainRenderer.h"
+#include "TerrainShader.h"
 
 #include <map>
 using namespace std;
@@ -12,10 +27,19 @@ class MasterRenderer
 {
 public:
 	MasterRenderer()
-		:myShader(), myRenderer(myShader)
+		: myProjectionMatrix(glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane))
+		, myEntityShader()
+		, myTerrainShader()
+		, myEntityRenderer(myEntityShader)
+		, myTerrainRenderer(myTerrainShader)
 	{
-		myShader.Setup();
-		myRenderer.Setup();
+		EnableCulling();
+
+		myEntityShader.Setup();
+		myEntityRenderer.Setup(myProjectionMatrix);
+
+		myTerrainShader.Setup();
+		myTerrainRenderer.Setup(myProjectionMatrix);
 	}
 
 	~MasterRenderer()
@@ -24,15 +48,28 @@ public:
 
 	void Render(Light& aSun, Camera& aCamera)
 	{
-		myRenderer.Prepare();
-		myShader.Start();
-		myShader.LoadLight(aSun);
-		myShader.LoadViewMatrix(aCamera);
+		Prepare();
+		myEntityShader.Start();
+		myEntityShader.LoadLight(aSun);
+		myEntityShader.LoadViewMatrix(aCamera);
+		myEntityRenderer.Render(myEntities);
+		myEntityShader.Stop();
 
-		myRenderer.Render(myEntities);
-
-		myShader.Stop();
+		myTerrainShader.Start();
+		myTerrainShader.LoadLight(aSun);
+		myTerrainShader.LoadViewMatrix(aCamera);
+		myTerrainRenderer.Render(myTerrains);
+		myTerrainShader.Stop();
+		
 		myEntities.clear();
+		myTerrains.clear();
+	}
+
+	void Prepare()
+	{
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(0, 0, 0, 1);
 	}
 
 	void ProcessEntity(Entity& anEntity)
@@ -52,9 +89,25 @@ public:
 		}
 	}
 
+	void ProcessTerrain(Terrain& aTerrain)
+	{
+		myTerrains.push_back(&aTerrain);
+	}
+
 private:
-	StaticShader myShader;
-	Renderer myRenderer;
+	float myFOV = 70;
+	float myNearPlane = 0.1f;
+	float myFarPlane = 1000.0f;
+	glm::mat4 myProjectionMatrix;
+
+	StaticShader myEntityShader;
+	EntityRenderer myEntityRenderer;
+
+	TerrainShader myTerrainShader;
+	TerrainRenderer myTerrainRenderer;
 	map<TexturedModel*, vector<Entity*>> myEntities; //TODO:CW don't really like these pointers...
+
+	vector<Terrain*> myTerrains; //TODO:CW don't really like these pointers...
+
 	
 };

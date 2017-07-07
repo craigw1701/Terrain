@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="GameInfo.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="MasterRenderer.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="ModelTexture.h" />
@@ -165,11 +167,16 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderBase.h" />
     <ClInclude Include="StaticShader.h" />
+    <ClInclude Include="Terrain.h" />
+    <ClInclude Include="TerrainRenderer.h" />
+    <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="TexturedModel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragmentShader.fragmentshader" />
+    <None Include="Shaders\terrain.fragmentshader" />
+    <None Include="Shaders\terrain.vertexshader" />
     <None Include="Shaders\vertexShader.vertexshader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

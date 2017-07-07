@@ -14,6 +14,9 @@ public:
 public:
 	float myShineDamper = 1;
 	float myReflectivity = 0;
+	bool myHasTransparency = false;
+	bool myUseFakeLighting = false;
+
 private:
 	GLuint myTextureID;
 };

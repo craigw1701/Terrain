@@ -28,6 +28,9 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{81e73b05-554e-4f2f-a0c0-07178712dfed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Terrain">
+      <UniqueIdentifier>{6e49295d-93dd-4171-a53d-eb75f339ed45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -35,6 +38,9 @@
     </ClCompile>
     <ClCompile Include="texture.cpp">
       <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,12 +89,30 @@
     <ClInclude Include="MasterRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragmentShader.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\vertexShader.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\terrain.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\terrain.vertexshader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

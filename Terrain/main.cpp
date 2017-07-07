@@ -12,14 +12,15 @@
 #include "glm/glm.hpp"
 using namespace glm;
 
+#include "Camera.h"
+#include "GameInfo.h"
 #include "Loader.h"
 #include "MasterRenderer.h"
-#include "StaticShader.h"
 #include "ModelTexture.h"
-#include "TexturedModel.h"
-#include "GameInfo.h"
-#include "Camera.h"
 #include "ObjLoader.h"
+#include "StaticShader.h"
+#include "Terrain.h"
+#include "TexturedModel.h"
 
 int main()
 {
@@ -70,33 +71,79 @@ int main()
 	std::vector<glm::vec2> out_uvs;
 	std::vector<glm::vec3> out_normals;
 	std::vector<int> out_indices;
-	LoadOBJ("data/stall.obj", out_vertices, out_uvs, out_normals, out_indices);
+	LoadOBJ("data/fern.obj", out_vertices, out_uvs, out_normals, out_indices);
 	RawModel model = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
-
-	ModelTexture texture(loader.LoadTexture("data/stallTexture.bmp"));
+	ModelTexture texture(DecodeOneStep("data/fern.png"));
 	TexturedModel texturedModel(model, texture);
+	texture.myReflectivity = 0.2;
+	texture.myShineDamper = 1;
+	texture.myHasTransparency = true;
+	texture.myUseFakeLighting = true;
 
-	texturedModel.GetTexture().myReflectivity = 1;
-	texturedModel.GetTexture().myShineDamper = 10;
+	LoadOBJ("data/tree.obj", out_vertices, out_uvs, out_normals, out_indices);
+	RawModel treeModel = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
+	ModelTexture treeTexture(DecodeOneStep("data/tree.png"));
+	TexturedModel texturedTreeModel(treeModel, treeTexture);
+	treeTexture.myReflectivity = 0.2;
+	treeTexture.myShineDamper = 1;
+
+
+	LoadOBJ("data/grassModel.obj", out_vertices, out_uvs, out_normals, out_indices);
+	RawModel grassModel = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
+	ModelTexture grassTexture(DecodeOneStep("data/grassTexture.png"));
+	TexturedModel texturedGrassModel(grassModel, grassTexture);
+	grassTexture.myReflectivity = 0.2;
+	grassTexture.myShineDamper = 1;
+	grassTexture.myHasTransparency = true;
+	texture.myUseFakeLighting = true;
 
 	vector<Entity> allEntities;
+
+	/*
+	for (int i = 0; i < 400; i++)
+	{
+		float x = rand() % 100 - 50;
+		float y = 0;
+		float z = rand() % 100 - 50;
+
+		float rY = rand() % 180;
+		float rS = float((rand() % 3) + 3.0f) / 20.0f;
+		allEntities.push_back(Entity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS));
+	}*/
 
 	for (int i = 0; i < 200; i++)
 	{
 		float x = rand() % 100 - 50;
-		float y = rand() % 100 - 50;
+		float y = 0;
 		float z = rand() % 100 - 50;
 
-		float rX = rand() % 180;
 		float rY = rand() % 180;
-		allEntities.push_back(Entity(texturedModel, glm::vec3(x, y, z), glm::vec3(rX, rY, 0), 1));
+		float rS = float((rand() % 3) + 3.0f) / 20.0f;
+		allEntities.push_back(Entity(texturedModel, glm::vec3(x, y, z), glm::vec3(0, rY, 0), rS));
+	}
+
+	for (int i = 0; i < 100; i++)
+	{
+		float x = rand() % 100 - 50;
+		float y = 0;
+		float z = rand() % 100 - 50;
+
+		float rY = rand() % 180;
+		float rS = float((rand() % 3) + 3.0f) / 2.0f;
+		allEntities.push_back(Entity(texturedTreeModel, glm::vec3(x, y, z), glm::vec3(0, -rY, 0), rS));
 	}
 
 	double currentFrame = glfwGetTime();
 	double lastFrame = currentFrame;
 	
 	Camera camera(*window);
-	Light light(vec3(0, 0, -20), vec3(1, 1, 1));
+	Light light(vec3(0, 25, 0), vec3(1, 1, 1));
+	ModelTexture grass = loader.LoadTexture("data/grass.bmp");
+
+	grass.myReflectivity = 1;
+	grass.myShineDamper = 10;
+	Terrain terrain(-1, -1, loader, grass);
+	Terrain terrain2(0, -1, loader, grass);
 	
 	MasterRenderer renderer;
 
@@ -109,6 +156,9 @@ int main()
 
 		for(Entity& entity : allEntities)
 			renderer.ProcessEntity(entity);
+
+		renderer.ProcessTerrain(terrain);
+		renderer.ProcessTerrain(terrain2);
 
 		renderer.Render(light, camera);
 		// Swap buffers

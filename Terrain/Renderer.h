@@ -2,11 +2,12 @@
 
 #include <map>
 
-#include "RawModel.h"
-#include "TexturedModel.h"
 #include "Entity.h"
-#include "StaticShader.h"
+#include "MasterRenderer.h"
 #include "Maths.h"
+#include "RawModel.h"
+#include "StaticShader.h"
+#include "TexturedModel.h"
 
 #include "glm/gtx/transform.hpp"
 
@@ -17,29 +18,19 @@ static float locToRadians(float aDegree)
 	return (aDegree * 3.14f) / 180.0f;
 }
 
-class Renderer
+class EntityRenderer
 {
 public:
-	Renderer(StaticShader& aShader)
+	EntityRenderer(StaticShader& aShader)
 		:myShader(aShader)
 	{
 	}
 
-	void Setup()
+	void Setup(glm::mat4 aProjectionMatrix)
 	{
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		myProjectionMatrix = glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane);
 		myShader.Start();
-		myShader.LoadProjectionMatrix(myProjectionMatrix);
+		myShader.LoadProjectionMatrix(aProjectionMatrix);
 		myShader.Stop();
-	}
-	
-	void Prepare()
-	{
-		glEnable(GL_DEPTH_TEST);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0, 0, 0, 1);
 	}
 
 	void Render(map<TexturedModel*, vector<Entity*>>& someEntities)
@@ -67,6 +58,11 @@ public:
 		glEnableVertexAttribArray(2);
 
 		ModelTexture const& texture = aModel.GetTexture();
+
+		if (texture.myHasTransparency)
+			DisableCulling();
+
+		myShader.LoadFakeLighting(texture.myUseFakeLighting);
 		myShader.LoadShineVariables(texture.myShineDamper, texture.myReflectivity);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -75,6 +71,7 @@ public:
 
 	void UnbindTexturedModel()
 	{
+		EnableCulling();
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(3);
@@ -89,10 +86,6 @@ public:
 	}
 
 private:
-	float myFOV = 70;
-	float myNearPlane = 0.1f;
-	float myFarPlane = 1000.0f;
-	glm::mat4 myProjectionMatrix;
 	StaticShader& myShader;
 
 };

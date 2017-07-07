@@ -25,27 +25,28 @@ protected:
 		myLocationTransofmationMatrix = GetUniformLocation("transformationMatrix");
 		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
 		myLocationViewMatrix = GetUniformLocation("viewMatrix");
-		myLocationLightPosition = GetUniformLocation("lighPos");
+		myLocationLightPosition = GetUniformLocation("lightPos");
 		myLocationLightColour = GetUniformLocation("lightColour");
 		myLocationShineDamper = GetUniformLocation("shineDamper");
 		myLocationReflectivity = GetUniformLocation("reflectivity");
+		myLocationFakeLighting = GetUniformLocation("useFakeLighting");
 	}
 
 public:
-	void LoadTransformationMatrix(glm::mat4 aMatrix)
+	void LoadTransformationMatrix(glm::mat4 const& aMatrix)
 	{
 		LoadMatrix(myLocationTransofmationMatrix, aMatrix);
 	}
-	void LoadProjectionMatrix(glm::mat4 aMatrix)
+	void LoadProjectionMatrix(glm::mat4 const& aMatrix)
 	{
 		LoadMatrix(myLocationProjectionMatrix, aMatrix);
 	}
-	void LoadViewMatrix(Camera& aCamera)
+	void LoadViewMatrix(Camera const& aCamera)
 	{
 		LoadMatrix(myLocationViewMatrix, CreateViewMatrix(aCamera));
 	}
 
-	void LoadLight(Light& aLight)
+	void LoadLight(Light const& aLight)
 	{
 		LoadVector(myLocationLightPosition, aLight.myPosition);
 		LoadVector(myLocationLightColour, aLight.myColour);
@@ -57,6 +58,11 @@ public:
 		LoadFloat(myLocationReflectivity, aReflectivity);
 	}
 
+	void LoadFakeLighting(bool aUseFake)
+	{
+		LoadBoolean(myLocationFakeLighting, aUseFake);
+	}
+
 private:
 	GLuint myLocationTransofmationMatrix;
 	GLuint myLocationProjectionMatrix;
@@ -65,4 +71,5 @@ private:
 	GLuint myLocationLightColour;
 	GLuint myLocationShineDamper;
 	GLuint myLocationReflectivity;
+	GLuint myLocationFakeLighting;
 };

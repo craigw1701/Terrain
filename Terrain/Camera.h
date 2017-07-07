@@ -17,8 +17,8 @@ class Camera
 public:
 	Camera(GLFWwindow& aWindow)
 		: myWindow(aWindow)
-		, myPosition(0)
-		, myRotation(0)
+		, myPosition(0, 5, -1)
+		, myRotation(0.0, 0, 0)
 	{
 
 	}
@@ -51,6 +51,8 @@ public:
 		if (glfwGetKey(&myWindow, GLFW_KEY_Z) == GLFW_PRESS) {
 			myPosition.y -= GameInfo::ourDeltaTime * newSpeed;
 		}
+
+		//myRotation.y -= GameInfo::ourDeltaTime * newSpeed;
 	}
 
 	vec3 myPosition;
