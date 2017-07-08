@@ -19,6 +19,7 @@ using namespace glm;
 #include "ModelTexture.h"
 #include "StaticShader.h"
 #include "Terrain.h"
+#include "TerrainTexture.h"
 #include "TexturedModel.h"
 
 int main()
@@ -105,9 +106,9 @@ int main()
 
 	for (int i = 0; i < 200; i++)
 	{
-		float x = rand() % 100 - 50;
+		float x = rand() % 200 - 100;
 		float y = 0;
-		float z = rand() % 100 - 50;
+		float z = -rand() % 200;
 
 		float rY = rand() % 180;
 		float rS = float((rand() % 3) + 3.0f) / 20.0f;
@@ -116,9 +117,9 @@ int main()
 
 	for (int i = 0; i < 100; i++)
 	{
-		float x = rand() % 100 - 50;
+		float x = rand() % 200 - 100;
 		float y = 0;
-		float z = rand() % 100 - 50;
+		float z = -rand() % 200;
 
 		float rY = rand() % 180;
 		float rS = float((rand() % 3) + 3.0f) / 2.0f;
@@ -132,10 +133,13 @@ int main()
 	Light light(vec3(0, 25, 0), vec3(1, 1, 1));
 	ModelTexture grass = loader.LoadTexture("data/grass.bmp");
 
+	TerrainTexture blendMap = DecodeOneStep("data/blendMap.png");
+	TerrainTexturePack texturePack("data/grassy2.png", "data/grassFlowers.png", "data/mud.png", "data/path.png");
+
 	grass.myReflectivity = 1;
 	grass.myShineDamper = 10;
-	Terrain terrain(-1, -1, loader, grass);
-	Terrain terrain2(0, -1, loader, grass);
+	Terrain terrain(-1, -1, loader, texturePack, blendMap);
+	Terrain terrain2(0, -1, loader, texturePack, blendMap);
 	
 	MasterRenderer renderer;
 

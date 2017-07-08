@@ -25,12 +25,12 @@ public:
 
 	void Move()
 	{
-		float speed = 1.0f;
+		float speed = 5.0f;
 
 		float newSpeed = speed;
 
 		if (glfwGetKey(&myWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-			newSpeed *= 5.0f;
+			newSpeed *= 25.0f;
 		}
 
 		if (glfwGetKey(&myWindow, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(&myWindow, GLFW_KEY_W) == GLFW_PRESS) {
@@ -50,6 +50,14 @@ public:
 		}
 		if (glfwGetKey(&myWindow, GLFW_KEY_Z) == GLFW_PRESS) {
 			myPosition.y -= GameInfo::ourDeltaTime * newSpeed;
+		}
+
+		if (glfwGetKey(&myWindow, GLFW_KEY_E) == GLFW_PRESS) {
+			myRotation.x -= GameInfo::ourDeltaTime * newSpeed * 0.01f;
+		}
+
+		if (glfwGetKey(&myWindow, GLFW_KEY_C) == GLFW_PRESS) {
+			myRotation.x += GameInfo::ourDeltaTime * newSpeed * 0.01f;
 		}
 
 		//myRotation.y -= GameInfo::ourDeltaTime * newSpeed;

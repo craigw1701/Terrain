@@ -29,6 +29,11 @@ protected:
 		myLocationLightColour = GetUniformLocation("lightColour");
 		myLocationShineDamper = GetUniformLocation("shineDamper");
 		myLocationReflectivity = GetUniformLocation("reflectivity");
+		myLocationBackgroundTexture = GetUniformLocation("backgroundTexture");
+		myLocationRTexture = GetUniformLocation("rTexture");
+		myLocationGTexture = GetUniformLocation("gTexture");
+		myLocationBTexture = GetUniformLocation("bTexture");
+		myLocationBlendTexture = GetUniformLocation("blendMap");
 	}
 
 public:
@@ -43,6 +48,15 @@ public:
 	void LoadViewMatrix(Camera& aCamera)
 	{
 		LoadMatrix(myLocationViewMatrix, CreateViewMatrix(aCamera));
+	}
+
+	void ConnectTextureUnits()
+	{
+		LoadInt(myLocationBackgroundTexture, 0);
+		LoadInt(myLocationRTexture, 1);
+		LoadInt(myLocationGTexture, 2);
+		LoadInt(myLocationBTexture, 3);
+		LoadInt(myLocationBlendTexture, 4);
 	}
 
 	void LoadLight(Light& aLight)
@@ -65,4 +79,10 @@ private:
 	GLuint myLocationLightColour;
 	GLuint myLocationShineDamper;
 	GLuint myLocationReflectivity;
+
+	GLuint myLocationBackgroundTexture;
+	GLuint myLocationRTexture;
+	GLuint myLocationGTexture;
+	GLuint myLocationBTexture;
+	GLuint myLocationBlendTexture;
 };

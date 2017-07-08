@@ -1,14 +1,15 @@
 #pragma once
 
-#include "RawModel.h"
-#include "ModelTexture.h"
 #include "Loader.h"
+#include "RawModel.h"
+#include "TerrainTexture.h"
 
 class Terrain
 {
 public:
-	Terrain(int aGridX, int aGridZ, Loader& aLoader, ModelTexture& aTexture)
-		: myTexture(aTexture)
+	Terrain(int aGridX, int aGridZ, Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap)
+		: myTextures(aTexturePack)
+		, myBlendMap(aBlendMap)
 		, myModel(GenerateTerrain(aLoader))
 		, myX(aGridX * mySize)
 		, myZ(aGridZ * mySize)
@@ -62,7 +63,8 @@ public:
 	float GetX() const { return myX; }
 	float GetZ() const { return myZ; }
 	RawModel const& GetModel() const { return myModel; }
-	ModelTexture const& GetTexture() const { return myTexture; }
+	TerrainTexturePack const& GetTextures() const { return myTextures; }
+	TerrainTexture const& GetBlendMap() const { return myBlendMap; }
 
 private:
 	float mySize = 800;
@@ -71,5 +73,6 @@ private:
 	float myX;
 	float myZ;
 	RawModel myModel;
-	ModelTexture& myTexture;
+	TerrainTexturePack& myTextures;
+	TerrainTexture& myBlendMap;
 };

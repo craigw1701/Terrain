@@ -170,6 +170,7 @@
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainRenderer.h" />
     <ClInclude Include="TerrainShader.h" />
+    <ClInclude Include="TerrainTexture.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="TexturedModel.h" />
   </ItemGroup>

@@ -17,6 +17,7 @@ public:
 	{
 		myShader.Start();
 		myShader.LoadProjectionMatrix(aProjectionMatrix);
+		myShader.ConnectTextureUnits();
 		myShader.Stop();
 	}
 
@@ -40,12 +41,24 @@ private:
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
+		BindTextures(aTerrain);
+		myShader.LoadShineVariables(1, 0);
+	}
 
-		ModelTexture const& texture = aTerrain.GetTexture();
-		myShader.LoadShineVariables(texture.myShineDamper, texture.myReflectivity);
+	void BindTextures(Terrain const& aTerrain)
+	{
+		TerrainTexturePack const& texturePack = aTerrain.GetTextures();
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture.GetTextureID());
+		glBindTexture(GL_TEXTURE_2D, texturePack.myBackgroundTexture.myTextureID);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texturePack.myRTexture.myTextureID);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, texturePack.myGTexture.myTextureID);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, texturePack.myBTexture.myTextureID);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, aTerrain.GetBlendMap().myTextureID);
 	}
 
 	void UnbindTexturedModel()

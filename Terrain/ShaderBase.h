@@ -65,6 +65,10 @@ protected:
 		glBindAttribLocation(myProgramID, anAttribute, aVariableName);
 	}
 
+	void LoadInt(GLuint aLocation, int aValue)
+	{
+		glUniform1i(aLocation, aValue);
+	}
 
 	void LoadFloat(GLuint aLocation, float aValue)
 	{
