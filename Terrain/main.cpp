@@ -17,7 +17,6 @@ using namespace glm;
 #include "Loader.h"
 #include "MasterRenderer.h"
 #include "ModelTexture.h"
-#include "ObjLoader.h"
 #include "StaticShader.h"
 #include "Terrain.h"
 #include "TexturedModel.h"
@@ -67,12 +66,7 @@ int main()
 	//ModelTexture texture(loader.LoadTexture("data/image.bmp"));
 #pragma endregion
 
-	std::vector<glm::vec3> out_vertices;
-	std::vector<glm::vec2> out_uvs;
-	std::vector<glm::vec3> out_normals;
-	std::vector<int> out_indices;
-	LoadOBJ("data/fern.obj", out_vertices, out_uvs, out_normals, out_indices);
-	RawModel model = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
+	RawModel model = loader.LoadToVAO("data/fern.obj");
 	ModelTexture texture(DecodeOneStep("data/fern.png"));
 	TexturedModel texturedModel(model, texture);
 	texture.myReflectivity = 0.2;
@@ -80,16 +74,14 @@ int main()
 	texture.myHasTransparency = true;
 	texture.myUseFakeLighting = true;
 
-	LoadOBJ("data/tree.obj", out_vertices, out_uvs, out_normals, out_indices);
-	RawModel treeModel = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
+	RawModel treeModel = loader.LoadToVAO("data/tree.obj");
 	ModelTexture treeTexture(DecodeOneStep("data/tree.png"));
 	TexturedModel texturedTreeModel(treeModel, treeTexture);
 	treeTexture.myReflectivity = 0.2;
 	treeTexture.myShineDamper = 1;
 
 
-	LoadOBJ("data/grassModel.obj", out_vertices, out_uvs, out_normals, out_indices);
-	RawModel grassModel = loader.LoadToVAO(out_vertices, out_uvs, out_normals, out_indices);
+	RawModel grassModel = loader.LoadToVAO("data/grassModel.obj");
 	ModelTexture grassTexture(DecodeOneStep("data/grassTexture.png"));
 	TexturedModel texturedGrassModel(grassModel, grassTexture);
 	grassTexture.myReflectivity = 0.2;

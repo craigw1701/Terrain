@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "ObjLoader.h"
 #include "RawModel.h"
 #include "texture.h"
 
@@ -20,6 +21,16 @@ public:
 		UnbindVAO();
 
 		return RawModel(vaoID, someIndices.size());
+	}
+
+	RawModel LoadToVAO(const char* anOBJFile)
+	{
+		std::vector<glm::vec3> vertices;
+		std::vector<glm::vec2> uvs;
+		std::vector<glm::vec3> normals;
+		std::vector<int> indices;
+		LoadOBJ(anOBJFile, vertices, uvs, normals, indices);
+		return LoadToVAO(vertices, uvs, normals, indices);
 	}
 
 	void CleanUp()
