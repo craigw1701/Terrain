@@ -27,6 +27,7 @@ public:
 		myLocationRefractionTexture = GetUniformLocation("refractionTexture");
 		myLocationDUDVMap = GetUniformLocation("dudvMap");
 		myLocationMoveFactor = GetUniformLocation("moveFactor");
+		myLocationCameraPos = GetUniformLocation("cameraPos");
 	}
 
 	void LoadProjectionMatrix(mat4 aMatrix)
@@ -38,6 +39,7 @@ public:
 	{
 		mat4 viewMatrix = CreateViewMatrix(aCamera);
 		LoadMatrix(myLocationViewMatrix, viewMatrix);
+		LoadVector(myLocationCameraPos, aCamera.myPosition);
 	}
 
 	void LoadModelMatrix(mat4 aMatrix)
@@ -64,4 +66,5 @@ public:
 	GLuint myLocationRefractionTexture;
 	GLuint myLocationDUDVMap;
 	GLuint myLocationMoveFactor;
+	GLuint myLocationCameraPos;
 };
