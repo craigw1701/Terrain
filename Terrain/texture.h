@@ -1,5 +1,24 @@
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#pragma once
+
+
+#include "GL/glew.h"
+
+#include "GL/glfw3.h"
+
+#include "lodepng.h"
+
+#include <vector>
+
+class TextureData
+{
+public:
+	std::vector<unsigned char> myImageBuffer;
+	unsigned int myWidth;
+	unsigned int myHeight;
+};
+
+TextureData GetTextureData(const char * imagepath);
+
 
 // Load a .BMP file using our custom loader
 GLuint loadBMP_custom(const char * imagepath);
@@ -14,4 +33,3 @@ GLuint loadDDS(const char * imagepath);
 
 GLuint DecodeOneStep(const char* filename);
 
-#endif

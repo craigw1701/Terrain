@@ -1,0 +1,38 @@
+#version 400 core
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 textureCoords;
+layout(location = 2) in vec3 normal;
+
+out vec2 pass_textureCoods;
+out vec3 surfaceNormal;
+out vec3 toLightVector;
+out vec3 toCameraVector;
+
+uniform mat4 transformationMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+uniform vec3 lightPos;
+uniform float useFakeLighting;
+
+
+void main(void)
+{
+	vec4 worldPosition = transformationMatrix * vec4(position, 1);
+	gl_Position = projectionMatrix * viewMatrix * worldPosition;
+	
+	//colour = vec3(position.x + 0.5, 1.0, position.y + 0.5);//vec3(transformationMatrix[3][0] + 1, transformationMatrix[3][1] + 1, transformationMatrix[3][2] + 1);
+	pass_textureCoods = textureCoords;
+
+	vec3 actualNormal = normal;
+
+	if (useFakeLighting > 0.5)
+	{
+		actualNormal = vec3(0, 1, 0);
+	}
+
+	surfaceNormal = (transformationMatrix * vec4(actualNormal, 0.0)).xyz;
+	toLightVector = lightPos - worldPosition.xyz;
+
+	toCameraVector = (inverse(viewMatrix) * vec4(0,0,0,1)).xyz - worldPosition.xyz;
+}

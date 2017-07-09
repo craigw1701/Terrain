@@ -172,7 +172,7 @@ int main()
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));
 
-	MasterRenderer renderer;
+	MasterRenderer renderer(loader);
 
 	do {
 		currentFrame = glfwGetTime();

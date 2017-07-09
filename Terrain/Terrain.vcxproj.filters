@@ -34,6 +34,9 @@
     <Filter Include="GUI">
       <UniqueIdentifier>{361ebade-f96a-408a-aafe-334448a34e81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Skybox">
+      <UniqueIdentifier>{a4d0d5a3-848c-44d8-993d-425947321d2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -119,14 +122,14 @@
     <ClInclude Include="GUIShader.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="SkyboxShader.h">
+      <Filter>Skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyboxRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragmentShader.fragmentshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vertexShader.vertexshader">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\terrain.fragmentshader">
       <Filter>Shaders</Filter>
     </None>
@@ -137,6 +140,18 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\gui.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\staticshader.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\staticshader.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skybox.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\skybox.vertexshader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

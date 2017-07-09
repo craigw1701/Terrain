@@ -7,7 +7,7 @@ class TerrainShader : public ShaderBase
 {
 public:
 	TerrainShader()
-		: ShaderBase("Shaders/terrain.vertexshader", "Shaders/terrain.fragmentshader")
+		: ShaderBase("terrain")
 	{
 
 	}

@@ -36,6 +36,14 @@ public:
 		return RawModel(vaoID, somePositions.size());
 	}
 
+	RawModel LoadToVAO(vector<vec3> somePositions)
+	{
+		GLuint vaoID = CreateVAO();
+		StoreDataInAttributeList(0, 3, somePositions);
+		UnbindVAO();
+		return RawModel(vaoID, somePositions.size());
+	}
+
 	RawModel LoadToVAO(const char* anOBJFile)
 	{
 		std::string fileName;
@@ -63,6 +71,28 @@ public:
 			glDeleteBuffers(1, &vbo);
 		for(GLuint& texture : myTextures)
 			glDeleteTextures(1, &texture);
+	}
+
+	GLuint LoadCubeMap(vector<std::string> const& someTextures)
+	{
+		GLuint textureID;
+		glGenTextures(1, &textureID);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+		int i = 0;
+		for (string const& texture : someTextures)
+		{
+			TextureData data = GetTextureData(("data/" + texture).c_str());
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, data.myWidth, data.myHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &data.myImageBuffer.front());
+			i++;
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		myTextures.push_back(textureID);
+		return textureID;
 	}
 	
 	GLuint LoadTexture(const char* aFileName)

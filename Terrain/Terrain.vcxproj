@@ -170,6 +170,8 @@
     <ClInclude Include="RawModel.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderBase.h" />
+    <ClInclude Include="SkyboxRenderer.h" />
+    <ClInclude Include="SkyboxShader.h" />
     <ClInclude Include="StaticShader.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainRenderer.h" />
@@ -179,12 +181,14 @@
     <ClInclude Include="TexturedModel.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragmentShader.fragmentshader" />
+    <None Include="Shaders\skybox.fragmentshader" />
+    <None Include="Shaders\skybox.vertexshader" />
+    <None Include="Shaders\staticshader.fragmentshader" />
     <None Include="Shaders\gui.fragmentshader" />
     <None Include="Shaders\gui.vertexshader" />
     <None Include="Shaders\terrain.fragmentshader" />
     <None Include="Shaders\terrain.vertexshader" />
-    <None Include="Shaders\vertexShader.vertexshader" />
+    <None Include="Shaders\staticshader.vertexshader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

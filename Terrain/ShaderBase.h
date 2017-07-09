@@ -21,10 +21,12 @@ using namespace glm;
 class ShaderBase
 {
 	bool myHasSetup = false;
+	std::string myShaderPath = "Shaders/";
 public:
-	ShaderBase(const char* aVertexShaderFile, const char* aFragmentShaderFile)
+	ShaderBase(const char* aShaderFile)
 	{
-		myProgramID = LoadShaders(aVertexShaderFile, aFragmentShaderFile);
+		std::string shaderPath = myShaderPath + aShaderFile;
+		myProgramID = LoadShaders((shaderPath + ".vertexshader").c_str(), (shaderPath + ".fragmentshader").c_str());
 	}
 
 	virtual ~ShaderBase()

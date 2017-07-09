@@ -39,10 +39,10 @@ public:
 		if (glfwGetKey(&myWindow, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(&myWindow, GLFW_KEY_S) == GLFW_PRESS) {
 			myPosition.z += GameInfo::ourDeltaTime * newSpeed;
 		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(&myWindow, GLFW_KEY_A) == GLFW_PRESS) {
+		if (glfwGetKey(&myWindow, GLFW_KEY_A) == GLFW_PRESS) {
 			myPosition.x -= GameInfo::ourDeltaTime * newSpeed;
 		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(&myWindow, GLFW_KEY_D) == GLFW_PRESS) {
+		if (glfwGetKey(&myWindow, GLFW_KEY_D) == GLFW_PRESS) {
 			myPosition.x += GameInfo::ourDeltaTime * newSpeed;
 		}
 		if (glfwGetKey(&myWindow, GLFW_KEY_Q) == GLFW_PRESS) {
@@ -58,6 +58,13 @@ public:
 
 		if (glfwGetKey(&myWindow, GLFW_KEY_C) == GLFW_PRESS) {
 			myRotation.x += GameInfo::ourDeltaTime * newSpeed * 0.01f;
+		}
+
+		if (glfwGetKey(&myWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
+			myRotation.y -= GameInfo::ourDeltaTime * newSpeed * 0.01f;
+		}
+		if (glfwGetKey(&myWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+			myRotation.y += GameInfo::ourDeltaTime * newSpeed * 0.01f;
 		}
 
 		//myRotation.y -= GameInfo::ourDeltaTime * newSpeed;

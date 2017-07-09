@@ -13,12 +13,13 @@ void DisableCulling()
 }
 
 
-#include "StaticShader.h"
-#include "Renderer.h"
-#include "TexturedModel.h"
 #include "Entity.h"
+#include "Renderer.h"
+#include "SkyboxRenderer.h"
+#include "StaticShader.h"
 #include "TerrainRenderer.h"
 #include "TerrainShader.h"
+#include "TexturedModel.h"
 
 #include <map>
 using namespace std;
@@ -26,12 +27,13 @@ using namespace std;
 class MasterRenderer
 {
 public:
-	MasterRenderer()
+	MasterRenderer(Loader& aLoader)
 		: myProjectionMatrix(glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane))
 		, myEntityShader()
 		, myTerrainShader()
 		, myEntityRenderer(myEntityShader)
 		, myTerrainRenderer(myTerrainShader)
+		, mySkyboxRenderer(aLoader, myProjectionMatrix)
 	{
 		EnableCulling();
 
@@ -49,6 +51,7 @@ public:
 	void Render(Light& aSun, Camera& aCamera)
 	{
 		Prepare();
+		mySkyboxRenderer.Render(aCamera);
 		myEntityShader.Start();
 		myEntityShader.LoadLight(aSun);
 		myEntityShader.LoadViewMatrix(aCamera);
@@ -60,6 +63,7 @@ public:
 		myTerrainShader.LoadViewMatrix(aCamera);
 		myTerrainRenderer.Render(myTerrains);
 		myTerrainShader.Stop();
+
 		
 		myEntities.clear();
 		myTerrains.clear();
@@ -97,11 +101,12 @@ public:
 private:
 	float myFOV = 70;
 	float myNearPlane = 0.1f;
-	float myFarPlane = 1000.0f;
+	float myFarPlane = 5000.0f;
 	glm::mat4 myProjectionMatrix;
 
 	StaticShader myEntityShader;
 	EntityRenderer myEntityRenderer;
+	SkyboxRenderer mySkyboxRenderer;
 
 	TerrainShader myTerrainShader;
 	TerrainRenderer myTerrainRenderer;

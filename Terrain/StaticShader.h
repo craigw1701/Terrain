@@ -7,7 +7,7 @@ class StaticShader : public ShaderBase
 {
 public:
 	StaticShader()
-		: ShaderBase("Shaders/vertexShader.vertexshader", "Shaders/fragmentShader.fragmentshader")
+		: ShaderBase("staticShader")
 	{
 
 	}

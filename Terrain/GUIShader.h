@@ -17,7 +17,7 @@ class GUIShader : public ShaderBase
 {
 public:
 	GUIShader()
-		: ShaderBase("shaders/gui.vertexshader", "shaders/gui.fragmentshader")
+		: ShaderBase("gui")
 	{
 
 	}

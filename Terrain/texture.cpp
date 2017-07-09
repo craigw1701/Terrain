@@ -1,12 +1,8 @@
+#include "texture.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
-#include "GL/glew.h"
-
-#include "GL/glfw3.h"
-
-#include "lodepng.h"
 using namespace std;
 
 #pragma warning(disable:4996)
@@ -213,20 +209,26 @@ GLuint loadDDS(const char * imagepath){
 
 }
 
-GLuint DecodeOneStep(const char* filename)
+TextureData GetTextureData(const char * aFileName)
 {
-	std::vector<unsigned char> image; //the raw pixels
-	unsigned width, height;
+	TextureData textureData;
 
 	//decode
-	unsigned error = lodepng::decode(image, width, height, filename);
+	unsigned error = lodepng::decode(textureData.myImageBuffer, textureData.myWidth, textureData.myHeight, aFileName);
 
 	//if there's an error, display it
 	if (error)
 	{
 		std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
-		return -1;
+		return TextureData();
 	}
+	return textureData;
+}
+
+
+GLuint DecodeOneStep(const char* filename)
+{
+	TextureData textureData = GetTextureData(filename);
 
 	// Create one OpenGL texture
 	GLuint textureID;
@@ -236,7 +238,7 @@ GLuint DecodeOneStep(const char* filename)
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	// Give the image to OpenGL
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image.front());
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureData.myWidth, textureData.myHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureData.myImageBuffer.front());
 	
 	// Poor filtering, or ...
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
