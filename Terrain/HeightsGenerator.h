@@ -85,6 +85,7 @@ public:
 		unsigned int seed = aX * 49632 + aZ * 325176 + mySeed;
 			
 #ifdef _DEBUG
+		// TODO:CW this isn't good enough
 		fast_srand(seed);
 		float r = static_cast <float> (fast_rand()) / static_cast <float> (32767);
 		

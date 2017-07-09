@@ -3,6 +3,8 @@
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
 #include "GL\glew.h"
 
+#include "Loader.h"
+
 class TerrainTexture
 {
 public:
@@ -17,8 +19,8 @@ class TerrainTexturePack
 {
 public:
 
-	TerrainTexturePack(const char* aBackgroundTexture, const char* aRTexture, const char* aGTexture, const char* aBTexture)
-		:TerrainTexturePack(DecodeOneStep(aBackgroundTexture), DecodeOneStep(aRTexture), DecodeOneStep(aGTexture), DecodeOneStep(aBTexture))
+	TerrainTexturePack(const char* aBackgroundTexture, const char* aRTexture, const char* aGTexture, const char* aBTexture, Loader& aLoader)
+		:TerrainTexturePack(aLoader.LoadTexture(aBackgroundTexture), aLoader.LoadTexture(aRTexture), aLoader.LoadTexture(aGTexture), aLoader.LoadTexture(aBTexture))
 	{
 	}
 

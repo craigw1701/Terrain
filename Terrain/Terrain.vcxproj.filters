@@ -31,6 +31,9 @@
     <Filter Include="Terrain">
       <UniqueIdentifier>{6e49295d-93dd-4171-a53d-eb75f339ed45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{361ebade-f96a-408a-aafe-334448a34e81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -107,6 +110,15 @@
     <ClInclude Include="HeightsGenerator.h">
       <Filter>Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="GUITexture.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIRenderer.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUIShader.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragmentShader.fragmentshader">
@@ -119,6 +131,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\terrain.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\gui.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\gui.vertexshader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -25,6 +25,13 @@ glm::mat4 CreateTransformMatrix(glm::vec3 aTranslation, glm::vec3 aRotation, flo
 	return matrix;
 }
 
+glm::mat4 CreateTransformationMatrix(vec2 aTranslation, vec2 aScale) 
+{
+	glm::mat4 matrix(1.0f);
+	matrix = glm::translate(matrix, vec3(aTranslation, 0));
+	matrix = glm::scale(matrix, glm::vec3(aScale.x, aScale.y, 1.0f));
+	return matrix;
+}
 
 glm::mat4 CreateViewMatrix(Camera const& aCamera)
 {

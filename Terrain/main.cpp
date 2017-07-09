@@ -14,6 +14,8 @@ using namespace glm;
 
 #include "Camera.h"
 #include "GameInfo.h"
+#include "GUIRenderer.h"
+#include "GUITexture.h"
 #include "Loader.h"
 #include "MasterRenderer.h"
 #include "ModelTexture.h"
@@ -21,6 +23,24 @@ using namespace glm;
 #include "Terrain.h"
 #include "TerrainTexture.h"
 #include "TexturedModel.h"
+
+void DebugControls(GLFWwindow* aWindow)
+{
+	static bool wasPressed = false;
+	if (glfwGetKey(aWindow, GLFW_KEY_P) == GLFW_PRESS) {
+		if (wasPressed == false)
+		{
+			wasPressed = true;
+			static bool wireFrame = false;
+			wireFrame = !wireFrame;
+			glPolygonMode(GL_FRONT_AND_BACK, wireFrame ? GL_LINE : GL_FILL);
+		}
+	}
+	else
+	{
+		wasPressed = false;
+	}
+}
 
 int main()
 {
@@ -67,23 +87,23 @@ int main()
 	//ModelTexture texture(loader.LoadTexture("data/image.bmp"));
 #pragma endregion
 
-	RawModel model = loader.LoadToVAO("data/fern.obj");
-	ModelTexture texture(DecodeOneStep("data/fern.png"));
+	RawModel model = loader.LoadToVAO("fern.obj");
+	ModelTexture texture(loader.LoadTexture("fern.png"));
 	TexturedModel texturedModel(model, texture);
 	texture.myReflectivity = 0.2f;
 	texture.myShineDamper = 1;
 	texture.myHasTransparency = true;
 	texture.myUseFakeLighting = true;
 
-	RawModel treeModel = loader.LoadToVAO("data/tree.obj");
-	ModelTexture treeTexture(DecodeOneStep("data/tree.png"));
+	RawModel treeModel = loader.LoadToVAO("tree.obj");
+	ModelTexture treeTexture(loader.LoadTexture("tree.png"));
 	TexturedModel texturedTreeModel(treeModel, treeTexture);
 	treeTexture.myReflectivity = 0.2f;
 	treeTexture.myShineDamper = 1;
 
 
-	RawModel grassModel = loader.LoadToVAO("data/grassModel.obj");
-	ModelTexture grassTexture(DecodeOneStep("data/grassTexture.png"));
+	RawModel grassModel = loader.LoadToVAO("grassModel.obj");
+	ModelTexture grassTexture(loader.LoadTexture("grassTexture.png"));
 	TexturedModel texturedGrassModel(grassModel, grassTexture);
 	grassTexture.myReflectivity = 0.2f;
 	grassTexture.myShineDamper = 1;
@@ -131,16 +151,27 @@ int main()
 	
 	Camera camera(*window);
 	Light light(vec3(0, 25, 0), vec3(1, 1, 1));
-	ModelTexture grass = loader.LoadTexture("data/grass.bmp");
+	ModelTexture grass = loader.LoadTexture("grass.bmp");
 
-	TerrainTexture blendMap = DecodeOneStep("data/blendMap.png");
-	TerrainTexturePack texturePack("data/grass.png", "data/grassFlowers.png", "data/mud.png", "data/grassy2.png");
+	TerrainTexture blendMap = loader.LoadTexture("blendMap.png");
+	TerrainTexturePack texturePack("grass.png", "grassFlowers.png", "mud.png", "grassy2.png", loader);
 
 	grass.myReflectivity = 1;
 	grass.myShineDamper = 10;
 	Terrain terrain(-1, -1, loader, texturePack, blendMap);
 	Terrain terrain2(0, -1, loader, texturePack, blendMap);
 	
+	vector<GUITexture> guis;
+	/*GUITexture gui = GUITexture(loader.LoadTexture("grassTexture.png"), vec2(0.5f, 0.5f), vec2(0.25f, 0.25f));
+	GUITexture gui2 = GUITexture(loader.LoadTexture("fern.png"), vec2(0.3f, 0.75f), vec2(0.4f, 0.4f));
+
+	guis.push_back(gui);
+	guis.push_back(gui2);*/
+
+
+	GUIRenderer guiRenderer(loader);
+	guiRenderer.Setup(mat4(1));
+
 	MasterRenderer renderer;
 
 	do {
@@ -149,6 +180,7 @@ int main()
 		lastFrame = currentFrame;
 
 		camera.Move();
+		DebugControls(window);
 
 		for(Entity& entity : allEntities)
 			renderer.ProcessEntity(entity);
@@ -157,6 +189,9 @@ int main()
 		renderer.ProcessTerrain(terrain2);
 
 		renderer.Render(light, camera);
+
+		guiRenderer.Render(guis);
+
 		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();

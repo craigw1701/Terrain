@@ -222,7 +222,11 @@ GLuint DecodeOneStep(const char* filename)
 	unsigned error = lodepng::decode(image, width, height, filename);
 
 	//if there's an error, display it
-	if (error) std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+	if (error)
+	{
+		std::cout << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+		return -1;
+	}
 
 	// Create one OpenGL texture
 	GLuint textureID;

@@ -156,6 +156,9 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameInfo.h" />
+    <ClInclude Include="GUIRenderer.h" />
+    <ClInclude Include="GUIShader.h" />
+    <ClInclude Include="GUITexture.h" />
     <ClInclude Include="HeightsGenerator.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Loader.h" />
@@ -177,6 +180,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragmentShader.fragmentshader" />
+    <None Include="Shaders\gui.fragmentshader" />
+    <None Include="Shaders\gui.vertexshader" />
     <None Include="Shaders\terrain.fragmentshader" />
     <None Include="Shaders\terrain.vertexshader" />
     <None Include="Shaders\vertexShader.vertexshader" />

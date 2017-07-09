@@ -19,6 +19,8 @@ public:
 
 	RawModel GenerateTerrain(Loader& aLoader) 
 	{
+		double startTime = glfwGetTime();
+
 		std::srand(1);
 		HeightsGenerator generator(myX/mySize, myZ/mySize, myVertexCount, rand() % 1000000);
 
@@ -59,6 +61,7 @@ public:
 				indices[pointer++] = bottomRight;
 			}
 		}
+		printf("Terrain Generation Time: %f\n", glfwGetTime() - startTime);
 		return aLoader.LoadToVAO(vertices, textureCoords, normals, indices);
 	}
 
