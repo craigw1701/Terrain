@@ -16,6 +16,7 @@ The plan is to spend 4-8 hours on each area beofre moving on, allowing me to get
 * Rain/Snow
 * Day/Night
 * Waterfalls
+* Aurora
 
 
 Looking at tutorials from:

@@ -207,7 +207,7 @@ int main()
 
 
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
-	//guis.push_back(GUITexture(fbos.myRefractionTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
+	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
 
 	do {
 		currentFrame = glfwGetTime();
@@ -224,13 +224,13 @@ int main()
 			float distance = 2 * (camera.myPosition.y - WATER_HEIGHT);
 			camera.myPosition.y -= distance;
 			camera.InvertCamera();
-			renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT));
+			renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT + 5.0f));
 			camera.myPosition.y += distance;
 			camera.InvertCamera();
 		}
 		
 		fbos.BindRefractionFrameBuffer();
-		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT));
+		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT + 1.0f));
 		fbos.UnbindCurrentFrameBuffer();
 		
 		glDisable(GL_CLIP_DISTANCE0);

@@ -72,10 +72,16 @@ public:
 		glBindTexture(GL_TEXTURE_2D, myDUDVMap);
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, myNormalMap);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionDepthTexture);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void Unbind()
 	{
+		glDisable(GL_BLEND);
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 		myShader.Stop();

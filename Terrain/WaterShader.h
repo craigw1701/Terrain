@@ -31,6 +31,7 @@ public:
 		myLocationNormalMap = GetUniformLocation("normalMap");
 		myLocationLightColour = GetUniformLocation("lightColour");
 		myLocationLightPosition = GetUniformLocation("lightPos");
+		myLocationDepthMap = GetUniformLocation("depthMap");
 	}
 
 	void LoadProjectionMatrix(mat4 aMatrix)
@@ -56,6 +57,7 @@ public:
 		LoadInt(myLocationRefractionTexture, 1);
 		LoadInt(myLocationDUDVMap, 2);
 		LoadInt(myLocationNormalMap, 3);
+		LoadInt(myLocationDepthMap, 4);
 	}
 
 	void LoadLight(Light& aSun)
@@ -80,4 +82,5 @@ public:
 	GLuint myLocationNormalMap;
 	GLuint myLocationLightColour;
 	GLuint myLocationLightPosition;
+	GLuint myLocationDepthMap;
 };
