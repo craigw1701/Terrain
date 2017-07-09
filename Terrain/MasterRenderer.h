@@ -48,7 +48,7 @@ public:
 	{
 	}
 
-	void RenderScene(vector<Entity>& someEntities, vector<Terrain>& someTerrain, Light& aSun, Camera& aCamera)
+	void RenderScene(vector<Entity>& someEntities, vector<Terrain>& someTerrain, Light& aSun, Camera& aCamera, vec4 aClipPlane)
 	{
 		for (Terrain& terrain : someTerrain)
 			ProcessTerrain(terrain);
@@ -56,25 +56,37 @@ public:
 		for (Entity& entity : someEntities)
 			ProcessEntity(entity);
 
-		Render(aSun, aCamera);
+		Render(aSun, aCamera, aClipPlane);
 	}
 
-	void Render(Light& aSun, Camera& aCamera)
+	void Render(Light& aSun, Camera& aCamera, vec4 aClipPlane)
 	{
 		Prepare();
-		mySkyboxRenderer.Render(aCamera);
-		myEntityShader.Start();
-		myEntityShader.LoadLight(aSun);
-		myEntityShader.LoadViewMatrix(aCamera);
-		myEntityRenderer.Render(myEntities);
-		myEntityShader.Stop();
+		
+		if (GameInfo::ourDrawSkybox)
+		{
+			mySkyboxRenderer.Render(aCamera);
+		}
+		
+		if (GameInfo::ourDrawEntities)
+		{
+			myEntityShader.Start();
+			myEntityShader.LoadClipPlane(aClipPlane);
+			myEntityShader.LoadLight(aSun);
+			myEntityShader.LoadViewMatrix(aCamera);
+			myEntityRenderer.Render(myEntities);
+			myEntityShader.Stop();
+		}
 
-		myTerrainShader.Start();
-		myTerrainShader.LoadLight(aSun);
-		myTerrainShader.LoadViewMatrix(aCamera);
-		myTerrainRenderer.Render(myTerrains);
-		myTerrainShader.Stop();
-
+		if (GameInfo::ourDrawTerrain)
+		{
+			myTerrainShader.Start();
+			myTerrainShader.LoadClipPlane(aClipPlane);
+			myTerrainShader.LoadLight(aSun);
+			myTerrainShader.LoadViewMatrix(aCamera);
+			myTerrainRenderer.Render(myTerrains);
+			myTerrainShader.Stop();
+		}
 		
 		myEntities.clear();
 		myTerrains.clear();

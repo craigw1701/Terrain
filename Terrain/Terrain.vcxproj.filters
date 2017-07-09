@@ -101,9 +101,6 @@
     <ClInclude Include="Terrain.h">
       <Filter>Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainShader.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -134,26 +131,20 @@
     <ClInclude Include="WaterRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="WaterShader.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="WaterTile.h">
+      <Filter>Water</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterFrameBuffer.h">
+      <Filter>Water</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterShader.h">
       <Filter>Water</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\terrain.fragmentshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\terrain.vertexshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\gui.fragmentshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\gui.vertexshader">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\staticshader.vertexshader">
       <Filter>Shaders</Filter>
     </None>
@@ -161,16 +152,28 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\skybox.fragmentshader">
-      <Filter>Shaders</Filter>
+      <Filter>Skybox</Filter>
     </None>
     <None Include="Shaders\skybox.vertexshader">
-      <Filter>Shaders</Filter>
+      <Filter>Skybox</Filter>
     </None>
-    <None Include="Shaders\watershader.fragmentshader">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\terrain.fragmentshader">
+      <Filter>Terrain</Filter>
+    </None>
+    <None Include="Shaders\terrain.vertexshader">
+      <Filter>Terrain</Filter>
     </None>
     <None Include="Shaders\watershader.vertexshader">
-      <Filter>Shaders</Filter>
+      <Filter>Water</Filter>
+    </None>
+    <None Include="Shaders\watershader.fragmentshader">
+      <Filter>Water</Filter>
+    </None>
+    <None Include="Shaders\gui.vertexshader">
+      <Filter>GUI</Filter>
+    </None>
+    <None Include="Shaders\gui.fragmentshader">
+      <Filter>GUI</Filter>
     </None>
   </ItemGroup>
 </Project>

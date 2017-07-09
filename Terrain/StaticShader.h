@@ -30,6 +30,7 @@ protected:
 		myLocationShineDamper = GetUniformLocation("shineDamper");
 		myLocationReflectivity = GetUniformLocation("reflectivity");
 		myLocationFakeLighting = GetUniformLocation("useFakeLighting");
+		myLocationPlane = GetUniformLocation("plane");
 	}
 
 public:
@@ -63,6 +64,11 @@ public:
 		LoadBoolean(myLocationFakeLighting, aUseFake);
 	}
 
+	void LoadClipPlane(vec4 aPlane)
+	{
+		LoadVector(myLocationPlane, aPlane);
+	}
+
 private:
 	GLuint myLocationTransofmationMatrix;
 	GLuint myLocationProjectionMatrix;
@@ -72,4 +78,5 @@ private:
 	GLuint myLocationShineDamper;
 	GLuint myLocationReflectivity;
 	GLuint myLocationFakeLighting;
+	GLuint myLocationPlane;
 };

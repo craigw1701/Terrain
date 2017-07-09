@@ -23,25 +23,43 @@ using namespace glm;
 #include "Terrain.h"
 #include "TerrainTexture.h"
 #include "TexturedModel.h"
+#include "WaterFrameBuffer.h"
 #include "WaterRenderer.h"
 #include "WaterShader.h"
 #include "WaterTile.h"
 
-void DebugControls(GLFWwindow* aWindow)
+#define WATER_HEIGHT -20
+
+int LastFrameKeys[GLFW_KEY_LAST + 1] = { 0 };
+
+bool WasJustPressed(int aKey)
 {
-	static bool wasPressed = false;
-	if (glfwGetKey(aWindow, GLFW_KEY_P) == GLFW_PRESS) {
-		if (wasPressed == false)
-		{
-			wasPressed = true;
-			static bool wireFrame = false;
-			wireFrame = !wireFrame;
-			glPolygonMode(GL_FRONT_AND_BACK, wireFrame ? GL_LINE : GL_FILL);
-		}
-	}
-	else
+	return glfwGetKey(GameInfo::ourWindow, aKey) == GLFW_PRESS && LastFrameKeys[aKey] == GLFW_RELEASE;
+}
+
+void DebugControls(GLFWwindow* aWindow, Camera& aCamera)
+{
+	if (WasJustPressed(GLFW_KEY_P))
 	{
-		wasPressed = false;
+		GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
+		glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
+	}
+	if (WasJustPressed(GLFW_KEY_O))
+	{
+		GameInfo::ourDrawEntities = !GameInfo::ourDrawEntities;
+	}
+	if (WasJustPressed(GLFW_KEY_L))
+	{
+		GameInfo::ourDrawTerrain = !GameInfo::ourDrawTerrain;
+	}
+	if (WasJustPressed(GLFW_KEY_K))
+	{
+		GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
+	}
+
+	for (int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST; i++)
+	{
+		LastFrameKeys[i] = glfwGetKey(aWindow, i);
 	}
 }
 
@@ -77,6 +95,8 @@ int main()
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+	GameInfo::ourWindow = window;
 
 	Loader loader;
 
@@ -125,7 +145,7 @@ int main()
 		float rY = rand() % 180;
 		float rS = float((rand() % 3) + 3.0f) / 20.0f;
 		allEntities.push_back(Entity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS));
-	}* /
+	}*/
 
 	for (int i = 0; i < 200; i++)
 	{
@@ -147,7 +167,7 @@ int main()
 		float rY = (float)(rand() % 180);
 		float rS = float((rand() % 3) + 3.0f) / 2.0f;
 		allEntities.push_back(Entity(texturedTreeModel, glm::vec3(x, y, z), glm::vec3(0, -rY, 0), rS));
-	}*/
+	}/**/
 
 	double currentFrame = glfwGetTime();
 	double lastFrame = currentFrame;
@@ -175,15 +195,19 @@ int main()
 
 	MasterRenderer renderer(loader);
 
+	WaterFrameBuffer fbos;
 	WaterShader waterShader;
-	WaterRenderer waterRenderer(loader, waterShader);
+	WaterRenderer waterRenderer(loader, waterShader, fbos);
 	waterRenderer.Setup(renderer.GetProjectionMatrix());
 	vector<WaterTile> waters;
-	waters.push_back(WaterTile(vec3(75, -20, -75)));
+	waters.push_back(WaterTile(vec3(75, WATER_HEIGHT, -75)));
 
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));
 
+
+	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
+	//guis.push_back(GUITexture(fbos.myRefractionTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
 
 	do {
 		currentFrame = glfwGetTime();
@@ -191,10 +215,27 @@ int main()
 		lastFrame = currentFrame;
 
 		camera.Move();
-		DebugControls(window);
+		DebugControls(window, camera);
 
-		renderer.RenderScene(allEntities, terrains, light, camera);
+		glEnable(GL_CLIP_DISTANCE0);
 
+		fbos.BindReflectionFrameBuffer();
+		{
+			float distance = 2 * (camera.myPosition.y - WATER_HEIGHT);
+			camera.myPosition.y -= distance;
+			camera.InvertCamera();
+			renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT));
+			camera.myPosition.y += distance;
+			camera.InvertCamera();
+		}
+		
+		fbos.BindRefractionFrameBuffer();
+		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT));
+		fbos.UnbindCurrentFrameBuffer();
+		
+		glDisable(GL_CLIP_DISTANCE0);
+
+		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera);
 
 		guiRenderer.Render(guis);

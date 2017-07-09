@@ -11,10 +11,12 @@ class WaterRenderer
 public:
 	RawModel myQuad;
 	WaterShader& myShader;
+	WaterFrameBuffer& myFBOs;
 
-	WaterRenderer(Loader& aLoader, WaterShader& aShader)
+	WaterRenderer(Loader& aLoader, WaterShader& aShader, WaterFrameBuffer& fbos)
 		: myShader(aShader)
 		, myQuad(aLoader.LoadToVAO({ { -1, 1 },{ -1, -1 },{ 1, 1 },{ 1, -1 } }))
+		, myFBOs(fbos)
 	{
 		myShader.Setup();
 	}
@@ -22,12 +24,16 @@ public:
 	void Setup(glm::mat4 aProjectionMatrix)
 	{
 		myShader.Start();
+		myShader.ConnectTextureUnits();
 		myShader.LoadProjectionMatrix(aProjectionMatrix);
 		myShader.Stop();
 	}
 
 	void Render(vector<WaterTile>& someWater, Camera& aCamera)
 	{
+		if (!GameInfo::ourDrawWater)
+			return;
+
 		DisableCulling();
 		PrepareRender(aCamera);
 		for (WaterTile& waterTile : someWater)
@@ -46,6 +52,10 @@ public:
 		myShader.LoadViewMatrix(aCamera);
 		glBindVertexArray(myQuad.GetVAOID());
 		glEnableVertexAttribArray(0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, myFBOs.myReflectionTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionTexture);
 	}
 
 	void Unbind()

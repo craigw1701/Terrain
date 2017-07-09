@@ -34,6 +34,7 @@ protected:
 		myLocationGTexture = GetUniformLocation("gTexture");
 		myLocationBTexture = GetUniformLocation("bTexture");
 		myLocationBlendTexture = GetUniformLocation("blendMap");
+		myLocationPlane = GetUniformLocation("plane");
 	}
 
 public:
@@ -71,6 +72,11 @@ public:
 		LoadFloat(myLocationReflectivity, aReflectivity);
 	}
 
+	void LoadClipPlane(vec4 aPlane)
+	{
+		LoadVector(myLocationPlane, aPlane);
+	}
+
 private:
 	GLuint myLocationTransofmationMatrix;
 	GLuint myLocationProjectionMatrix;
@@ -85,4 +91,5 @@ private:
 	GLuint myLocationGTexture;
 	GLuint myLocationBTexture;
 	GLuint myLocationBlendTexture;
+	GLuint myLocationPlane;
 };

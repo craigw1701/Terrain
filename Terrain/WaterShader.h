@@ -23,6 +23,8 @@ public:
 		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
 		myLocationViewMatrix = GetUniformLocation("viewMatrix");
 		myLocationModelMatrix = GetUniformLocation("modelMatrix");
+		myLocationReflectionTexture = GetUniformLocation("reflectionTexture");
+		myLocationRefractionTexture = GetUniformLocation("refractionTexture");
 	}
 
 	void LoadProjectionMatrix(mat4 aMatrix)
@@ -41,7 +43,15 @@ public:
 		LoadMatrix(myLocationModelMatrix, aMatrix);
 	}
 
+	void ConnectTextureUnits()
+	{
+		LoadInt(myLocationReflectionTexture, 0);
+		LoadInt(myLocationRefractionTexture, 1);
+	}
+
 	GLuint myLocationModelMatrix;
 	GLuint myLocationViewMatrix;
 	GLuint myLocationProjectionMatrix;
+	GLuint myLocationReflectionTexture;
+	GLuint myLocationRefractionTexture;
 };

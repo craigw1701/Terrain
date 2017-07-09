@@ -70,6 +70,12 @@ public:
 		//myRotation.y -= GameInfo::ourDeltaTime * newSpeed;
 	}
 
+	void InvertCamera()
+	{
+		myRotation.x = -myRotation.x;
+		//verticalAngle = -verticalAngle;// +(3.14f / 2.0f));
+	}
+
 	vec3 myPosition;
 	vec3 myRotation;
 

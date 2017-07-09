@@ -82,6 +82,11 @@ protected:
 		glUniform3f(aLocation, aVector.x, aVector.y, aVector.z);
 	}
 
+	void LoadVector(GLuint aLocation, vec4 aVector)
+	{
+		glUniform4f(aLocation, aVector.x, aVector.y, aVector.z, aVector.w);
+	}
+
 	void LoadBoolean(GLuint aLocation, bool aValue)
 	{
 		glUniform1f(aLocation, aValue ? 1.0f : 0.0f);
