@@ -200,7 +200,7 @@ int main()
 	WaterRenderer waterRenderer(loader, waterShader, fbos);
 	waterRenderer.Setup(renderer.GetProjectionMatrix());
 	vector<WaterTile> waters;
-	waters.push_back(WaterTile(vec3(75, WATER_HEIGHT, -75)));
+	waters.push_back(WaterTile(vec3(75, WATER_HEIGHT, -500)));
 
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));

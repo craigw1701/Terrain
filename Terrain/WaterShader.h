@@ -25,6 +25,8 @@ public:
 		myLocationModelMatrix = GetUniformLocation("modelMatrix");
 		myLocationReflectionTexture = GetUniformLocation("reflectionTexture");
 		myLocationRefractionTexture = GetUniformLocation("refractionTexture");
+		myLocationDUDVMap = GetUniformLocation("dudvMap");
+		myLocationMoveFactor = GetUniformLocation("moveFactor");
 	}
 
 	void LoadProjectionMatrix(mat4 aMatrix)
@@ -47,6 +49,12 @@ public:
 	{
 		LoadInt(myLocationReflectionTexture, 0);
 		LoadInt(myLocationRefractionTexture, 1);
+		LoadInt(myLocationDUDVMap, 2);
+	}
+
+	void LoadMoveFactor(float aMoveFactor)
+	{
+		LoadFloat(myLocationMoveFactor, aMoveFactor);
 	}
 
 	GLuint myLocationModelMatrix;
@@ -54,4 +62,6 @@ public:
 	GLuint myLocationProjectionMatrix;
 	GLuint myLocationReflectionTexture;
 	GLuint myLocationRefractionTexture;
+	GLuint myLocationDUDVMap;
+	GLuint myLocationMoveFactor;
 };

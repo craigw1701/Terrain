@@ -6,18 +6,24 @@
 #include "WaterShader.h"
 #include "WaterTile.h"
 
+#define WAVE_SPEED 0.03f
+
 class WaterRenderer
 {
 public:
 	RawModel myQuad;
 	WaterShader& myShader;
 	WaterFrameBuffer& myFBOs;
+	GLuint myDUDVMap;
+
+	float myMoveFactor = 0;
 
 	WaterRenderer(Loader& aLoader, WaterShader& aShader, WaterFrameBuffer& fbos)
 		: myShader(aShader)
 		, myQuad(aLoader.LoadToVAO({ { -1, 1 },{ -1, -1 },{ 1, 1 },{ 1, -1 } }))
 		, myFBOs(fbos)
 	{
+		myDUDVMap = aLoader.LoadTexture("waterDUDV.png");
 		myShader.Setup();
 	}
 
@@ -50,12 +56,17 @@ public:
 	{
 		myShader.Start();
 		myShader.LoadViewMatrix(aCamera);
+		myMoveFactor += WAVE_SPEED * GameInfo::ourDeltaTime;
+		myMoveFactor = myMoveFactor - (int)myMoveFactor;
+		myShader.LoadMoveFactor(myMoveFactor);
 		glBindVertexArray(myQuad.GetVAOID());
 		glEnableVertexAttribArray(0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, myFBOs.myReflectionTexture);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionTexture);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, myDUDVMap);
 	}
 
 	void Unbind()
