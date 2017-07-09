@@ -48,6 +48,17 @@ public:
 	{
 	}
 
+	void RenderScene(vector<Entity>& someEntities, vector<Terrain>& someTerrain, Light& aSun, Camera& aCamera)
+	{
+		for (Terrain& terrain : someTerrain)
+			ProcessTerrain(terrain);
+
+		for (Entity& entity : someEntities)
+			ProcessEntity(entity);
+
+		Render(aSun, aCamera);
+	}
+
 	void Render(Light& aSun, Camera& aCamera)
 	{
 		Prepare();
@@ -98,6 +109,7 @@ public:
 		myTerrains.push_back(&aTerrain);
 	}
 
+	mat4 GetProjectionMatrix() const { return myProjectionMatrix; }
 private:
 	float myFOV = 70;
 	float myNearPlane = 0.1f;

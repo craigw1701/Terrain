@@ -37,6 +37,9 @@
     <Filter Include="Skybox">
       <UniqueIdentifier>{a4d0d5a3-848c-44d8-993d-425947321d2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Water">
+      <UniqueIdentifier>{4068c4b9-e7c4-47dc-b654-8ea71fda39a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -128,6 +131,15 @@
     <ClInclude Include="SkyboxRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="WaterRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterTile.h">
+      <Filter>Water</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\terrain.fragmentshader">
@@ -152,6 +164,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\skybox.vertexshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\watershader.fragmentshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\watershader.vertexshader">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

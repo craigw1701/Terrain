@@ -23,6 +23,9 @@ using namespace glm;
 #include "Terrain.h"
 #include "TerrainTexture.h"
 #include "TexturedModel.h"
+#include "WaterRenderer.h"
+#include "WaterShader.h"
+#include "WaterTile.h"
 
 void DebugControls(GLFWwindow* aWindow)
 {
@@ -158,8 +161,9 @@ int main()
 
 	grass.myReflectivity = 1;
 	grass.myShineDamper = 10;
-	Terrain terrain(-1, -1, loader, texturePack, blendMap);
-	Terrain terrain2(0, -1, loader, texturePack, blendMap);
+	vector<Terrain> terrains;
+	terrains.push_back(Terrain(-1, -1, loader, texturePack, blendMap));
+	terrains.push_back(Terrain(0, -1, loader, texturePack, blendMap));
 	
 	vector<GUITexture> guis;
 	/*GUITexture gui = GUITexture(loader.LoadTexture("grassTexture.png"), vec2(0.5f, 0.5f), vec2(0.25f, 0.25f));
@@ -169,10 +173,17 @@ int main()
 	guis.push_back(gui2);*/
 
 
+	MasterRenderer renderer(loader);
+
+	WaterShader waterShader;
+	WaterRenderer waterRenderer(loader, waterShader);
+	waterRenderer.Setup(renderer.GetProjectionMatrix());
+	vector<WaterTile> waters;
+	waters.push_back(WaterTile(vec3(75, -20, -75)));
+
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));
 
-	MasterRenderer renderer(loader);
 
 	do {
 		currentFrame = glfwGetTime();
@@ -182,13 +193,9 @@ int main()
 		camera.Move();
 		DebugControls(window);
 
-		for(Entity& entity : allEntities)
-			renderer.ProcessEntity(entity);
+		renderer.RenderScene(allEntities, terrains, light, camera);
 
-		renderer.ProcessTerrain(terrain);
-		renderer.ProcessTerrain(terrain2);
-
-		renderer.Render(light, camera);
+		waterRenderer.Render(waters, camera);
 
 		guiRenderer.Render(guis);
 
