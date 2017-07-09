@@ -1,5 +1,6 @@
 #pragma once
 
+#include "HeightsGenerator.h"
 #include "Loader.h"
 #include "RawModel.h"
 #include "TerrainTexture.h"
@@ -18,6 +19,9 @@ public:
 
 	RawModel GenerateTerrain(Loader& aLoader) 
 	{
+		std::srand(1);
+		HeightsGenerator generator(myX/mySize, myZ/mySize, myVertexCount, rand() % 1000000);
+
 		int count = myVertexCount * myVertexCount;
 		vector<vec3> vertices(count);
 		vector<vec3> normals(count);
@@ -30,11 +34,9 @@ public:
 			for (int j = 0; j<myVertexCount; j++) 
 			{
 				vertices[vertexPointer].x = (float)j / ((float)myVertexCount - 1) * mySize;
-				vertices[vertexPointer].y = 0;
+				vertices[vertexPointer].y = GetHeight(j, i, generator);
 				vertices[vertexPointer].z = (float)i / ((float)myVertexCount - 1) * mySize;
-				normals[vertexPointer].x = 0;
-				normals[vertexPointer].y = 1;
-				normals[vertexPointer].z = 0;
+				normals[vertexPointer] = GetNormal(j, i, generator);
 				textureCoords[vertexPointer].x = (float)j / ((float)myVertexCount - 1);
 				textureCoords[vertexPointer].y = (float)i / ((float)myVertexCount - 1);
 				vertexPointer++;
@@ -58,6 +60,22 @@ public:
 			}
 		}
 		return aLoader.LoadToVAO(vertices, textureCoords, normals, indices);
+	}
+
+	vec3 GetNormal(int aX, int aZ, HeightsGenerator& aGenerator)
+	{
+		float heightL = GetHeight(aX - 1, aZ, aGenerator);
+		float heightR = GetHeight(aX + 1, aZ, aGenerator);
+		float heightD = GetHeight(aX, aZ - 1, aGenerator);
+		float heightU = GetHeight(aX, aZ + 1, aGenerator);
+		vec3 normal = vec3(heightL - heightR, 2.0f, heightD - heightU);
+		normal = glm::normalize(normal);
+		return normal;
+	}
+
+	float GetHeight(int aX, int aZ, HeightsGenerator& aGenerator)
+	{
+		return aGenerator.GenerateHeight(aX, aZ);
 	}
 
 	float GetX() const { return myX; }

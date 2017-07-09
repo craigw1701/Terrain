@@ -70,7 +70,7 @@ int main()
 	RawModel model = loader.LoadToVAO("data/fern.obj");
 	ModelTexture texture(DecodeOneStep("data/fern.png"));
 	TexturedModel texturedModel(model, texture);
-	texture.myReflectivity = 0.2;
+	texture.myReflectivity = 0.2f;
 	texture.myShineDamper = 1;
 	texture.myHasTransparency = true;
 	texture.myUseFakeLighting = true;
@@ -78,14 +78,14 @@ int main()
 	RawModel treeModel = loader.LoadToVAO("data/tree.obj");
 	ModelTexture treeTexture(DecodeOneStep("data/tree.png"));
 	TexturedModel texturedTreeModel(treeModel, treeTexture);
-	treeTexture.myReflectivity = 0.2;
+	treeTexture.myReflectivity = 0.2f;
 	treeTexture.myShineDamper = 1;
 
 
 	RawModel grassModel = loader.LoadToVAO("data/grassModel.obj");
 	ModelTexture grassTexture(DecodeOneStep("data/grassTexture.png"));
 	TexturedModel texturedGrassModel(grassModel, grassTexture);
-	grassTexture.myReflectivity = 0.2;
+	grassTexture.myReflectivity = 0.2f;
 	grassTexture.myShineDamper = 1;
 	grassTexture.myHasTransparency = true;
 	texture.myUseFakeLighting = true;
@@ -102,29 +102,29 @@ int main()
 		float rY = rand() % 180;
 		float rS = float((rand() % 3) + 3.0f) / 20.0f;
 		allEntities.push_back(Entity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS));
-	}*/
+	}* /
 
 	for (int i = 0; i < 200; i++)
 	{
-		float x = rand() % 200 - 100;
+		float x = (float)(rand() % 200 - 100);
 		float y = 0;
-		float z = -rand() % 200;
+		float z = (float)(-rand() % 200);
 
-		float rY = rand() % 180;
+		float rY = (float)(rand() % 180);
 		float rS = float((rand() % 3) + 3.0f) / 20.0f;
 		allEntities.push_back(Entity(texturedModel, glm::vec3(x, y, z), glm::vec3(0, rY, 0), rS));
 	}
 
 	for (int i = 0; i < 100; i++)
 	{
-		float x = rand() % 200 - 100;
+		float x = (float)(rand() % 200 - 100);
 		float y = 0;
-		float z = -rand() % 200;
+		float z = (float)(-rand() % 200);
 
-		float rY = rand() % 180;
+		float rY = (float)(rand() % 180);
 		float rS = float((rand() % 3) + 3.0f) / 2.0f;
 		allEntities.push_back(Entity(texturedTreeModel, glm::vec3(x, y, z), glm::vec3(0, -rY, 0), rS));
-	}
+	}*/
 
 	double currentFrame = glfwGetTime();
 	double lastFrame = currentFrame;
@@ -134,7 +134,7 @@ int main()
 	ModelTexture grass = loader.LoadTexture("data/grass.bmp");
 
 	TerrainTexture blendMap = DecodeOneStep("data/blendMap.png");
-	TerrainTexturePack texturePack("data/grassy2.png", "data/grassFlowers.png", "data/mud.png", "data/path.png");
+	TerrainTexturePack texturePack("data/grass.png", "data/grassFlowers.png", "data/mud.png", "data/grassy2.png");
 
 	grass.myReflectivity = 1;
 	grass.myShineDamper = 10;

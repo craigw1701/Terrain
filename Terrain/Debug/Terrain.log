@@ -1,13 +1,4 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (TerrainTest.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  main.cpp
-c:\users\craig\documents\github\terrain\terrain\main.cpp(73): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\craig\documents\github\terrain\terrain\main.cpp(81): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\craig\documents\github\terrain\terrain\main.cpp(88): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\craig\documents\github\terrain\terrain\main.cpp(109): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\craig\documents\github\terrain\terrain\main.cpp(111): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\craig\documents\github\terrain\terrain\main.cpp(113): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\craig\documents\github\terrain\terrain\main.cpp(120): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\craig\documents\github\terrain\terrain\main.cpp(122): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\craig\documents\github\terrain\terrain\main.cpp(124): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+﻿  main.cpp
+c:\users\craig\documents\github\terrain\terrain\heightsgenerator.h(35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Terrain.vcxproj -> C:\Users\craig\Documents\GitHub\Terrain\Debug\Terrain.exe
   Terrain.vcxproj -> C:\Users\craig\Documents\GitHub\Terrain\Debug\Terrain.pdb (Full PDB)

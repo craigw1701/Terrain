@@ -4,6 +4,7 @@ in vec2 pass_textureCoods;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec3 toCameraVector;
+in vec3 vertexWorldPos;
 
 out vec4 outColour;
 
@@ -19,14 +20,33 @@ uniform float reflectivity;
 
 void main(void)
 {
-	vec4 blendMapColour = texture(blendMap, pass_textureCoods);
+	vec3 blendMapColour = vec3(0);// texture(blendMap, pass_textureCoods);
+	
+	{	// Grass
+		float y = clamp(1 - (abs(20 - (vertexWorldPos.y )) / 20), 0, 0.9);
+		blendMapColour += vec3(0, 0, y);
+	}
+	
+	{	// Flowers
+		float y = clamp(1 - (abs(20 - (vertexWorldPos.y + 20)) / 20), 0, 0.9);
+		blendMapColour += vec3(y, 0, 0);
+	}
+	{	// Mud
+		float y = clamp(1 - (abs(30 - (vertexWorldPos.y + 60)) / 30), 0, 0.9);
+		blendMapColour += vec3(0, y, 0);
+	}
 
 	float backTextureAmount = 1 - (blendMapColour.r + blendMapColour.g + blendMapColour.b);
+	if(backTextureAmount < 0)
+	{
+		blendMapColour = normalize(blendMapColour);
+		backTextureAmount = 0;
+	}
 	vec2 tiledCoords = pass_textureCoods * 40.0f;
-	vec4 backgroundTextureColour = texture(backgroundTexture, tiledCoords) * backTextureAmount;
+	vec4 backgroundTextureColour = texture(backgroundTexture, tiledCoords) * blendMapColour.b;
 	vec4 rTextureColour = texture(rTexture, tiledCoords) * blendMapColour.r;
 	vec4 gTextureColour = texture(gTexture, tiledCoords) * blendMapColour.g;
-	vec4 bTextureColour = texture(bTexture, tiledCoords) * blendMapColour.b;
+	vec4 bTextureColour = texture(bTexture, tiledCoords) * backTextureAmount;
 
 	vec4 totalColour = backgroundTextureColour + rTextureColour + gTextureColour + bTextureColour;
 
