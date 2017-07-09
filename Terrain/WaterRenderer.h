@@ -15,6 +15,7 @@ public:
 	WaterShader& myShader;
 	WaterFrameBuffer& myFBOs;
 	GLuint myDUDVMap;
+	GLuint myNormalMap;
 
 	float myMoveFactor = 0;
 
@@ -24,6 +25,7 @@ public:
 		, myFBOs(fbos)
 	{
 		myDUDVMap = aLoader.LoadTexture("waterDUDV.png");
+		myNormalMap = aLoader.LoadTexture("normal.png");
 		myShader.Setup();
 	}
 
@@ -35,13 +37,13 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(vector<WaterTile>& someWater, Camera& aCamera)
+	void Render(vector<WaterTile>& someWater, Camera& aCamera, Light& aLight)
 	{
 		if (!GameInfo::ourDrawWater)
 			return;
 
 		DisableCulling();
-		PrepareRender(aCamera);
+		PrepareRender(aCamera, aLight);
 		for (WaterTile& waterTile : someWater)
 		{
 			mat4 modelMatrix = CreateTransformMatrix(waterTile.myCenterPos, vec3(0, 0, 0), waterTile.TILE_SIZE);
@@ -52,13 +54,14 @@ public:
 		EnableCulling();
 	}
 
-	void PrepareRender(Camera& aCamera)
+	void PrepareRender(Camera& aCamera, Light& aLight)
 	{
 		myShader.Start();
 		myShader.LoadViewMatrix(aCamera);
 		myMoveFactor += WAVE_SPEED * GameInfo::ourDeltaTime;
 		myMoveFactor = myMoveFactor - (int)myMoveFactor;
 		myShader.LoadMoveFactor(myMoveFactor);
+		myShader.LoadLight(aLight);
 		glBindVertexArray(myQuad.GetVAOID());
 		glEnableVertexAttribArray(0);
 		glActiveTexture(GL_TEXTURE0);
@@ -67,6 +70,8 @@ public:
 		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionTexture);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, myDUDVMap);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, myNormalMap);
 	}
 
 	void Unbind()

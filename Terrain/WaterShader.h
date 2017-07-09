@@ -28,6 +28,9 @@ public:
 		myLocationDUDVMap = GetUniformLocation("dudvMap");
 		myLocationMoveFactor = GetUniformLocation("moveFactor");
 		myLocationCameraPos = GetUniformLocation("cameraPos");
+		myLocationNormalMap = GetUniformLocation("normalMap");
+		myLocationLightColour = GetUniformLocation("lightColour");
+		myLocationLightPosition = GetUniformLocation("lightPos");
 	}
 
 	void LoadProjectionMatrix(mat4 aMatrix)
@@ -52,6 +55,13 @@ public:
 		LoadInt(myLocationReflectionTexture, 0);
 		LoadInt(myLocationRefractionTexture, 1);
 		LoadInt(myLocationDUDVMap, 2);
+		LoadInt(myLocationNormalMap, 3);
+	}
+
+	void LoadLight(Light& aSun)
+	{
+		LoadVector(myLocationLightColour, aSun.myColour);
+		LoadVector(myLocationLightPosition, aSun.myPosition);
 	}
 
 	void LoadMoveFactor(float aMoveFactor)
@@ -67,4 +77,7 @@ public:
 	GLuint myLocationDUDVMap;
 	GLuint myLocationMoveFactor;
 	GLuint myLocationCameraPos;
+	GLuint myLocationNormalMap;
+	GLuint myLocationLightColour;
+	GLuint myLocationLightPosition;
 };

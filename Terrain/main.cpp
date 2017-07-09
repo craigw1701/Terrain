@@ -173,7 +173,7 @@ int main()
 	double lastFrame = currentFrame;
 	
 	Camera camera(*window);
-	Light light(vec3(0, 25, 0), vec3(1, 1, 1));
+	Light light(vec3(0, 25, -200), vec3(1, 1, 1));
 	ModelTexture grass = loader.LoadTexture("grass.bmp");
 
 	TerrainTexture blendMap = loader.LoadTexture("blendMap.png");
@@ -236,7 +236,7 @@ int main()
 		glDisable(GL_CLIP_DISTANCE0);
 
 		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, 6));
-		waterRenderer.Render(waters, camera);
+		waterRenderer.Render(waters, camera, light);
 
 		guiRenderer.Render(guis);
 
