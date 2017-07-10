@@ -17,7 +17,7 @@ namespace GameInfo
 	bool ourDrawTerrain = true;
 	bool ourDrawWater = true;
 	bool ourDrawSkybox = true;
-	bool ourFlyCamera = false;
+	bool ourFlyCamera = false;	
 
 	EntityManager* ourEntityManager = nullptr;
 	std::string ourCurrentRenderPass = "Main";
@@ -60,3 +60,5 @@ namespace GameInfo
 		ourRenderTimes[pass].second = aVertCount;
 	}
 };
+
+#define ErrorReturn(x) { printf(x); printf("\n"); system("color 47"); return -1; }

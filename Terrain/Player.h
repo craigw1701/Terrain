@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Input.h"
+#include "Terrain.h"
 
 class Player : public Entity
 {
@@ -20,10 +21,9 @@ public:
 	Player(TexturedModel& aModel, glm::vec3 aPosition, glm::vec3 aRotation, float aScale)
 		: Entity(aModel, aPosition, aRotation, aScale)
 	{
-
 	}
 
-	void Update()
+	void Update(Terrain& aTerrain)
 	{
 		CheckInputs();
 		myRotation += vec3(0, myCurrentTurnSpeed * GameInfo::ourDeltaTime, 0);
@@ -37,11 +37,12 @@ public:
 		myUpwardsSpeed += myGravity * GameInfo::ourDeltaTime;
 		myPosition.y += myUpwardsSpeed * GameInfo::ourDeltaTime;
 
-		if (myPosition.y < myTerrainHeight)
+		float terrainHeight = aTerrain.GetHeight(myPosition.x, myPosition.z);
+		if (myPosition.y < terrainHeight)
 		{
 			myIsInAir = false;
 			myUpwardsSpeed = 0;
-			myPosition.y = myTerrainHeight;
+			myPosition.y = terrainHeight;
 		}
 	}
 

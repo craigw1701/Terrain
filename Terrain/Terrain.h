@@ -2,6 +2,7 @@
 
 #include "HeightsGenerator.h"
 #include "Loader.h"
+#include "Maths.h"
 #include "RawModel.h"
 #include "TerrainTexture.h"
 
@@ -11,19 +12,55 @@ public:
 	Terrain(int aGridX, int aGridZ, Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap)
 		: myTextures(aTexturePack)
 		, myBlendMap(aBlendMap)
+		, myGenerator(aGridX, aGridZ, myVertexCount, rand() % 1000000)
 		, myModel(GenerateTerrain(aLoader))
 		, myX(aGridX * mySize)
 		, myZ(aGridZ * mySize)
 	{
 	}
 
+	float GetHeight(float aWorldX, float aWorldZ)
+	{
+		float terrainX = aWorldX - myX;
+		float terrainZ = aWorldZ - myZ;
+
+		float gridSquareSize = mySize / (myVertexCount - 1);
+		int gridX = static_cast<int>(floor(terrainX / gridSquareSize));
+		int gridZ = static_cast<int>(floor(terrainZ / gridSquareSize));
+
+		if (gridX >= (myVertexCount - 1) || gridZ >= (myVertexCount - 1) || gridX < 0 || gridZ < 0)
+		{
+			ErrorReturn("Position not on terrain!");
+		}
+
+		float xCoord = fmod(terrainX, gridSquareSize) / gridSquareSize;
+		float zCoord = fmod(terrainZ, gridSquareSize) / gridSquareSize;
+
+		float answer;
+		if (xCoord <= (1 - zCoord)) 
+		{
+			answer = BarryCentric(
+				vec3(0, GetHeight(gridX, gridZ, myGenerator), 0),
+				vec3(1, GetHeight(gridX+1, gridZ, myGenerator), 0),
+				vec3(0, GetHeight(gridX, gridZ+1, myGenerator), 1),
+				vec2(xCoord, zCoord));
+		}
+		else {
+			answer = BarryCentric(
+				vec3(1, GetHeight(gridX+1, gridZ, myGenerator), 0),
+				vec3(1, GetHeight(gridX+1, gridZ+1, myGenerator), 1),
+				vec3(0, GetHeight(gridX, gridZ+1, myGenerator), 1),
+				vec2(xCoord, zCoord));
+		}
+
+		return answer;
+	}
+	
+
 	RawModel GenerateTerrain(Loader& aLoader) 
 	{
 		double startTime = glfwGetTime();
-
-		std::srand(1);
-		HeightsGenerator generator(static_cast<int>(myX/mySize), static_cast<int>(myZ/mySize), myVertexCount, rand() % 1000000);
-
+		
 		int count = myVertexCount * myVertexCount;
 		vector<vec3> vertices(count);
 		vector<vec3> normals(count);
@@ -36,9 +73,9 @@ public:
 			for (int j = 0; j<myVertexCount; j++) 
 			{
 				vertices[vertexPointer].x = (float)j / ((float)myVertexCount - 1) * mySize;
-				vertices[vertexPointer].y = GetHeight(j, i, generator);
+				vertices[vertexPointer].y = GetHeight(j, i, myGenerator);
 				vertices[vertexPointer].z = (float)i / ((float)myVertexCount - 1) * mySize;
-				normals[vertexPointer] = GetNormal(j, i, generator);
+				normals[vertexPointer] = GetNormal(j, i, myGenerator);
 				textureCoords[vertexPointer].x = (float)j / ((float)myVertexCount - 1);
 				textureCoords[vertexPointer].y = (float)i / ((float)myVertexCount - 1);
 				vertexPointer++;
@@ -93,6 +130,7 @@ private:
 
 	float myX;
 	float myZ;
+	HeightsGenerator myGenerator;
 	RawModel myModel;
 	TerrainTexturePack& myTextures;
 	TerrainTexture& myBlendMap;

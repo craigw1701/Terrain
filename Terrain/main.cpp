@@ -14,6 +14,7 @@
 #include "glm/glm.hpp"
 using namespace glm;
 
+#include "Maths.h"
 #include "Camera.h"
 #include "EntityManager.h"
 #include "GameInfo.h"
@@ -191,14 +192,6 @@ int main()
 		//entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1.5, 2.5));
 	}
 
-	
-	RawModel bunnyModel = loader.LoadToVAO("stanfordBunny.obj");
-	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
-	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
-
-	Player player(texturedBunnyModel, vec3(0, 0, 0), vec3(0, 0, 0), 1);
-
-	Camera camera(player);
 	Light light(vec3(0, 25, -200), vec3(1, 1, 1));
 	ModelTexture grass = loader.LoadTexture("grass.bmp");
 
@@ -209,10 +202,10 @@ int main()
 	grass.myShineDamper = 10;
 	vector<Terrain> terrains;
 	terrains.push_back(Terrain(-1, -1, loader, texturePack, blendMap));
-	terrains.push_back(Terrain(0, -1, loader, texturePack, blendMap));
-	terrains.push_back(Terrain(0, 0, loader, texturePack, blendMap));
-	terrains.push_back(Terrain(-1, 0, loader, texturePack, blendMap));
-	
+	//terrains.push_back(Terrain(0, -1, loader, texturePack, blendMap));
+	//terrains.push_back(Terrain(0, 0, loader, texturePack, blendMap));
+	//terrains.push_back(Terrain(-1, 0, loader, texturePack, blendMap));
+
 	vector<GUITexture> guis;
 	/*GUITexture gui = GUITexture(loader.LoadTexture("grassTexture.png"), vec2(0.5f, 0.5f), vec2(0.25f, 0.25f));
 	GUITexture gui2 = GUITexture(loader.LoadTexture("fern.png"), vec2(0.3f, 0.75f), vec2(0.4f, 0.4f));
@@ -220,6 +213,14 @@ int main()
 	guis.push_back(gui);
 	guis.push_back(gui2);*/
 
+
+	RawModel bunnyModel = loader.LoadToVAO("stanfordBunny.obj");
+	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
+	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
+
+	Player player(texturedBunnyModel, vec3(-100, 0, -100), vec3(0, 0, 0), 1);
+
+	Camera camera(player);
 
 	MasterRenderer renderer(loader);
 
@@ -251,7 +252,7 @@ int main()
 		camera.Update();
 		DebugControls();
 
-		player.Update();
+		player.Update(terrains.back());
 
 		glEnable(GL_CLIP_DISTANCE0);
 

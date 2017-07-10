@@ -27,6 +27,9 @@ public:
 		, myZOffset((aGridZ + 2) * (aVertexCount-1))
 		, mySeed(aSeed)
 	{
+		// TODO:CW HACK FOR NOW
+		std::srand(1);
+		mySeed = rand() % 1000000;
 	}
 
 	int myXOffset;
@@ -82,7 +85,6 @@ public:
 
 	float GetNoise(int aX, int aZ)
 	{
-
 		unsigned int seed = aX * 49632 + aZ * 325176 + mySeed;
 			
 #ifdef _DEBUG
@@ -99,6 +101,7 @@ public:
 #endif
 		r = r * 2.0f;
 		r = r - 1.0f;
+		//r = 0;
 
 #ifndef _DEBUG
 		myLookup[seed] = r;
