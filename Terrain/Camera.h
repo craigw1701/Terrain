@@ -11,13 +11,13 @@
 using namespace glm;
 
 #include "GameInfo.h"
+#include "Input.h"
 
 class Camera
 {
 public:
-	Camera(GLFWwindow& aWindow)
-		: myWindow(aWindow)
-		, myPosition(0, 5, -1)
+	Camera()
+		: myPosition(0, 5, -1)
 		, myRotation(0.0, 0, 0)
 	{
 
@@ -29,43 +29,40 @@ public:
 
 		float newSpeed = speed;
 
-		if (glfwGetKey(&myWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+		if (Input::IsDown(GLFW_KEY_LEFT_SHIFT))
 			newSpeed *= 25.0f;
-		}
 
-		if (glfwGetKey(&myWindow, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(&myWindow, GLFW_KEY_W) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_UP) || Input::IsDown(GLFW_KEY_W))
 			myPosition.z -= GameInfo::ourDeltaTime * newSpeed;
-		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(&myWindow, GLFW_KEY_S) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_DOWN) || Input::IsDown(GLFW_KEY_S))
 			myPosition.z += GameInfo::ourDeltaTime * newSpeed;
-		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_A) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_A))
 			myPosition.x -= GameInfo::ourDeltaTime * newSpeed;
-		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_D) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_D))
 			myPosition.x += GameInfo::ourDeltaTime * newSpeed;
-		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_Q) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_Q))
 			myPosition.y += GameInfo::ourDeltaTime * newSpeed;
-		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_Z) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_Z))
 			myPosition.y -= GameInfo::ourDeltaTime * newSpeed;
-		}
-
-		if (glfwGetKey(&myWindow, GLFW_KEY_E) == GLFW_PRESS) {
+		
+		if (Input::IsDown(GLFW_KEY_E))
 			myRotation.x -= GameInfo::ourDeltaTime * newSpeed * 0.01f;
-		}
-
-		if (glfwGetKey(&myWindow, GLFW_KEY_C) == GLFW_PRESS) {
+		
+		if (Input::IsDown(GLFW_KEY_C))
 			myRotation.x += GameInfo::ourDeltaTime * newSpeed * 0.01f;
-		}
 
-		if (glfwGetKey(&myWindow, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		if (Input::IsDown(GLFW_KEY_LEFT))
 			myRotation.y -= GameInfo::ourDeltaTime * newSpeed * 0.01f;
-		}
-		if (glfwGetKey(&myWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+
+		if (Input::IsDown(GLFW_KEY_RIGHT))
 			myRotation.y += GameInfo::ourDeltaTime * newSpeed * 0.01f;
-		}
+
 
 		//myRotation.y -= GameInfo::ourDeltaTime * newSpeed;
 	}
@@ -73,12 +70,10 @@ public:
 	void InvertCamera()
 	{
 		myRotation.x = -myRotation.x;
-		//verticalAngle = -verticalAngle;// +(3.14f / 2.0f));
 	}
 
 	vec3 myPosition;
 	vec3 myRotation;
 
 private:
-	GLFWwindow& myWindow;
 };

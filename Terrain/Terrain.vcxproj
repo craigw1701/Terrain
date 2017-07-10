@@ -160,6 +160,7 @@
     <ClInclude Include="GUIShader.h" />
     <ClInclude Include="GUITexture.h" />
     <ClInclude Include="HeightsGenerator.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="lodepng.h" />

@@ -16,6 +16,7 @@ using namespace glm;
 #include "GameInfo.h"
 #include "GUIRenderer.h"
 #include "GUITexture.h"
+#include "Input.h"
 #include "Loader.h"
 #include "MasterRenderer.h"
 #include "ModelTexture.h"
@@ -30,36 +31,24 @@ using namespace glm;
 
 #define WATER_HEIGHT -20
 
-int LastFrameKeys[GLFW_KEY_LAST + 1] = { 0 };
-
-bool WasJustPressed(int aKey)
+void DebugControls()
 {
-	return glfwGetKey(GameInfo::ourWindow, aKey) == GLFW_PRESS && LastFrameKeys[aKey] == GLFW_RELEASE;
-}
-
-void DebugControls(GLFWwindow* aWindow, Camera& aCamera)
-{
-	if (WasJustPressed(GLFW_KEY_P))
+	if (Input::IsPressed(GLFW_KEY_P))
 	{
 		GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
 		glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
 	}
-	if (WasJustPressed(GLFW_KEY_O))
+	if (Input::IsPressed(GLFW_KEY_O))
 	{
 		GameInfo::ourDrawEntities = !GameInfo::ourDrawEntities;
 	}
-	if (WasJustPressed(GLFW_KEY_L))
+	if (Input::IsPressed(GLFW_KEY_L))
 	{
 		GameInfo::ourDrawTerrain = !GameInfo::ourDrawTerrain;
 	}
-	if (WasJustPressed(GLFW_KEY_K))
+	if (Input::IsPressed(GLFW_KEY_K))
 	{
 		GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
-	}
-
-	for (int i = GLFW_KEY_SPACE; i < GLFW_KEY_LAST; i++)
-	{
-		LastFrameKeys[i] = glfwGetKey(aWindow, i);
 	}
 }
 
@@ -99,17 +88,7 @@ int main()
 	GameInfo::ourWindow = window;
 
 	Loader loader;
-
-#pragma region old
-	//float vertices[] = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f, -0.5f, 0.5f, 0.f };
-	//vector<float> vertices = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f, -0.5f, 0.5f, 0.f };
-	vector<float> vertices = { -0.5f, 0.5f, 0.f, -0.5f, -0.5f, 0.f, 0.5f, -0.5f, 0.f, 0.5f, 0.5f, 0.f};
-	vector<int> indices = { 0, 1, 3, 3, 1, 2 };
-	vector<float> textureCoords = { 0,0, 0,1, 1,1, 1,0 };
-	//RawModel model = loader.LoadToVAO(vertices, textureCoords, indices);
-	//ModelTexture texture(loader.LoadTexture("data/image.bmp"));
-#pragma endregion
-
+	
 	RawModel model = loader.LoadToVAO("fern.obj");
 	ModelTexture texture(loader.LoadTexture("fern.png"));
 	TexturedModel texturedModel(model, texture);
@@ -172,7 +151,7 @@ int main()
 	double currentFrame = glfwGetTime();
 	double lastFrame = currentFrame;
 	
-	Camera camera(*window);
+	Camera camera;
 	Light light(vec3(0, 25, -200), vec3(1, 1, 1));
 	ModelTexture grass = loader.LoadTexture("grass.bmp");
 
@@ -184,6 +163,8 @@ int main()
 	vector<Terrain> terrains;
 	terrains.push_back(Terrain(-1, -1, loader, texturePack, blendMap));
 	terrains.push_back(Terrain(0, -1, loader, texturePack, blendMap));
+	terrains.push_back(Terrain(0, 0, loader, texturePack, blendMap));
+	terrains.push_back(Terrain(-1, 0, loader, texturePack, blendMap));
 	
 	vector<GUITexture> guis;
 	/*GUITexture gui = GUITexture(loader.LoadTexture("grassTexture.png"), vec2(0.5f, 0.5f), vec2(0.25f, 0.25f));
@@ -214,8 +195,9 @@ int main()
 		GameInfo::ourDeltaTime = (float)(currentFrame - lastFrame);
 		lastFrame = currentFrame;
 
+		Input::UpdateInput();
 		camera.Move();
-		DebugControls(window, camera);
+		DebugControls();
 
 		glEnable(GL_CLIP_DISTANCE0);
 
@@ -245,8 +227,7 @@ int main()
 		glfwPollEvents();
 
 	} // Check if the ESC key was pressed or the window was closed
-	while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-		glfwWindowShouldClose(window) == 0);
+	while (!Input::IsPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window) == 0);
 
 	loader.CleanUp();
 }

@@ -50,6 +50,9 @@ void main(void)
 
 	vec4 totalColour = backgroundTextureColour + rTextureColour + gTextureColour + bTextureColour;
 
+	float rockNormal = pow(1 - dot(surfaceNormal, vec3(0,1,0)), 8);
+	totalColour = mix(totalColour, texture(gTexture, tiledCoords), rockNormal);
+
 	vec3 unitNormal = normalize(surfaceNormal);
 	vec3 unitLightVector = normalize(toLightVector);
 
