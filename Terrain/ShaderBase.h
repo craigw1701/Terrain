@@ -22,8 +22,10 @@ class ShaderBase
 {
 	bool myHasSetup = false;
 	std::string myShaderPath = "Shaders/";
+	std::string myShaderName;
 public:
 	ShaderBase(const char* aShaderFile)
+		: myShaderName(aShaderFile)
 	{
 		std::string shaderPath = myShaderPath + aShaderFile;
 		myProgramID = LoadShaders((shaderPath + ".vertexshader").c_str(), (shaderPath + ".fragmentshader").c_str());
@@ -43,6 +45,7 @@ public:
 
 	void Start()
 	{
+		GameInfo::ourCurrentShaderPass = myShaderName;
 		assert(myHasSetup); //"not setup");
 		glUseProgram(myProgramID);
 	}
@@ -50,6 +53,7 @@ public:
 	void Stop()
 	{
 		glUseProgram(0);
+		GameInfo::ourCurrentShaderPass = "";
 	}
 
 protected:

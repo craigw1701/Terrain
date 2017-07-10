@@ -50,6 +50,8 @@ public:
 
 	void RenderScene(vector<Entity>& someEntities, vector<Terrain>& someTerrain, Light& aSun, Camera& aCamera, vec4 aClipPlane)
 	{
+		double startTime = glfwGetTime();
+
 		for (Terrain& terrain : someTerrain)
 			ProcessTerrain(terrain);
 
@@ -57,6 +59,8 @@ public:
 			ProcessEntity(entity);
 
 		Render(aSun, aCamera, aClipPlane);
+
+		GameInfo::SetRenderTime(glfwGetTime() - startTime);
 	}
 
 	void Render(Light& aSun, Camera& aCamera, vec4 aClipPlane)
@@ -70,21 +74,25 @@ public:
 		
 		if (GameInfo::ourDrawEntities)
 		{
+			double startTime = glfwGetTime();
 			myEntityShader.Start();
 			myEntityShader.LoadClipPlane(aClipPlane);
 			myEntityShader.LoadLight(aSun);
 			myEntityShader.LoadViewMatrix(aCamera);
 			myEntityRenderer.Render(myEntities);
+			GameInfo::SetRenderTime(glfwGetTime() - startTime);
 			myEntityShader.Stop();
 		}
 
 		if (GameInfo::ourDrawTerrain)
 		{
+			double startTime = glfwGetTime();
 			myTerrainShader.Start();
 			myTerrainShader.LoadClipPlane(aClipPlane);
 			myTerrainShader.LoadLight(aSun);
 			myTerrainShader.LoadViewMatrix(aCamera);
 			myTerrainRenderer.Render(myTerrains);
+			GameInfo::SetRenderTime(glfwGetTime() - startTime);
 			myTerrainShader.Stop();
 		}
 		

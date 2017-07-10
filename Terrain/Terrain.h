@@ -22,7 +22,7 @@ public:
 		double startTime = glfwGetTime();
 
 		std::srand(1);
-		HeightsGenerator generator(myX/mySize, myZ/mySize, myVertexCount, rand() % 1000000);
+		HeightsGenerator generator(static_cast<int>(myX/mySize), static_cast<int>(myZ/mySize), myVertexCount, rand() % 1000000);
 
 		int count = myVertexCount * myVertexCount;
 		vector<vec3> vertices(count);

@@ -34,10 +34,10 @@ public:
 
 	float GenerateHeight(int aX, int aZ)
 	{
-		int x = myXOffset + aX;
-		int z = myZOffset + aZ;
+		float x = static_cast<float> (myXOffset + aX);
+		float z = static_cast<float>(myZOffset + aZ);
 
-		float total = GetInterpolatedNoise(x / 32.0f, z / 32.0f) * AMPLITUTE * 10.0;
+		float total = GetInterpolatedNoise(x / 32.0f, z / 32.0f) * AMPLITUTE * 10.0f;
 		total += GetInterpolatedNoise(x / 8.0f, z / 8.0f) * AMPLITUTE * 2.0f;
 		total += GetInterpolatedNoise(x / 2.0f, z / 2.0f) * AMPLITUTE / 6.0f;
 		total += GetInterpolatedNoise(x, z) * AMPLITUTE / 12.0f;

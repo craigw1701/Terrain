@@ -34,6 +34,7 @@ public:
 			glBindTexture(GL_TEXTURE_2D, gui.myTextureID);
 			mat4 matrix = CreateTransformationMatrix(gui.myPosition, gui.myScale);
 			myShader.LoadTransformationMatrix(matrix);
+			GameInfo::SetRenderVerts(myQuad.GetVertexCount());
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, myQuad.GetVertexCount());
 		}
 		glEnable(GL_DEPTH_TEST);

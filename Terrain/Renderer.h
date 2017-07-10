@@ -41,6 +41,7 @@ public:
 			for (Entity const* entity : iter->second)
 			{
 				PrepareInstance(*entity);
+				GameInfo::SetRenderVerts(iter->first->GetRawModel().GetVertexCount());
 				glDrawElements(GL_TRIANGLES, iter->first->GetRawModel().GetVertexCount(), GL_UNSIGNED_INT, nullptr);
 
 			}

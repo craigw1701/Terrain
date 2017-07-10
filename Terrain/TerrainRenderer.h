@@ -27,6 +27,7 @@ public:
 		{
 			PrepareTerrain(*terrain);
 			LoadModelMatrix(*terrain);
+			GameInfo::SetRenderVerts(terrain->GetModel().GetVertexCount());
 			glDrawElements(GL_TRIANGLES, terrain->GetModel().GetVertexCount(), GL_UNSIGNED_INT, nullptr);
 			UnbindTexturedModel();
 		}

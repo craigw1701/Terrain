@@ -1,6 +1,8 @@
 // Include standard headers
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
+#include <iomanip>
 
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
 #include "GL\glew.h"
@@ -13,6 +15,7 @@
 using namespace glm;
 
 #include "Camera.h"
+#include "EntityManager.h"
 #include "GameInfo.h"
 #include "GUIRenderer.h"
 #include "GUITexture.h"
@@ -50,15 +53,41 @@ void DebugControls()
 	{
 		GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
 	}
+	if (Input::IsPressed(GLFW_KEY_M))
+	{
+		std::cout.imbue(std::locale(""));
+		cout << std::fixed;
+		double total = 0;
+		unsigned int totalVerts = 0;
+		cout << std::setw(30) << left << "Location"
+			<< std::setw(30) << left << "ms"
+			<< std::setw(10) << right << "vertices" << endl;
+		for (auto& pass : GameInfo::ourRenderTimes)
+		{
+			total += pass.second.first;
+			totalVerts += pass.second.second;
+			cout << std::setw(30) << left << pass.first.c_str() 
+				<< std::setw(30) << std::setprecision(4) << pass.second.first 
+				<< std::setw(10) << right << pass.second.second << endl;
+		}
+		std::cout << std::string(70, '-') << std::endl;
+
+		cout << std::setw(30) << left << "Total" 
+			<< std::setw(30) << total 
+			<< std::setw(10) << right << totalVerts << endl;
+		std::cout << std::string(70, '=') << std::endl;
+
+	}
+	GameInfo::ourRenderTimes.clear();
 }
 
-int main()
+bool Setup()
 {
 	// Initialise GLFW
 	if (!glfwInit())
 	{
 		fprintf(stderr, "Failed to initialize GLFW\n");
-		return -1;
+		return false;
 	}
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
@@ -73,19 +102,30 @@ int main()
 	if (window == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		glfwTerminate();
-		return -1;
+		return false;
 	}
 	glfwMakeContextCurrent(window); // Initialize GLEW
 	glewExperimental = true; // Needed in core profile
 	if (glewInit() != GLEW_OK) {
 		fprintf(stderr, "Failed to initialize GLEW\n");
-		return -1;
+		return false;
 	}
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	GameInfo::ourWindow = window;
+	return true;
+}
+
+int main()
+{
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+
+	double startLoadTime = glfwGetTime();
+	if (!Setup())
+		return -1;
 
 	Loader loader;
 	
@@ -112,7 +152,7 @@ int main()
 	grassTexture.myHasTransparency = true;
 	texture.myUseFakeLighting = true;
 
-	vector<Entity> allEntities;
+	EntityManager entityManager;
 
 	/*
 	for (int i = 0; i < 400; i++)
@@ -123,33 +163,22 @@ int main()
 
 		float rY = rand() % 180;
 		float rS = float((rand() % 3) + 3.0f) / 20.0f;
-		allEntities.push_back(Entity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS));
+		entityManager.AddEntity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS);
 	}*/
 
-	for (int i = 0; i < 200; i++)
-	{
-		float x = (float)(rand() % 200 - 100);
-		float y = 0;
-		float z = (float)(-rand() % 200);
+	const float range = 2000.0;
+	const int num = 2500;
 
-		float rY = (float)(rand() % 180);
-		float rS = float((rand() % 3) + 3.0f) / 20.0f;
-		allEntities.push_back(Entity(texturedModel, glm::vec3(x, y, z), glm::vec3(0, rY, 0), rS));
+	for (int i = 0; i < num; i++)
+	{
+		entityManager.AddEntityRandom(texturedModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(0.15, 0.25));
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < num/2; i++)
 	{
-		float x = (float)(rand() % 200 - 100);
-		float y = 0;
-		float z = (float)(-rand() % 200);
+		entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1.5, 2.5));
+	}
 
-		float rY = (float)(rand() % 180);
-		float rS = float((rand() % 3) + 3.0f) / 2.0f;
-		allEntities.push_back(Entity(texturedTreeModel, glm::vec3(x, y, z), glm::vec3(0, -rY, 0), rS));
-	}/**/
-
-	double currentFrame = glfwGetTime();
-	double lastFrame = currentFrame;
 	
 	Camera camera;
 	Light light(vec3(0, 25, -200), vec3(1, 1, 1));
@@ -189,7 +218,11 @@ int main()
 
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
 	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
+	
+	cout << "Loading took: " << glfwGetTime() - startLoadTime << endl;
 
+	double currentFrame = glfwGetTime();
+	double lastFrame = currentFrame;
 	do {
 		currentFrame = glfwGetTime();
 		GameInfo::ourDeltaTime = (float)(currentFrame - lastFrame);
@@ -206,29 +239,32 @@ int main()
 			float distance = 2 * (camera.myPosition.y - WATER_HEIGHT);
 			camera.myPosition.y -= distance;
 			camera.InvertCamera();
-			renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT + 5.0f));
+			renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT + 5.0f));
 			camera.myPosition.y += distance;
 			camera.InvertCamera();
 		}
 		
 		fbos.BindRefractionFrameBuffer();
-		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT + 1.0f));
+		renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT + 1.0f));
 		fbos.UnbindCurrentFrameBuffer();
 		
 		glDisable(GL_CLIP_DISTANCE0);
 
-		renderer.RenderScene(allEntities, terrains, light, camera, vec4(0, 1, 0, 6));
+		renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera, light);
 
 		guiRenderer.Render(guis);
-
+		
 		// Swap buffers
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(GameInfo::ourWindow);
 		glfwPollEvents();
 
 	} // Check if the ESC key was pressed or the window was closed
-	while (!Input::IsPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window) == 0);
+	while (!Input::IsPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(GameInfo::ourWindow) == 0);
 
-	loader.CleanUp();
+	//loader.CleanUp();
+	
+	// Close OpenGL window and terminate GLFW
+	glfwTerminate();
 }
 

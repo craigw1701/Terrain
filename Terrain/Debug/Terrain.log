@@ -1,5 +1,3 @@
 ﻿  main.cpp
-c:\users\craig\documents\github\terrain\terrain\heightsgenerator.h(42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\craig\documents\github\terrain\terrain\terrain.h(25): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   Terrain.vcxproj -> C:\Users\craig\Documents\GitHub\Terrain\Debug\Terrain.exe
   Terrain.vcxproj -> C:\Users\craig\Documents\GitHub\Terrain\Debug\Terrain.pdb (Full PDB)
