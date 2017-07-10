@@ -25,6 +25,9 @@ public:
 
 	void Move()
 	{
+		if (!GameInfo::ourFlyCamera)
+			return;
+
 		float speed = 5.0f;
 
 		float newSpeed = speed;

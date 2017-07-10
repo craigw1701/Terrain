@@ -29,7 +29,7 @@ public:
 		glEnableVertexAttribArray(0);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, myTextureID);
-		GameInfo::SetRenderVerts(myCube.GetVertexCount());
+		GameInfo::SetRenderTriangles(myCube.GetVertexCount()/3);
 		glDrawArrays(GL_TRIANGLES, 0, myCube.GetVertexCount());
 		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);

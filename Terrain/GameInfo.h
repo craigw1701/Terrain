@@ -13,10 +13,11 @@ namespace GameInfo
 	int ourScreenHeight = 768;
 	GLFWwindow* ourWindow = nullptr;
 	bool ourWireframeMode = false;
-	bool ourDrawEntities = false;
+	bool ourDrawEntities = true;
 	bool ourDrawTerrain = true;
 	bool ourDrawWater = true;
 	bool ourDrawSkybox = true;
+	bool ourFlyCamera = false;
 
 	EntityManager* ourEntityManager = nullptr;
 	std::string ourCurrentRenderPass = "Main";
@@ -45,7 +46,7 @@ namespace GameInfo
 		ourRenderTimes[pass].second = 0;
 	}
 
-	void SetRenderVerts(unsigned int aVertCount)
+	void SetRenderTriangles(unsigned int aVertCount)
 	{
 		std::string pass = GetPass();
 		auto iter = ourRenderTimes.find(pass);

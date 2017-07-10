@@ -23,6 +23,7 @@ using namespace glm;
 #include "Loader.h"
 #include "MasterRenderer.h"
 #include "ModelTexture.h"
+#include "Player.h"
 #include "StaticShader.h"
 #include "Terrain.h"
 #include "TerrainTexture.h"
@@ -53,15 +54,21 @@ void DebugControls()
 	{
 		GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
 	}
+	if (Input::IsPressed(GLFW_KEY_N))
+	{
+		GameInfo::ourFlyCamera = !GameInfo::ourFlyCamera;
+	}
 	if (Input::IsPressed(GLFW_KEY_M))
 	{
 		std::cout.imbue(std::locale(""));
 		cout << std::fixed;
+
+		cout << "Frame Time: " << GameInfo::ourDeltaTime << endl;
 		double total = 0;
 		unsigned int totalVerts = 0;
 		cout << std::setw(30) << left << "Location"
 			<< std::setw(30) << left << "ms"
-			<< std::setw(10) << right << "vertices" << endl;
+			<< std::setw(10) << right << "Triangles" << endl;
 		for (auto& pass : GameInfo::ourRenderTimes)
 		{
 			total += pass.second.first;
@@ -166,17 +173,17 @@ int main()
 		entityManager.AddEntity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS);
 	}*/
 
-	const float range = 2000.0;
-	const int num = 2500;
+	const float range = 200.0;
+	const int num = 250;
 
 	for (int i = 0; i < num; i++)
 	{
-		entityManager.AddEntityRandom(texturedModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(0.15, 0.25));
+		//entityManager.AddEntityRandom(texturedModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(0.15, 0.25));
 	}
 
 	for (int i = 0; i < num/2; i++)
 	{
-		entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1.5, 2.5));
+		//entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1.5, 2.5));
 	}
 
 	
@@ -219,6 +226,13 @@ int main()
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
 	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
 	
+
+	RawModel bunnyModel = loader.LoadToVAO("stanfordBunny.obj");
+	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
+	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
+
+	Player player(texturedBunnyModel, vec3(0, 0, -100), vec3(0, 0, 0), 1);
+
 	cout << "Loading took: " << glfwGetTime() - startLoadTime << endl;
 
 	double currentFrame = glfwGetTime();
@@ -232,6 +246,8 @@ int main()
 		camera.Move();
 		DebugControls();
 
+		player.Update();
+
 		glEnable(GL_CLIP_DISTANCE0);
 
 		fbos.BindReflectionFrameBuffer();
@@ -239,17 +255,20 @@ int main()
 			float distance = 2 * (camera.myPosition.y - WATER_HEIGHT);
 			camera.myPosition.y -= distance;
 			camera.InvertCamera();
+			renderer.ProcessEntity(player);
 			renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT + 5.0f));
 			camera.myPosition.y += distance;
 			camera.InvertCamera();
 		}
 		
 		fbos.BindRefractionFrameBuffer();
+		//renderer.ProcessEntity(player);
 		renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT + 1.0f));
 		fbos.UnbindCurrentFrameBuffer();
 		
 		glDisable(GL_CLIP_DISTANCE0);
 
+		renderer.ProcessEntity(player);
 		renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera, light);
 

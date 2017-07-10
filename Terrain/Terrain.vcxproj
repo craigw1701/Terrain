@@ -169,6 +169,7 @@
     <ClInclude Include="Maths.h" />
     <ClInclude Include="ModelTexture.h" />
     <ClInclude Include="ObjLoader.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="RawModel.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderBase.h" />

@@ -149,6 +149,9 @@
     <ClInclude Include="EntityManager.h">
       <Filter>Entities</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\staticshader.vertexshader">

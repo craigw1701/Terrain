@@ -48,7 +48,7 @@ public:
 		{
 			mat4 modelMatrix = CreateTransformMatrix(waterTile.myCenterPos, vec3(0, 0, 0), waterTile.TILE_SIZE);
 			myShader.LoadModelMatrix(modelMatrix);
-			GameInfo::SetRenderVerts(myQuad.GetVertexCount());
+			GameInfo::SetRenderTriangles(myQuad.GetVertexCount()-2);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, myQuad.GetVertexCount());
 		}
 		Unbind();
