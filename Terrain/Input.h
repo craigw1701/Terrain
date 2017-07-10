@@ -50,7 +50,7 @@ public:
 		locThisFrameScrollDelta = vec2(0.0f);
 	}
 
-	static bool IsButtonDown(int aKey)
+	static bool IsMouseButtonDown(int aKey)
 	{
 		return locThisFrameMouseButtons[aKey] == GLFW_PRESS || locThisFrameMouseButtons[aKey] == GLFW_REPEAT;
 	}

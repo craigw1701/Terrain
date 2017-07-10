@@ -10,9 +10,9 @@
 class EntityManager
 {
 public:
-	EntityManager()
+	EntityManager(TerrainManager& aTerrainManager)
+		: myTerrainManager(aTerrainManager)
 	{
-		GameInfo::ourEntityManager = this;
 	}
 	Entity& AddEntity(TexturedModel& aModel, glm::vec3 aPosition, glm::vec3 aRotation, float aScale)
 	{
@@ -22,7 +22,11 @@ public:
 
 	void AddEntityRandom(TexturedModel& aModel, vec3 aMin, vec3 aMax, vec2 aScaleRange)
 	{
-		vec3 randPos = RandVector(aMin, aMax);
+		vec3 randPos;
+		do {
+			 randPos = RandVector(aMin, aMax);
+			 randPos.y = myTerrainManager.GetHeight(randPos.x, randPos.z);
+		} while (randPos.y < GameInfo::ourWaterHeight);
 		float rY = (float)(rand() % 180);
 		float rS = RandFloat(aScaleRange.x, aScaleRange.y);
 
@@ -30,4 +34,5 @@ public:
 	}
 
 	std::vector<Entity> myEntities;
+	TerrainManager& myTerrainManager;
 };

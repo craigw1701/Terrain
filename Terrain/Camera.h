@@ -24,7 +24,7 @@ public:
 	{
 	}
 
-	void Update()
+	void Update(TerrainManager& aTerrainManager)
 	{
 		CalculateZoon();
 		CalculatePitch();
@@ -33,6 +33,11 @@ public:
 		float verticalDistance = CalculateVerticalDistance();
 
 		CalculateCameraPosition(horizontalDistance, verticalDistance);
+		float terrainHeight = aTerrainManager.GetHeight(myPosition.x, myPosition.z) + 5.0f;
+		if (myPosition.y < terrainHeight)
+		{
+			myPosition.y = terrainHeight;
+		}
 		myRotation.y = 180 - (myPlayer.myRotation.y + myAngleAroundPlayer);
 
 		if (!GameInfo::ourFlyCamera)
@@ -108,23 +113,25 @@ private:
 
 	void CalculateZoon()
 	{
-		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * 10.0f, 20.0f, 1000.0f);
+		float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 50.0f : 10.0f;
+		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * speed, 20.0f, 1000.0f);
 	}
 
 	void CalculatePitch()
 	{
-		if (Input::IsButtonDown(GLFW_MOUSE_BUTTON_2))
+		if (Input::IsMouseButtonDown(GLFW_MOUSE_BUTTON_2))
 		{
-			myRotation.x = clamp(myRotation.x - Input::MousePosDelta().y / 10.0f, -90.0f, 90.0f);
-			
+			float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 1.0f : 5.0f;
+			myRotation.x = clamp(myRotation.x - Input::MousePosDelta().y / speed, -90.0f, 90.0f);
 		}
 	}
 
 	void CalculateAngleAroundPlayer()
 	{
-		if (Input::IsButtonDown(GLFW_MOUSE_BUTTON_1))
+		if (Input::IsMouseButtonDown(GLFW_MOUSE_BUTTON_1))
 		{
-			myAngleAroundPlayer -= Input::MousePosDelta().x / 10.0f;
+			float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 1.0f : 5.0f;
+			myAngleAroundPlayer -= Input::MousePosDelta().x / speed;
 		}
 	}
 	

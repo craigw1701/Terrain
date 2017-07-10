@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 #include "Input.h"
-#include "Terrain.h"
+#include "TerrainManager.h"
 
 class Player : public Entity
 {
@@ -23,7 +23,7 @@ public:
 	{
 	}
 
-	void Update(Terrain& aTerrain)
+	void Update(TerrainManager& aTerrainManager)
 	{
 		CheckInputs();
 		myRotation += vec3(0, myCurrentTurnSpeed * GameInfo::ourDeltaTime, 0);
@@ -37,7 +37,7 @@ public:
 		myUpwardsSpeed += myGravity * GameInfo::ourDeltaTime;
 		myPosition.y += myUpwardsSpeed * GameInfo::ourDeltaTime;
 
-		float terrainHeight = aTerrain.GetHeight(myPosition.x, myPosition.z);
+		float terrainHeight = aTerrainManager.GetHeight(myPosition.x, myPosition.z);
 		if (myPosition.y < terrainHeight)
 		{
 			myIsInAir = false;
@@ -58,13 +58,14 @@ private:
 
 	void CheckInputs()
 	{
+		float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 5.0f : 1.0f;
 		if (Input::IsDown(GLFW_KEY_W))
 		{
-			myCurrentSpeed = myRunSpeed;
+			myCurrentSpeed = myRunSpeed * speed;
 		}
 		else if(Input::IsDown(GLFW_KEY_S))
 		{
-			myCurrentSpeed = -myRunSpeed;
+			myCurrentSpeed = -myRunSpeed * speed;
 		}
 		else
 		{
@@ -73,11 +74,11 @@ private:
 
 		if (Input::IsDown(GLFW_KEY_D))
 		{
-			myCurrentTurnSpeed = -myTurnSpeed;
+			myCurrentTurnSpeed = -myTurnSpeed * speed;
 		}
 		else if (Input::IsDown(GLFW_KEY_A))
 		{
-			myCurrentTurnSpeed = myTurnSpeed;
+			myCurrentTurnSpeed = myTurnSpeed * speed;
 		}
 		else
 		{

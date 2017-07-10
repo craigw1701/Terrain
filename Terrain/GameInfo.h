@@ -11,6 +11,7 @@ namespace GameInfo
 	float ourDeltaTime;
 	int ourScreenWidth = 1024;
 	int ourScreenHeight = 768;
+	float ourWaterHeight = -20;
 	GLFWwindow* ourWindow = nullptr;
 	bool ourWireframeMode = false;
 	bool ourDrawEntities = true;
@@ -18,8 +19,8 @@ namespace GameInfo
 	bool ourDrawWater = true;
 	bool ourDrawSkybox = true;
 	bool ourFlyCamera = false;	
+	vec3 ourPlayerSpawnPos(-100, 0, -100);
 
-	EntityManager* ourEntityManager = nullptr;
 	std::string ourCurrentRenderPass = "Main";
 	std::string ourCurrentShaderPass = "";
 	std::map<std::string, std::pair<double, unsigned int>> ourRenderTimes;
@@ -61,4 +62,5 @@ namespace GameInfo
 	}
 };
 
+#define Error(x) { printf(x); printf("\n"); system("color 47"); }
 #define ErrorReturn(x) { printf(x); printf("\n"); system("color 47"); return -1; }

@@ -14,8 +14,8 @@ public:
 		, myBlendMap(aBlendMap)
 		, myGenerator(aGridX, aGridZ, myVertexCount, rand() % 1000000)
 		, myModel(GenerateTerrain(aLoader))
-		, myX(aGridX * mySize)
-		, myZ(aGridZ * mySize)
+		, myX(static_cast<float>(aGridX * mySize))
+		, myZ(static_cast<float>(aGridZ * mySize))
 	{
 	}
 
@@ -24,7 +24,7 @@ public:
 		float terrainX = aWorldX - myX;
 		float terrainZ = aWorldZ - myZ;
 
-		float gridSquareSize = mySize / (myVertexCount - 1);
+		float gridSquareSize = static_cast<float>(Terrain::mySize) / static_cast<float>(myVertexCount - 1);
 		int gridX = static_cast<int>(floor(terrainX / gridSquareSize));
 		int gridZ = static_cast<int>(floor(terrainZ / gridSquareSize));
 
@@ -124,10 +124,10 @@ public:
 	TerrainTexturePack const& GetTextures() const { return myTextures; }
 	TerrainTexture const& GetBlendMap() const { return myBlendMap; }
 
-private:
-	float mySize = 800;
-	int myVertexCount = 128;
+	static const int mySize = 800;
+	static const int myVertexCount = 128;
 
+private:
 	float myX;
 	float myZ;
 	HeightsGenerator myGenerator;

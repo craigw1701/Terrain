@@ -26,15 +26,13 @@ using namespace glm;
 #include "ModelTexture.h"
 #include "Player.h"
 #include "StaticShader.h"
-#include "Terrain.h"
+#include "TerrainManager.h"
 #include "TerrainTexture.h"
 #include "TexturedModel.h"
 #include "WaterFrameBuffer.h"
 #include "WaterRenderer.h"
 #include "WaterShader.h"
 #include "WaterTile.h"
-
-#define WATER_HEIGHT -20
 
 void DebugControls()
 {
@@ -141,32 +139,31 @@ int main()
 	}
 
 	Loader loader;
-	
-	RawModel model = loader.LoadToVAO("fern.obj");
-	ModelTexture texture(loader.LoadTexture("fern.png"));
+	/*
+	RawModel model = loader.LoadToVAO("Tree005/tree_oak.obj");
+	ModelTexture texture(loader.LoadTexture("Tree006/Branches0018_1_S.png"));
 	TexturedModel texturedModel(model, texture);
-	texture.myReflectivity = 0.2f;
+	texture.myHasTransparency = true;
+	/*texture.myReflectivity = 0.2f;
 	texture.myShineDamper = 1;
 	texture.myHasTransparency = true;
 	texture.myUseFakeLighting = true;
+*/
+	//RawModel treeModel = loader.LoadToVAO("Tree001/Tree.obj");
+	//ModelTexture treeTexture(loader.LoadTexture("white.png"));
+	//TexturedModel texturedTreeModel(treeModel, texture);
+	//treeTexture.myReflectivity = 0.2f;
+	//treeTexture.myShineDamper = 1;
 
-	RawModel treeModel = loader.LoadToVAO("tree.obj");
-	ModelTexture treeTexture(loader.LoadTexture("tree.png"));
-	TexturedModel texturedTreeModel(treeModel, treeTexture);
-	treeTexture.myReflectivity = 0.2f;
-	treeTexture.myShineDamper = 1;
 
-
-	RawModel grassModel = loader.LoadToVAO("grassModel.obj");
-	ModelTexture grassTexture(loader.LoadTexture("grassTexture.png"));
-	TexturedModel texturedGrassModel(grassModel, grassTexture);
-	grassTexture.myReflectivity = 0.2f;
+	//RawModel grassModel = loader.LoadToVAO("Tree002/tree.obj");
+	//ModelTexture grassTexture(loader.LoadTexture("Tree002/DB2X2_L01.png"));
+	//TexturedModel texturedGrassModel(grassModel, texture);
+	/*grassTexture.myReflectivity = 0.2f;
 	grassTexture.myShineDamper = 1;
 	grassTexture.myHasTransparency = true;
-	texture.myUseFakeLighting = true;
-
-	EntityManager entityManager;
-
+	texture.myUseFakeLighting = true;*/
+	
 	/*
 	for (int i = 0; i < 400; i++)
 	{
@@ -179,32 +176,18 @@ int main()
 		entityManager.AddEntity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS);
 	}*/
 
-	const float range = 200.0;
-	const int num = 250;
 
-	for (int i = 0; i < num; i++)
-	{
-		//entityManager.AddEntityRandom(texturedModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(0.15, 0.25));
-	}
-
-	for (int i = 0; i < num/2; i++)
-	{
-		//entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1.5, 2.5));
-	}
-
-	Light light(vec3(0, 25, -200), vec3(1, 1, 1));
+	Light light(vec3(2000, 100, -200), vec3(0.988, 0.831, 0.25));
 	ModelTexture grass = loader.LoadTexture("grass.bmp");
+	grass.myReflectivity = 1;
+	grass.myShineDamper = 10;
 
 	TerrainTexture blendMap = loader.LoadTexture("blendMap.png");
 	TerrainTexturePack texturePack("grass.png", "grassFlowers.png", "mud.png", "grassy2.png", loader);
+	TerrainManager terrainManager(loader, texturePack, blendMap);
 
-	grass.myReflectivity = 1;
-	grass.myShineDamper = 10;
-	vector<Terrain> terrains;
-	terrains.push_back(Terrain(-1, -1, loader, texturePack, blendMap));
-	//terrains.push_back(Terrain(0, -1, loader, texturePack, blendMap));
-	//terrains.push_back(Terrain(0, 0, loader, texturePack, blendMap));
-	//terrains.push_back(Terrain(-1, 0, loader, texturePack, blendMap));
+	EntityManager entityManager(terrainManager);;
+
 
 	vector<GUITexture> guis;
 	/*GUITexture gui = GUITexture(loader.LoadTexture("grassTexture.png"), vec2(0.5f, 0.5f), vec2(0.25f, 0.25f));
@@ -218,7 +201,9 @@ int main()
 	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
 	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
 
-	Player player(texturedBunnyModel, vec3(-100, 0, -100), vec3(0, 0, 0), 1);
+	vec3 playerStartPos = GameInfo::ourPlayerSpawnPos;
+	playerStartPos.y = terrainManager.GetHeight(playerStartPos.x, playerStartPos.z);
+	Player player(texturedBunnyModel, playerStartPos, vec3(0, 0, 0), 1);
 
 	Camera camera(player);
 
@@ -229,13 +214,31 @@ int main()
 	WaterRenderer waterRenderer(loader, waterShader, fbos);
 	waterRenderer.Setup(renderer.GetProjectionMatrix());
 	vector<WaterTile> waters;
-	waters.push_back(WaterTile(vec3(75, WATER_HEIGHT, -500)));
+	waters.push_back(WaterTile(vec3(75, GameInfo::ourWaterHeight, -500)));
+	
+	/*const float range = 500.0;
+	const int num = 250;
+
+	for (int i = 0; i < num; i++)
+	{
+		entityManager.AddEntityRandom(texturedModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1, 5));
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		entityManager.AddEntityRandom(texturedGrassModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(5, 25));
+	}
+
+	for (int i = 0; i < num; i++)
+	{
+		entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(0.1, 0.5));
+	}*/
 
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));
 
 
-	system("color 20");
+	//system("color 20");
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
 	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
 	
@@ -249,33 +252,34 @@ int main()
 		lastFrame = currentFrame;
 
 		Input::UpdateInput();
-		camera.Update();
+		camera.Update(terrainManager);
 		DebugControls();
 
-		player.Update(terrains.back());
+		player.Update(terrainManager);
 
 		glEnable(GL_CLIP_DISTANCE0);
 
 		fbos.BindReflectionFrameBuffer();
 		{
-			float distance = 2 * (camera.myPosition.y - WATER_HEIGHT);
+			float distance = 2 * (camera.myPosition.y - GameInfo::ourWaterHeight);
 			camera.myPosition.y -= distance;
 			camera.InvertCamera();
 			renderer.ProcessEntity(player);
-			renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, 1, 0, -WATER_HEIGHT + 5.0f));
+			renderer.RenderScene(entityManager.myEntities, terrainManager.myTerrains, light, camera, vec4(0, 1, 0, -GameInfo::ourWaterHeight + 5.0f));
 			camera.myPosition.y += distance;
 			camera.InvertCamera();
 		}
 		
 		fbos.BindRefractionFrameBuffer();
 		//renderer.ProcessEntity(player);
-		renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, -1, 0, WATER_HEIGHT + 1.0f));
+		// TODO:CW don't draw any of these entites under the water?
+		renderer.RenderScene(entityManager.myEntities, terrainManager.myTerrains, light, camera, vec4(0, -1, 0, GameInfo::ourWaterHeight + 1.0f));
 		fbos.UnbindCurrentFrameBuffer();
 		
 		glDisable(GL_CLIP_DISTANCE0);
 
 		renderer.ProcessEntity(player);
-		renderer.RenderScene(entityManager.myEntities, terrains, light, camera, vec4(0, 1, 0, 6));
+		renderer.RenderScene(entityManager.myEntities, terrainManager.myTerrains, light, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera, light);
 
 		guiRenderer.Render(guis);
