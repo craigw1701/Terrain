@@ -7,7 +7,7 @@ class Player : public Entity
 {
 public:
 	float myRunSpeed = 20.0f;
-	float myTurnSpeed = 5.0f;
+	float myTurnSpeed = 160.0f;
 	float myGravity = -50.0f;
 	float myJumpPower = 30;
 	float myTerrainHeight = 0.0f;
@@ -29,8 +29,8 @@ public:
 		myRotation += vec3(0, myCurrentTurnSpeed * GameInfo::ourDeltaTime, 0);
 		float distance = myCurrentSpeed * GameInfo::ourDeltaTime;
 
-		float dX = distance * sin(myRotation.y);
-		float dZ = distance * cos(myRotation.y);
+		float dX = distance * sin(radians(myRotation.y));
+		float dZ = distance * cos(radians(myRotation.y));
 
 		myPosition += vec3(dX, 0, dZ);
 

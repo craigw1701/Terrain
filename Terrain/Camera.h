@@ -12,19 +12,29 @@ using namespace glm;
 
 #include "GameInfo.h"
 #include "Input.h"
+#include "Player.h"
 
 class Camera
 {
 public:
-	Camera()
-		: myPosition(0, 5, -1)
-		, myRotation(0.0, 0, 0)
+	Camera(Player& aPlayer)
+		: myPlayer(aPlayer)
+		, myPosition(0, 0, 0)
+		, myRotation(20, 0, 0)
 	{
-
 	}
 
-	void Move()
+	void Update()
 	{
+		CalculateZoon();
+		CalculatePitch();
+		CalculateAngleAroundPlayer();
+		float horizontalDistance = CalculateHorizontalDistance();
+		float verticalDistance = CalculateVerticalDistance();
+
+		CalculateCameraPosition(horizontalDistance, verticalDistance);
+		myRotation.y = 180 - (myPlayer.myRotation.y + myAngleAroundPlayer);
+
 		if (!GameInfo::ourFlyCamera)
 			return;
 
@@ -75,8 +85,58 @@ public:
 		myRotation.x = -myRotation.x;
 	}
 
+private:
+	void CalculateCameraPosition(float aHorizontalDistance, float aVerticalDistance)
+	{
+		float theta = myPlayer.myRotation.y + myAngleAroundPlayer;
+		float offsetX = aHorizontalDistance * sin(radians(theta));
+		float offsetZ = aHorizontalDistance * cos(radians(theta));
+		myPosition.x = myPlayer.myPosition.x - offsetX;
+		myPosition.z = myPlayer.myPosition.z - offsetZ;
+		myPosition.y = myPlayer.myPosition.y + aVerticalDistance;
+	}
+
+	float CalculateHorizontalDistance()
+	{
+		return myDistanceFromPlayer * cos(radians(myRotation.x));
+	}
+
+	float CalculateVerticalDistance()
+	{
+		return myDistanceFromPlayer * sin(radians(myRotation.x));
+	}
+
+	void CalculateZoon()
+	{
+		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * 10.0f, 20.0f, 1000.0f);
+	}
+
+	void CalculatePitch()
+	{
+		if (Input::IsButtonDown(GLFW_MOUSE_BUTTON_2))
+		{
+			myRotation.x = clamp(myRotation.x - Input::MousePosDelta().y / 10.0f, -90.0f, 90.0f);
+			
+		}
+	}
+
+	void CalculateAngleAroundPlayer()
+	{
+		if (Input::IsButtonDown(GLFW_MOUSE_BUTTON_1))
+		{
+			myAngleAroundPlayer -= Input::MousePosDelta().x / 10.0f;
+		}
+	}
+	
+	Player& myPlayer;
+	float myDistanceFromPlayer = 50.0f;
+	float myAngleAroundPlayer = 0.0f;
+public:
 	vec3 myPosition;
 	vec3 myRotation;
+	//float myPitch = 20.0f;
+	//float myYaw = 0.0f;
+	//float myRoll = 0.0f;
 
 private:
 };

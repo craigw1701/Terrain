@@ -17,9 +17,9 @@ glm::mat4 CreateTransformMatrix(glm::vec3 aTranslation, glm::vec3 aRotation, flo
 {
 	glm::mat4 matrix(1.0f);
 	matrix = glm::translate(matrix, aTranslation);
-	matrix = glm::rotate(matrix, aRotation.x, glm::vec3(1, 0, 0));
-	matrix = glm::rotate(matrix, aRotation.y, glm::vec3(0, 1, 0));
-	matrix = glm::rotate(matrix, aRotation.z, glm::vec3(0, 0, 1));
+	matrix = glm::rotate(matrix, radians(aRotation.x), glm::vec3(1, 0, 0));
+	matrix = glm::rotate(matrix, radians(aRotation.y), glm::vec3(0, 1, 0));
+	matrix = glm::rotate(matrix, radians(aRotation.z), glm::vec3(0, 0, 1));
 	matrix = glm::scale(matrix, glm::vec3(aScale, aScale, aScale));
 	
 	return matrix;
@@ -37,8 +37,8 @@ glm::mat4 CreateViewMatrix(Camera const& aCamera)
 {
 	glm::mat4 matrix(1.0f);
 
-	matrix = glm::rotate(matrix, aCamera.myRotation.x, glm::vec3(1, 0, 0));
-	matrix = glm::rotate(matrix, aCamera.myRotation.y, glm::vec3(0, 1, 0));
+	matrix = glm::rotate(matrix, radians(aCamera.myRotation.x), glm::vec3(1, 0, 0));
+	matrix = glm::rotate(matrix, radians(aCamera.myRotation.y), glm::vec3(0, 1, 0));
 	//matrix = glm::rotate(matrix, aCamera.myRotation.z, glm::vec3(0, 0, 1));
 
 	vec3 negativeCameraPos = -aCamera.myPosition;

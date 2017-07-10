@@ -122,6 +122,8 @@ bool Setup()
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	GameInfo::ourWindow = window;
+
+	Input::Setup();
 	return true;
 }
 
@@ -132,7 +134,10 @@ int main()
 
 	double startLoadTime = glfwGetTime();
 	if (!Setup())
+	{
+		system("color 47");
 		return -1;
+	}
 
 	Loader loader;
 	
@@ -187,7 +192,13 @@ int main()
 	}
 
 	
-	Camera camera;
+	RawModel bunnyModel = loader.LoadToVAO("stanfordBunny.obj");
+	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
+	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
+
+	Player player(texturedBunnyModel, vec3(0, 0, 0), vec3(0, 0, 0), 1);
+
+	Camera camera(player);
 	Light light(vec3(0, 25, -200), vec3(1, 1, 1));
 	ModelTexture grass = loader.LoadTexture("grass.bmp");
 
@@ -223,16 +234,10 @@ int main()
 	guiRenderer.Setup(mat4(1));
 
 
+	system("color 20");
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
 	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
 	
-
-	RawModel bunnyModel = loader.LoadToVAO("stanfordBunny.obj");
-	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
-	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
-
-	Player player(texturedBunnyModel, vec3(0, 0, -100), vec3(0, 0, 0), 1);
-
 	cout << "Loading took: " << glfwGetTime() - startLoadTime << endl;
 
 	double currentFrame = glfwGetTime();
@@ -243,7 +248,7 @@ int main()
 		lastFrame = currentFrame;
 
 		Input::UpdateInput();
-		camera.Move();
+		camera.Update();
 		DebugControls();
 
 		player.Update();
