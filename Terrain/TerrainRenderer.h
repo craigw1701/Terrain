@@ -21,9 +21,9 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(vector<Terrain*> someTerrains)
+	void Render(vector<Terrain const*> someTerrains)
 	{
-		for (Terrain* terrain : someTerrains)
+		for (Terrain const* terrain : someTerrains)
 		{
 			PrepareTerrain(*terrain);
 			LoadModelMatrix(*terrain);
@@ -77,6 +77,4 @@ private:
 	}
 
 	TerrainShader& myShader;
-
-
 };

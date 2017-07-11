@@ -141,9 +141,4 @@ private:
 public:
 	vec3 myPosition;
 	vec3 myRotation;
-	//float myPitch = 20.0f;
-	//float myYaw = 0.0f;
-	//float myRoll = 0.0f;
-
-private:
 };

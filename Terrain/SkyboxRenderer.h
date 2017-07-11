@@ -38,6 +38,7 @@ public:
 		myShader.Stop();
 	}
 
+private:
 	vector<vec3> myVertices = {
 		{-SKYBOX_SIZE,  SKYBOX_SIZE, -SKYBOX_SIZE},
 		{-SKYBOX_SIZE, -SKYBOX_SIZE, -SKYBOX_SIZE},

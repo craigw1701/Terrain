@@ -46,7 +46,7 @@ public:
 		myShader.Stop();
 	}
 
-
+private:
 	vector<vec2> positions{ { -1, 1 },{ -1, -1 },{ 1, 1 },{ 1, -1 } };
 	RawModel myQuad;
 	GUIShader myShader;

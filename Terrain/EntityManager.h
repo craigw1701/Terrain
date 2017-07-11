@@ -33,6 +33,9 @@ public:
 		AddEntity(aModel, randPos, vec3(0, rY, 0), rS);
 	}
 
+	std::vector<Entity> const& GetEntities() const { return myEntities; }
+
+private:
 	std::vector<Entity> myEntities;
 	TerrainManager& myTerrainManager;
 };

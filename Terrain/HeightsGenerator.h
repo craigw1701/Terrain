@@ -32,10 +32,7 @@ public:
 		mySeed = rand() % 1000000;
 	}
 
-	int myXOffset;
-	int myZOffset;
-
-	float GenerateHeight(int aX, int aZ)
+	float GenerateHeight(int aX, int aZ) const
 	{
 		float x = static_cast<float> (myXOffset + aX);
 		float z = static_cast<float>(myZOffset + aZ);
@@ -47,7 +44,7 @@ public:
 		return total;
 	}
 
-	float GetInterpolatedNoise(float aX, float aZ)
+	float GetInterpolatedNoise(float aX, float aZ) const
 	{
 		int intX = (int)aX;
 		int intZ = (int)aZ;
@@ -66,14 +63,14 @@ public:
 		return Interpolate(i1, i2, fracZ);
 	}
 
-	float Interpolate(float anA, float aB, float aBlend)
+	float Interpolate(float anA, float aB, float aBlend) const
 	{
 		double theata = aBlend * 3.14f;
 		float f = (float)(1.0f - cos(theata)) * 0.5f;
 		return anA * (1.0f - f) + aB * f;
 	}
 
-	float GetSmoothNoise(int aX, int aZ)
+	float GetSmoothNoise(int aX, int aZ) const
 	{
 		float corners = (GetNoise(aX-1, aZ-1) + GetNoise(aX+1, aZ-1) + GetNoise(aX-1, aZ+1) + GetNoise(aX+1, aZ+1)) / 16.0f;
 		float sides = (GetNoise(aX - 1, aZ) + GetNoise(aX + 1, aZ) + GetNoise(aX, aZ - 1) + GetNoise(aX, aZ + 1)) / 8.0f;
@@ -83,7 +80,7 @@ public:
 		return corners + sides + center;
 	}
 
-	float GetNoise(int aX, int aZ)
+	float GetNoise(int aX, int aZ) const
 	{
 		unsigned int seed = aX * 49632 + aZ * 325176 + mySeed;
 			
@@ -109,8 +106,12 @@ public:
 		return r;
 	}
 
+private:
+	int myXOffset;
+	int myZOffset;
+
 	int mySeed;
-	std::mt19937 ra;
-	std::map<unsigned int, float> myLookup;
+	mutable std::mt19937 ra;
+	mutable std::map<unsigned int, float> myLookup;
 	
 };

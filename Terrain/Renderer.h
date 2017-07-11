@@ -13,11 +13,6 @@
 
 using namespace std;
 
-static float locToRadians(float aDegree)
-{
-	return (aDegree * 3.14f) / 180.0f;
-}
-
 class EntityRenderer
 {
 public:
@@ -33,7 +28,7 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(map<TexturedModel*, vector<Entity*>>& someEntities)
+	void Render(map<TexturedModel const*, vector<Entity const*>>& someEntities)
 	{
 		for (auto& iter = someEntities.begin(); iter != someEntities.end(); iter++)
 		{
@@ -50,6 +45,7 @@ public:
 
 	}
 
+private:
 	void PrepareTexturedModel(TexturedModel const& aModel)
 	{
 		RawModel& model = aModel.GetRawModel();

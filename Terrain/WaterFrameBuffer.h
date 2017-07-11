@@ -22,6 +22,26 @@ public:
 		glDeleteTextures(1, &myRefractionDepthTexture);
 	}
 
+	void BindReflectionFrameBuffer() //call before rendering to this FBO
+	{
+		GameInfo::ourCurrentRenderPass = "Reflection";
+		BindFrameBuffer(myReflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
+	}
+
+	void BindRefractionFrameBuffer() //call before rendering to this FBO
+	{
+		GameInfo::ourCurrentRenderPass = "Refraction";
+		BindFrameBuffer(myRefractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
+	}
+
+	void UnbindCurrentFrameBuffer() //call to switch to default frame buffer
+	{
+		GameInfo::ourCurrentRenderPass = "Main";
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, GameInfo::ourScreenWidth, GameInfo::ourScreenHeight);
+	}
+
+private:
 	void InitialiseReflectionFrameBuffer()
 	{
 		myReflectionFrameBuffer = CreateFrameBuffer();
@@ -78,17 +98,6 @@ public:
 		return texture;
 	}
 
-	void BindReflectionFrameBuffer() //call before rendering to this FBO
-	{
-		GameInfo::ourCurrentRenderPass = "Reflection";
-		BindFrameBuffer(myReflectionFrameBuffer, REFLECTION_WIDTH, REFLECTION_HEIGHT);
-	}
-
-	void BindRefractionFrameBuffer() //call before rendering to this FBO
-	{
-		GameInfo::ourCurrentRenderPass = "Refraction";
-		BindFrameBuffer(myRefractionFrameBuffer, REFRACTION_WIDTH, REFRACTION_HEIGHT);
-	}
 
 	void BindFrameBuffer(int frameBuffer, int width, int height) {
 		glBindTexture(GL_TEXTURE_2D, 0);//To make sure the texture isn't bound
@@ -96,13 +105,7 @@ public:
 		glViewport(0, 0, width, height);
 	}
 
-	void UnbindCurrentFrameBuffer() //call to switch to default frame buffer
-	{
-		GameInfo::ourCurrentRenderPass = "Main";
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, GameInfo::ourScreenWidth, GameInfo::ourScreenHeight);
-	}
-
+public:
 	int REFLECTION_WIDTH = 320;
 	int REFLECTION_HEIGHT = 180;
 

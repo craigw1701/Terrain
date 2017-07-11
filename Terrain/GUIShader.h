@@ -37,5 +37,6 @@ public:
 		BindAttribute(0, "position");
 	}
 
+private:
 	GLuint myLocationTranformationMatrix;
 };

@@ -24,7 +24,7 @@ public:
 
 	}
 
-	TexturedModel& GetModel() { return myModel; }
+	TexturedModel& GetModel() const { return myModel; }
 
 public:
 	glm::vec3 myPosition;

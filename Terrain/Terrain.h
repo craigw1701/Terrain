@@ -19,7 +19,7 @@ public:
 	{
 	}
 
-	float GetHeight(float aWorldX, float aWorldZ)
+	float GetHeight(float aWorldX, float aWorldZ) const
 	{
 		float terrainX = aWorldX - myX;
 		float terrainZ = aWorldZ - myZ;
@@ -56,7 +56,6 @@ public:
 		return answer;
 	}
 	
-
 	RawModel GenerateTerrain(Loader& aLoader) 
 	{
 		double startTime = glfwGetTime();
@@ -102,7 +101,16 @@ public:
 		return aLoader.LoadToVAO(vertices, textureCoords, normals, indices);
 	}
 
-	vec3 GetNormal(int aX, int aZ, HeightsGenerator& aGenerator)
+	float GetX() const { return myX; }
+	float GetZ() const { return myZ; }
+	RawModel const& GetModel() const { return myModel; }
+	TerrainTexturePack const& GetTextures() const { return myTextures; }
+	TerrainTexture const& GetBlendMap() const { return myBlendMap; }
+
+	static const int mySize = 800;
+	static const int myVertexCount = 128;
+private:
+	vec3 GetNormal(int aX, int aZ, HeightsGenerator const& aGenerator) const
 	{
 		float heightL = GetHeight(aX - 1, aZ, aGenerator);
 		float heightR = GetHeight(aX + 1, aZ, aGenerator);
@@ -113,19 +121,10 @@ public:
 		return normal;
 	}
 
-	float GetHeight(int aX, int aZ, HeightsGenerator& aGenerator)
+	float GetHeight(int aX, int aZ, HeightsGenerator const& aGenerator) const
 	{
 		return aGenerator.GenerateHeight(aX, aZ);
 	}
-
-	float GetX() const { return myX; }
-	float GetZ() const { return myZ; }
-	RawModel const& GetModel() const { return myModel; }
-	TerrainTexturePack const& GetTextures() const { return myTextures; }
-	TerrainTexture const& GetBlendMap() const { return myBlendMap; }
-
-	static const int mySize = 800;
-	static const int myVertexCount = 128;
 
 private:
 	float myX;

@@ -265,7 +265,7 @@ int main()
 			camera.myPosition.y -= distance;
 			camera.InvertCamera();
 			renderer.ProcessEntity(player);
-			renderer.RenderScene(entityManager.myEntities, terrainManager.myTerrains, light, camera, vec4(0, 1, 0, -GameInfo::ourWaterHeight + 5.0f));
+			renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, 1, 0, -GameInfo::ourWaterHeight + 5.0f));
 			camera.myPosition.y += distance;
 			camera.InvertCamera();
 		}
@@ -273,13 +273,13 @@ int main()
 		fbos.BindRefractionFrameBuffer();
 		//renderer.ProcessEntity(player);
 		// TODO:CW don't draw any of these entites under the water?
-		renderer.RenderScene(entityManager.myEntities, terrainManager.myTerrains, light, camera, vec4(0, -1, 0, GameInfo::ourWaterHeight + 1.0f));
+		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, -1, 0, GameInfo::ourWaterHeight + 1.0f));
 		fbos.UnbindCurrentFrameBuffer();
 		
 		glDisable(GL_CLIP_DISTANCE0);
 
 		renderer.ProcessEntity(player);
-		renderer.RenderScene(entityManager.myEntities, terrainManager.myTerrains, light, camera, vec4(0, 1, 0, 6));
+		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera, light);
 
 		guiRenderer.Render(guis);

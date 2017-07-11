@@ -59,7 +59,7 @@ public:
 protected:
 	virtual void GetAllUniformLocations() = 0;
 
-	GLuint GetUniformLocation(const char* aUniformName)
+	GLuint GetUniformLocation(const char* aUniformName) const
 	{
 		return glGetUniformLocation(myProgramID, aUniformName);
 	}
@@ -103,7 +103,8 @@ protected:
 
 private:
 	GLuint myProgramID;
-	GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path) {
+	GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path) const
+	{
 
 		// Create the shaders
 		GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);

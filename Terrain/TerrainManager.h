@@ -25,12 +25,12 @@ public:
 		myTerrains.push_back(Terrain(aGridX, aGridZ, myLoader, myTexturePack, myBlendMap));
 	}
 
-	float GetHeight(float aWorldX, float aWorldZ)
+	float GetHeight(float aWorldX, float aWorldZ) const
 	{
 		int vertexCount = (Terrain::myVertexCount - 1);
 		float gridSquareSize = static_cast<float>(Terrain::mySize) / static_cast<float>(vertexCount);
 
-		for (Terrain& terrain : myTerrains)
+		for (Terrain const& terrain : myTerrains)
 		{
 			float terrainX = aWorldX - terrain.GetX();
 			float terrainZ = aWorldZ - terrain.GetZ();
@@ -49,6 +49,8 @@ public:
 		return GameInfo::ourWaterHeight;
 	}
 
+	std::vector<Terrain> const& GetTerrains() const { return myTerrains; }
+private:
 	Loader& myLoader;
 	TerrainTexturePack& myTexturePack;
 	TerrainTexture& myBlendMap;

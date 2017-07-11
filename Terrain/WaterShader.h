@@ -71,6 +71,7 @@ public:
 		LoadFloat(myLocationMoveFactor, aMoveFactor);
 	}
 
+private:
 	GLuint myLocationModelMatrix;
 	GLuint myLocationViewMatrix;
 	GLuint myLocationProjectionMatrix;

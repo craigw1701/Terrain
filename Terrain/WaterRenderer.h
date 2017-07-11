@@ -11,14 +11,6 @@
 class WaterRenderer
 {
 public:
-	RawModel myQuad;
-	WaterShader& myShader;
-	WaterFrameBuffer& myFBOs;
-	GLuint myDUDVMap;
-	GLuint myNormalMap;
-
-	float myMoveFactor = 0;
-
 	WaterRenderer(Loader& aLoader, WaterShader& aShader, WaterFrameBuffer& fbos)
 		: myShader(aShader)
 		, myQuad(aLoader.LoadToVAO({ { -1, 1 },{ -1, -1 },{ 1, 1 },{ 1, -1 } }))
@@ -55,6 +47,7 @@ public:
 		EnableCulling();
 	}
 
+private:
 	void PrepareRender(Camera& aCamera, Light& aLight)
 	{
 		myShader.Start();
@@ -87,4 +80,13 @@ public:
 		glBindVertexArray(0);
 		myShader.Stop();
 	}
+
+private:
+	RawModel myQuad;
+	WaterShader& myShader;
+	WaterFrameBuffer& myFBOs;
+	GLuint myDUDVMap;
+	GLuint myNormalMap;
+
+	float myMoveFactor = 0;
 };

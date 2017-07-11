@@ -48,14 +48,19 @@ public:
 	{
 	}
 
-	void RenderScene(vector<Entity>& someEntities, vector<Terrain>& someTerrain, Light& aSun, Camera& aCamera, vec4 aClipPlane)
+	mat4 GetProjectionMatrix() const 
+	{ 
+		return myProjectionMatrix; 
+	}
+
+	void RenderScene(vector<Entity> const& someEntities, vector<Terrain> const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
 	{
 		double startTime = glfwGetTime();
 
-		for (Terrain& terrain : someTerrain)
+		for (Terrain const& terrain : someTerrain)
 			ProcessTerrain(terrain);
 
-		for (Entity& entity : someEntities)
+		for (Entity const& entity : someEntities)
 			ProcessEntity(entity);
 
 		Render(aSun, aCamera, aClipPlane);
@@ -63,7 +68,25 @@ public:
 		GameInfo::SetRenderTime(glfwGetTime() - startTime);
 	}
 
-	void Render(Light& aSun, Camera& aCamera, vec4 aClipPlane)
+	void ProcessEntity(Entity const& anEntity)
+	{
+		TexturedModel& entityModel = anEntity.GetModel();
+
+		auto& iter = myEntities.find(&entityModel);
+		if (iter != myEntities.end())
+		{
+			iter->second.push_back(&anEntity);
+		}
+		else
+		{
+			vector<Entity const*> list;
+			list.push_back(&anEntity);
+			myEntities[&entityModel] = list;
+		}
+	}
+
+private:
+	void Render(Light const& aSun, Camera const& aCamera, vec4 aClipPlane) 
 	{
 		Prepare();
 		
@@ -107,29 +130,11 @@ public:
 		glClearColor(0, 0, 0, 1);
 	}
 
-	void ProcessEntity(Entity& anEntity)
-	{
-		TexturedModel& entityModel = anEntity.GetModel();
-
-		auto& iter = myEntities.find(&entityModel);
-		if (iter != myEntities.end())
-		{
-			iter->second.push_back(&anEntity);
-		}
-		else
-		{
-			vector<Entity*> list;
-			list.push_back(&anEntity);
-			myEntities[&entityModel] = list;
-		}
-	}
-
-	void ProcessTerrain(Terrain& aTerrain)
+	void ProcessTerrain(Terrain const& aTerrain)
 	{
 		myTerrains.push_back(&aTerrain);
 	}
 
-	mat4 GetProjectionMatrix() const { return myProjectionMatrix; }
 private:
 	float myFOV = 70;
 	float myNearPlane = 0.1f;
@@ -142,9 +147,9 @@ private:
 
 	TerrainShader myTerrainShader;
 	TerrainRenderer myTerrainRenderer;
-	map<TexturedModel*, vector<Entity*>> myEntities; //TODO:CW don't really like these pointers...
+	map<TexturedModel const*, vector<Entity const*>> myEntities; //TODO:CW don't really like these pointers...
 
-	vector<Terrain*> myTerrains; //TODO:CW don't really like these pointers...
+	vector<Terrain const*> myTerrains; //TODO:CW don't really like these pointers...
 
 	
 };
