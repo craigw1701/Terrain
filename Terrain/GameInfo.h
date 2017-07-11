@@ -9,6 +9,7 @@ class EntityManager;
 namespace GameInfo
 {
 	float ourDeltaTime;
+	float ourDayNightTime;
 	int ourScreenWidth = 1024;
 	int ourScreenHeight = 768;
 	float ourWaterHeight = -20;

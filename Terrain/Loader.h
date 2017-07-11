@@ -73,11 +73,11 @@ public:
 			glDeleteTextures(1, &texture);
 	}
 
-	GLuint LoadCubeMap(vector<std::string> const& someTextures)
+	GLuint LoadCubeMap(vector<std::string> const& someTextures, GLuint aTextureIndex)
 	{
 		GLuint textureID;
 		glGenTextures(1, &textureID);
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(aTextureIndex);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 		int i = 0;

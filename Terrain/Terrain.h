@@ -12,10 +12,10 @@ public:
 	Terrain(int aGridX, int aGridZ, Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap)
 		: myTextures(aTexturePack)
 		, myBlendMap(aBlendMap)
-		, myGenerator(aGridX, aGridZ, myVertexCount, rand() % 1000000)
+		, myGenerator(aGridX, aGridZ, ourVertexCount, rand() % 1000000)
 		, myModel(GenerateTerrain(aLoader))
-		, myX(static_cast<float>(aGridX * mySize))
-		, myZ(static_cast<float>(aGridZ * mySize))
+		, myX(aGridX * ourSize)
+		, myZ(aGridZ * ourSize)
 	{
 	}
 
@@ -24,11 +24,11 @@ public:
 		float terrainX = aWorldX - myX;
 		float terrainZ = aWorldZ - myZ;
 
-		float gridSquareSize = static_cast<float>(Terrain::mySize) / static_cast<float>(myVertexCount - 1);
+		float gridSquareSize = ourSize / (ourVertexCount - 1);
 		int gridX = static_cast<int>(floor(terrainX / gridSquareSize));
 		int gridZ = static_cast<int>(floor(terrainZ / gridSquareSize));
 
-		if (gridX >= (myVertexCount - 1) || gridZ >= (myVertexCount - 1) || gridX < 0 || gridZ < 0)
+		if (gridX >= (ourVertexCount - 1) || gridZ >= (ourVertexCount - 1) || gridX < 0 || gridZ < 0)
 		{
 			ErrorReturn("Position not on terrain!");
 		}
@@ -60,34 +60,34 @@ public:
 	{
 		double startTime = glfwGetTime();
 		
-		int count = myVertexCount * myVertexCount;
+		int count = ourVertexCount * ourVertexCount;
 		vector<vec3> vertices(count);
 		vector<vec3> normals(count);
 		vector<vec2> textureCoords(count);
-		vector<int> indices(6 * (myVertexCount - 1)*(myVertexCount - 1));
+		vector<int> indices(6 * (ourVertexCount - 1)*(ourVertexCount - 1));
 
 		int vertexPointer = 0;
-		for (int i = 0; i<myVertexCount; i++) 
+		for (int i = 0; i < ourVertexCount; i++) 
 		{
-			for (int j = 0; j<myVertexCount; j++) 
+			for (int j = 0; j < ourVertexCount; j++) 
 			{
-				vertices[vertexPointer].x = (float)j / ((float)myVertexCount - 1) * mySize;
+				vertices[vertexPointer].x = (float)j / ((float)ourVertexCount - 1) * ourSize;
 				vertices[vertexPointer].y = GetHeight(j, i, myGenerator);
-				vertices[vertexPointer].z = (float)i / ((float)myVertexCount - 1) * mySize;
+				vertices[vertexPointer].z = (float)i / ((float)ourVertexCount - 1) * ourSize;
 				normals[vertexPointer] = GetNormal(j, i, myGenerator);
-				textureCoords[vertexPointer].x = (float)j / ((float)myVertexCount - 1);
-				textureCoords[vertexPointer].y = (float)i / ((float)myVertexCount - 1);
+				textureCoords[vertexPointer].x = (float)j / ((float)ourVertexCount - 1);
+				textureCoords[vertexPointer].y = (float)i / ((float)ourVertexCount - 1);
 				vertexPointer++;
 			}
 		}
 		int pointer = 0;
-		for (int gz = 0; gz<myVertexCount - 1; gz++) 
+		for (int gz = 0; gz < ourVertexCount - 1; gz++)
 		{
-			for (int gx = 0; gx<myVertexCount - 1; gx++) 
+			for (int gx = 0; gx < ourVertexCount - 1; gx++)
 			{
-				int topLeft = (gz*myVertexCount) + gx;
+				int topLeft = (gz*ourVertexCount) + gx;
 				int topRight = topLeft + 1;
-				int bottomLeft = ((gz + 1)*myVertexCount) + gx;
+				int bottomLeft = ((gz + 1)*ourVertexCount) + gx;
 				int bottomRight = bottomLeft + 1;
 				indices[pointer++] = topLeft;
 				indices[pointer++] = bottomLeft;
@@ -107,8 +107,8 @@ public:
 	TerrainTexturePack const& GetTextures() const { return myTextures; }
 	TerrainTexture const& GetBlendMap() const { return myBlendMap; }
 
-	static const int mySize = 800;
-	static const int myVertexCount = 128;
+	static constexpr float ourSize = 800.0f;
+	static const int ourVertexCount = 128;
 private:
 	vec3 GetNormal(int aX, int aZ, HeightsGenerator const& aGenerator) const
 	{

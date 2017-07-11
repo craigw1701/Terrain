@@ -247,13 +247,29 @@ int main()
 	double currentFrame = glfwGetTime();
 	double lastFrame = currentFrame;
 	do {
+		Input::UpdateInput();
 		currentFrame = glfwGetTime();
 		GameInfo::ourDeltaTime = (float)(currentFrame - lastFrame);
+
+		if (Input::IsDown(GLFW_KEY_LEFT_SHIFT))
+			GameInfo::ourDeltaTime *= 10.0f;
+
 		lastFrame = currentFrame;
 
-		Input::UpdateInput();
 		camera.Update(terrainManager);
 		DebugControls();
+		{
+			static float time = 0;
+			time -= GameInfo::ourDeltaTime / 20.0f;
+			light.myPosition.y = sin(time) * 2000.0f;
+			light.myPosition.x = cos(time) * 2000.0f;	
+
+			GameInfo::ourDayNightTime = 1-(pow(1-dot(normalize(light.myPosition), vec3(0, 1, 0)), 3));
+			float mix1 = clamp(GameInfo::ourDayNightTime, 0.0f, 1.0f);
+			float mix2 = clamp(-GameInfo::ourDayNightTime, 0.0f, 1.0f);
+			light.myColour = mix(vec3(0.992, 0.369, 0.325), vec3(0.988, 0.831, 0.25), mix1);
+			light.myColour = mix(light.myColour, vec3(0.0, 0.02, 0.1), mix2);
+		}
 
 		player.Update(terrainManager);
 

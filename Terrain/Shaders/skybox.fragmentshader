@@ -1,12 +1,19 @@
 #version 400 core
 
 in vec3 textureCoords;
+//in float sunDistance;
 out vec4 out_Color;
 
 uniform samplerCube cubeMap;
+uniform samplerCube cubeMapNight;
+uniform float dayNightTime;
+uniform vec3 lightColour;
 
 void main(void)
 {
-    out_Color = mix(texture(cubeMap, textureCoords), vec4(0.988, 0.831, 0.25, 1), 0.5);
-	
+    out_Color = mix(
+	mix(texture(cubeMapNight, textureCoords), texture(cubeMap, textureCoords), clamp(dayNightTime, 0.0, 1.0)),
+	vec4(lightColour, 1), 0.5);
+
+	//out_Color = mix(out_Color, vec4(0,1,0,1), clamp(sunDistance / 10000.0f, 0.0f, 1.0f));
 }

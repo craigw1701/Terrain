@@ -24,10 +24,20 @@ public:
 		LoadMatrix(myLocationViewMatrix, matrix);
 	}
 
+	void LoadLight(Light const& aSun)
+	{
+		LoadVector(myLocationLightColour, aSun.myColour);
+		LoadVector(myLocationLightPosition, aSun.myPosition);
+		LoadFloat(myLocationDayNightTime, GameInfo::ourDayNightTime);
+	}
+
 	void GetAllUniformLocations() override
 	{
 		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
 		myLocationViewMatrix = GetUniformLocation("viewMatrix");
+		myLocationLightColour = GetUniformLocation("lightColour");
+		myLocationLightPosition = GetUniformLocation("lightPosition");
+		myLocationDayNightTime = GetUniformLocation("dayNightTime");
 	}
 
 	void BindAttributes() override
@@ -38,5 +48,8 @@ public:
 private:
 	GLuint myLocationProjectionMatrix;
 	GLuint myLocationViewMatrix;
+	GLuint myLocationLightColour;
+	GLuint myLocationDayNightTime;
+	GLuint myLocationLightPosition;
 
 };

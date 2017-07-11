@@ -3,13 +3,19 @@
 layout(location = 0) in vec3 position;
 
 out vec3 textureCoords;
+//out float sunDistance;
 
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform vec3 lightPosition;
 
 void main(void) 
 {
-	gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0);
+	vec4 worldPosition = viewMatrix * vec4(position, 1.0);
+	gl_Position = projectionMatrix * worldPosition;
+	vec4 sunPos = viewMatrix * vec4(lightPosition, 1.0);
+	//sunDistance = length(worldPosition - sunPos);
+
 	textureCoords = position;
 
 }

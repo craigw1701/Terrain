@@ -55,6 +55,7 @@ public:
 		glUseProgram(0);
 		GameInfo::ourCurrentShaderPass = "";
 	}
+	GLuint myProgramID;
 
 protected:
 	virtual void GetAllUniformLocations() = 0;
@@ -102,7 +103,6 @@ protected:
 	}
 
 private:
-	GLuint myProgramID;
 	GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path) const
 	{
 

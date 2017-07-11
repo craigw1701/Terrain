@@ -27,8 +27,8 @@ public:
 
 	float GetHeight(float aWorldX, float aWorldZ) const
 	{
-		int vertexCount = (Terrain::myVertexCount - 1);
-		float gridSquareSize = static_cast<float>(Terrain::mySize) / static_cast<float>(vertexCount);
+		int vertexCount = (Terrain::ourVertexCount - 1);
+		float gridSquareSize = Terrain::ourSize / vertexCount;
 
 		for (Terrain const& terrain : myTerrains)
 		{

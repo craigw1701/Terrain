@@ -92,7 +92,7 @@ private:
 		
 		if (GameInfo::ourDrawSkybox)
 		{
-			mySkyboxRenderer.Render(aCamera);
+			mySkyboxRenderer.Render(aCamera, aSun);
 		}
 		
 		if (GameInfo::ourDrawEntities)
