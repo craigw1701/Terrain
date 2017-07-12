@@ -13,6 +13,7 @@ namespace GameInfo
 	int ourScreenWidth = 1024;
 	int ourScreenHeight = 768;
 	float ourWaterHeight = -20;
+	float ourDayNightSpeed = 0.0f;
 	GLFWwindow* ourWindow = nullptr;
 	bool ourWireframeMode = false;
 	bool ourDrawEntities = true;

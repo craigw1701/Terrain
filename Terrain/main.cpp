@@ -251,16 +251,14 @@ int main()
 		currentFrame = glfwGetTime();
 		GameInfo::ourDeltaTime = (float)(currentFrame - lastFrame);
 
-		if (Input::IsDown(GLFW_KEY_LEFT_SHIFT))
-			GameInfo::ourDeltaTime *= 10.0f;
-
 		lastFrame = currentFrame;
 
 		camera.Update(terrainManager);
 		DebugControls();
 		{
-			static float time = 0;
-			time -= GameInfo::ourDeltaTime / 20.0f;
+			static float time = -3.6;
+			float speed = (Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 10.0f : 1.0f) * GameInfo::ourDayNightSpeed;
+			time -= GameInfo::ourDeltaTime / 20.0f * speed;
 			light.myPosition.y = sin(time) * 2000.0f;
 			light.myPosition.x = cos(time) * 2000.0f;	
 
