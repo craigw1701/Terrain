@@ -20,32 +20,10 @@ public:
 		std::srand(1);
 		mySeed = rand() % 1000000;
 		// TODO:CW spin up threads to generate 
-
-		static bool t = false;
-		if (t)
-		{
-			thread t1{ &TerrainManager::AddTerrain, this, -1, -1 };
-			thread t2{ &TerrainManager::AddTerrain, this,  0, -1 };
-			thread t3{ &TerrainManager::AddTerrain, this,  0,  0 };
-			thread t4{ &TerrainManager::AddTerrain, this, -1,  0 };
-
-			t1.join();
-			t2.join();
-			t3.join();
-			t4.join();
-		}
-		else
-		{
-			AddTerrain(-1, -1);
-			AddTerrain(0, -1);
-			AddTerrain(0, 0);
-			AddTerrain(-1, 0);
-		}
-
-		for (Terrain* terrain : myTerrains)
-		{
-			terrain->Finalize(aLoader);
-		}
+		AddTerrain(-1, -1);
+		AddTerrain(0, -1);
+		AddTerrain(0, 0);
+		AddTerrain(-1, 0);		
 	}
 
 	~TerrainManager()

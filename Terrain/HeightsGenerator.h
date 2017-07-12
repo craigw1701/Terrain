@@ -28,7 +28,9 @@ public:
 		: myXOffset((aGridX + 2) * (aVertexCount - 1))
 		, myZOffset((aGridZ + 2) * (aVertexCount-1))
 		, mySeed(aSeed)
-	{
+	{		// TODO:CW HACK FOR NOW
+		std::srand(1);
+		mySeed = rand() % 1000000;
 	}
 
 	float GenerateHeight(int aX, int aZ) const
