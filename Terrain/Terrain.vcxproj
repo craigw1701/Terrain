@@ -154,56 +154,56 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lodepng.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="texture.cpp" />
+    <ClCompile Include="Code\lodepng.cpp" />
+    <ClCompile Include="Code\main.cpp" />
+    <ClCompile Include="Code\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityManager.h" />
-    <ClInclude Include="GameInfo.h" />
-    <ClInclude Include="GUIRenderer.h" />
-    <ClInclude Include="GUIShader.h" />
-    <ClInclude Include="GUITexture.h" />
-    <ClInclude Include="HeightsGenerator.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Loader.h" />
-    <ClInclude Include="lodepng.h" />
-    <ClInclude Include="MasterRenderer.h" />
-    <ClInclude Include="Maths.h" />
-    <ClInclude Include="ModelTexture.h" />
-    <ClInclude Include="NonCopyable.h" />
-    <ClInclude Include="ObjLoader.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="RawModel.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="ShaderBase.h" />
-    <ClInclude Include="SkyboxRenderer.h" />
-    <ClInclude Include="SkyboxShader.h" />
-    <ClInclude Include="StaticShader.h" />
-    <ClInclude Include="Terrain.h" />
-    <ClInclude Include="TerrainManager.h" />
-    <ClInclude Include="TerrainRenderer.h" />
-    <ClInclude Include="TerrainShader.h" />
-    <ClInclude Include="TerrainTexture.h" />
-    <ClInclude Include="texture.h" />
-    <ClInclude Include="TexturedModel.h" />
-    <ClInclude Include="WaterFrameBuffer.h" />
-    <ClInclude Include="WaterRenderer.h" />
-    <ClInclude Include="WaterShader.h" />
-    <ClInclude Include="WaterTile.h" />
+    <ClInclude Include="Code\Camera.h" />
+    <ClInclude Include="Code\Entity.h" />
+    <ClInclude Include="Code\EntityManager.h" />
+    <ClInclude Include="Code\GameInfo.h" />
+    <ClInclude Include="Code\GL.h" />
+    <ClInclude Include="Code\GUIRenderer.h" />
+    <ClInclude Include="Code\GUIShader.h" />
+    <ClInclude Include="Code\GUITexture.h" />
+    <ClInclude Include="Code\HeightsGenerator.h" />
+    <ClInclude Include="Code\Input.h" />
+    <ClInclude Include="Code\Loader.h" />
+    <ClInclude Include="Code\lodepng.h" />
+    <ClInclude Include="Code\MasterRenderer.h" />
+    <ClInclude Include="Code\Maths.h" />
+    <ClInclude Include="Code\ModelTexture.h" />
+    <ClInclude Include="Code\NonCopyable.h" />
+    <ClInclude Include="Code\ObjLoader.h" />
+    <ClInclude Include="Code\Player.h" />
+    <ClInclude Include="Code\RawModel.h" />
+    <ClInclude Include="Code\Renderer.h" />
+    <ClInclude Include="Code\ShaderBase.h" />
+    <ClInclude Include="Code\SkyboxRenderer.h" />
+    <ClInclude Include="Code\SkyboxShader.h" />
+    <ClInclude Include="Code\StaticShader.h" />
+    <ClInclude Include="Code\Terrain.h" />
+    <ClInclude Include="Code\TerrainManager.h" />
+    <ClInclude Include="Code\TerrainRenderer.h" />
+    <ClInclude Include="Code\TerrainShader.h" />
+    <ClInclude Include="Code\TerrainTexture.h" />
+    <ClInclude Include="Code\texture.h" />
+    <ClInclude Include="Code\TexturedModel.h" />
+    <ClInclude Include="Code\WaterFrameBuffer.h" />
+    <ClInclude Include="Code\WaterRenderer.h" />
+    <ClInclude Include="Code\WaterShader.h" />
+    <ClInclude Include="Code\WaterTile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\gui.fragmentshader" />
+    <None Include="Shaders\gui.vertexshader" />
     <None Include="Shaders\skybox.fragmentshader" />
     <None Include="Shaders\skybox.vertexshader" />
     <None Include="Shaders\staticshader.fragmentshader" />
-    <None Include="Shaders\gui.fragmentshader" />
-    <None Include="Shaders\gui.vertexshader" />
+    <None Include="Shaders\staticshader.vertexshader" />
     <None Include="Shaders\terrain.fragmentshader" />
     <None Include="Shaders\terrain.vertexshader" />
-    <None Include="Shaders\staticshader.vertexshader" />
     <None Include="Shaders\watershader.fragmentshader" />
     <None Include="Shaders\watershader.vertexshader" />
   </ItemGroup>

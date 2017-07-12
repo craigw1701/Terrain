@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -40,137 +36,150 @@
     <Filter Include="Water">
       <UniqueIdentifier>{4068c4b9-e7c4-47dc-b654-8ea71fda39a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{79473598-d473-45cb-a1a7-58c34b252771}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Code\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
+    <ClCompile Include="Code\texture.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
-    <ClCompile Include="lodepng.cpp">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="Code\lodepng.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Loader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Code\Entity.h">
+      <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderBase.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Code\EntityManager.h">
+      <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="StaticShader.h">
+    <ClInclude Include="Code\Player.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GUITexture.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GUIRenderer.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GUIShader.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Camera.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\RawModel.h">
+      <Filter>Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TexturedModel.h">
+      <Filter>Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\MasterRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Renderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ShaderBase.h">
       <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="RawModel.h">
-      <Filter>Models</Filter>
+    <ClInclude Include="Code\StaticShader.h">
+      <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="TexturedModel.h">
-      <Filter>Models</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Maths.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjLoader.h">
-      <Filter>Models</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="MasterRenderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Terrain.h">
-      <Filter>Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainRenderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="lodepng.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainTexture.h">
-      <Filter>Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="HeightsGenerator.h">
-      <Filter>Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="GUITexture.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUIRenderer.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="GUIShader.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyboxShader.h">
+    <ClInclude Include="Code\SkyboxRenderer.h">
       <Filter>Skybox</Filter>
     </ClInclude>
-    <ClInclude Include="SkyboxRenderer.h">
-      <Filter>Rendering</Filter>
+    <ClInclude Include="Code\SkyboxShader.h">
+      <Filter>Skybox</Filter>
     </ClInclude>
-    <ClInclude Include="WaterRenderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="WaterTile.h">
-      <Filter>Water</Filter>
-    </ClInclude>
-    <ClInclude Include="WaterFrameBuffer.h">
-      <Filter>Water</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainShader.h">
+    <ClInclude Include="Code\HeightsGenerator.h">
       <Filter>Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="WaterShader.h">
-      <Filter>Water</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainManager.h">
+    <ClInclude Include="Code\Terrain.h">
       <Filter>Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="NonCopyable.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Code\TerrainManager.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TerrainRenderer.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TerrainShader.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TerrainTexture.h">
+      <Filter>Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\texture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ModelTexture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\WaterFrameBuffer.h">
+      <Filter>Water</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\WaterRenderer.h">
+      <Filter>Water</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\WaterShader.h">
+      <Filter>Water</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\WaterTile.h">
+      <Filter>Water</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\ObjLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GameInfo.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GL.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Loader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\lodepng.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Maths.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\NonCopyable.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\staticshader.vertexshader">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\gui.fragmentshader">
+      <Filter>GUI</Filter>
     </None>
-    <None Include="Shaders\staticshader.fragmentshader">
-      <Filter>Shaders</Filter>
+    <None Include="Shaders\gui.vertexshader">
+      <Filter>GUI</Filter>
+    </None>
+    <None Include="Shaders\skybox.vertexshader">
+      <Filter>Skybox</Filter>
     </None>
     <None Include="Shaders\skybox.fragmentshader">
       <Filter>Skybox</Filter>
     </None>
-    <None Include="Shaders\skybox.vertexshader">
-      <Filter>Skybox</Filter>
+    <None Include="Shaders\staticshader.vertexshader">
+      <Filter>Entities</Filter>
+    </None>
+    <None Include="Shaders\staticshader.fragmentshader">
+      <Filter>Entities</Filter>
     </None>
     <None Include="Shaders\terrain.fragmentshader">
       <Filter>Terrain</Filter>
@@ -183,12 +192,6 @@
     </None>
     <None Include="Shaders\watershader.fragmentshader">
       <Filter>Water</Filter>
-    </None>
-    <None Include="Shaders\gui.vertexshader">
-      <Filter>GUI</Filter>
-    </None>
-    <None Include="Shaders\gui.fragmentshader">
-      <Filter>GUI</Filter>
     </None>
   </ItemGroup>
 </Project>
