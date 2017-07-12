@@ -14,6 +14,7 @@ void DisableCulling()
 
 
 #include "Entity.h"
+#include "NonCopyable.h"
 #include "Renderer.h"
 #include "SkyboxRenderer.h"
 #include "StaticShader.h"
@@ -24,7 +25,7 @@ void DisableCulling()
 #include <map>
 using namespace std;
 
-class MasterRenderer
+class MasterRenderer : public NonCopyable
 {
 public:
 	MasterRenderer(Loader& aLoader)
@@ -53,11 +54,11 @@ public:
 		return myProjectionMatrix; 
 	}
 
-	void RenderScene(vector<Entity> const& someEntities, vector<Terrain> const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
+	void RenderScene(vector<Entity> const& someEntities, vector<Terrain*> const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
 	{
 		double startTime = glfwGetTime();
 
-		for (Terrain const& terrain : someTerrain)
+		for (Terrain const* terrain : someTerrain)
 			ProcessTerrain(terrain);
 
 		for (Entity const& entity : someEntities)
@@ -130,9 +131,9 @@ private:
 		glClearColor(0, 0, 0, 1);
 	}
 
-	void ProcessTerrain(Terrain const& aTerrain)
+	void ProcessTerrain(Terrain const* aTerrain)
 	{
-		myTerrains.push_back(&aTerrain);
+		myTerrains.push_back(aTerrain);
 	}
 
 private:

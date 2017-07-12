@@ -1,9 +1,10 @@
 #pragma once
+#include "NonCopyable.h"
 #include "ModelTexture.h"
 #include "RawModel.h"
 
 
-class TexturedModel
+class TexturedModel : public NonCopyable
 {
 public:
 	TexturedModel(RawModel& aRawModel, ModelTexture& aTexture)

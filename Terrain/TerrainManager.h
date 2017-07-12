@@ -1,12 +1,15 @@
 #pragma once
 
+#include "NonCopyable.h"
 #include "Loader.h"
 #include "Terrain.h"
 #include "TerrainTexture.h"
 
+#include <thread>
+#include <mutex>
 #include <vector>
 
-class TerrainManager
+class TerrainManager : public NonCopyable
 {
 public:
 	TerrainManager(Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap)
@@ -14,15 +17,50 @@ public:
 		, myTexturePack(aTexturePack)
 		, myBlendMap(aBlendMap)
 	{
-		AddTerrain(-1, -1);
-		AddTerrain(0, -1);
-		AddTerrain(0, 0);
-		AddTerrain(-1, 0);
+		std::srand(1);
+		mySeed = rand() % 1000000;
+		// TODO:CW spin up threads to generate 
+
+		static bool t = false;
+		if (t)
+		{
+			thread t1{ &TerrainManager::AddTerrain, this, -1, -1 };
+			thread t2{ &TerrainManager::AddTerrain, this,  0, -1 };
+			thread t3{ &TerrainManager::AddTerrain, this,  0,  0 };
+			thread t4{ &TerrainManager::AddTerrain, this, -1,  0 };
+
+			t1.join();
+			t2.join();
+			t3.join();
+			t4.join();
+		}
+		else
+		{
+			AddTerrain(-1, -1);
+			AddTerrain(0, -1);
+			AddTerrain(0, 0);
+			AddTerrain(-1, 0);
+		}
+
+		for (Terrain* terrain : myTerrains)
+		{
+			terrain->Finalize(aLoader);
+		}
+	}
+
+	~TerrainManager()
+	{
+		for (Terrain* terrain : myTerrains)
+		{
+			delete terrain;
+		}
 	}
 
 	void AddTerrain(int aGridX, int aGridZ)
 	{
-		myTerrains.push_back(Terrain(aGridX, aGridZ, myLoader, myTexturePack, myBlendMap));
+		Terrain* t = new Terrain(aGridX, aGridZ, myLoader, myTexturePack, myBlendMap, mySeed);
+		unique_lock<mutex> l{ myMutex };
+		myTerrains.push_back(t);
 	}
 
 	float GetHeight(float aWorldX, float aWorldZ) const
@@ -30,10 +68,10 @@ public:
 		int vertexCount = (Terrain::ourVertexCount - 1);
 		float gridSquareSize = Terrain::ourSize / vertexCount;
 
-		for (Terrain const& terrain : myTerrains)
+		for (Terrain const* terrain : myTerrains)
 		{
-			float terrainX = aWorldX - terrain.GetX();
-			float terrainZ = aWorldZ - terrain.GetZ();
+			float terrainX = aWorldX - terrain->GetX();
+			float terrainZ = aWorldZ - terrain->GetZ();
 
 			int gridX = static_cast<int>(floor(terrainX / gridSquareSize));
 			int gridZ = static_cast<int>(floor(terrainZ / gridSquareSize));
@@ -43,16 +81,19 @@ public:
 				continue;
 			}
 
-			return terrain.GetHeight(aWorldX, aWorldZ);
+			return terrain->GetHeight(aWorldX, aWorldZ);
 		}
 		//ErrorReturn("Failed to find position on any terrain");
 		return GameInfo::ourWaterHeight;
 	}
 
-	std::vector<Terrain> const& GetTerrains() const { return myTerrains; }
+	std::vector<Terrain*> const& GetTerrains() const { return myTerrains; }
 private:
 	Loader& myLoader;
 	TerrainTexturePack& myTexturePack;
 	TerrainTexture& myBlendMap;
-	std::vector<Terrain> myTerrains;
+	std::vector<Terrain*> myTerrains;
+	int mySeed;
+
+	mutex myMutex;
 };

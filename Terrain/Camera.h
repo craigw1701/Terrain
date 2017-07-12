@@ -14,7 +14,7 @@ using namespace glm;
 #include "Input.h"
 #include "Player.h"
 
-class Camera
+class Camera : public NonCopyable
 {
 public:
 	Camera(Player& aPlayer)

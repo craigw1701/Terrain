@@ -1,14 +1,14 @@
 #pragma once
 
 #include <vector>
-
+#include "NonCopyable.h"
 #include "ObjLoader.h"
 #include "RawModel.h"
 #include "texture.h"
 
 using namespace std;
 
-class Loader
+class Loader : public NonCopyable
 {
 public:
 	Loader()

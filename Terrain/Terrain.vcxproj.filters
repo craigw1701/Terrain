@@ -155,6 +155,9 @@
     <ClInclude Include="TerrainManager.h">
       <Filter>Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="NonCopyable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\staticshader.vertexshader">

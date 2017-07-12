@@ -168,6 +168,7 @@
     <ClInclude Include="MasterRenderer.h" />
     <ClInclude Include="Maths.h" />
     <ClInclude Include="ModelTexture.h" />
+    <ClInclude Include="NonCopyable.h" />
     <ClInclude Include="ObjLoader.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RawModel.h" />

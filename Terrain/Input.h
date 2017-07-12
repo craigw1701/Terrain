@@ -11,6 +11,7 @@
 using namespace glm;
 
 #include "GameInfo.h"
+#include "NonCopyable.h"
 
 static int locThisFrameKeys[GLFW_KEY_LAST + 1] = { 0 };
 static int locLastFrameKeys[GLFW_KEY_LAST + 1] = { 0 };
@@ -20,7 +21,7 @@ static int locThisFrameMouseButtons[GLFW_MOUSE_BUTTON_LAST + 1] = {0};
 static vec2 locThisFrameCursorPos;
 static vec2 locLastFrameCursorPos;
 
-class Input
+class Input : public NonCopyable
 {
 public:
 	static void Setup()

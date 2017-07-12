@@ -1,5 +1,6 @@
 #pragma once
 
+#include "NonCopyable.h"
 #include "Loader.h"
 #include "Maths.h"
 #include "RawModel.h"
@@ -8,7 +9,7 @@
 
 #define WAVE_SPEED 0.03f
 
-class WaterRenderer
+class WaterRenderer : public NonCopyable
 {
 public:
 	WaterRenderer(Loader& aLoader, WaterShader& aShader, WaterFrameBuffer& fbos)

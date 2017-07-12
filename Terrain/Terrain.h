@@ -1,22 +1,29 @@
 #pragma once
 
+#include "NonCopyable.h"
 #include "HeightsGenerator.h"
 #include "Loader.h"
 #include "Maths.h"
 #include "RawModel.h"
 #include "TerrainTexture.h"
 
-class Terrain
+class Terrain : public NonCopyable
 {
 public:
-	Terrain(int aGridX, int aGridZ, Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap)
+	Terrain(int aGridX, int aGridZ, Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap, int aSeed)
 		: myTextures(aTexturePack)
 		, myBlendMap(aBlendMap)
-		, myGenerator(aGridX, aGridZ, ourVertexCount, rand() % 1000000)
-		, myModel(GenerateTerrain(aLoader))
+		, myGenerator(aGridX, aGridZ, ourVertexCount, aSeed)
+		, myModel(-1, 0)
 		, myX(aGridX * ourSize)
 		, myZ(aGridZ * ourSize)
 	{
+		GenerateTerrain(aLoader);
+	}
+
+	void Finalize(Loader& aLoader)
+	{
+		myModel = aLoader.LoadToVAO(myVertices, myTextureCoords, myNormals, myIndices);
 	}
 
 	float GetHeight(float aWorldX, float aWorldZ) const
@@ -56,27 +63,27 @@ public:
 		return answer;
 	}
 	
-	RawModel GenerateTerrain(Loader& aLoader) 
+	void GenerateTerrain(Loader& aLoader) 
 	{
 		double startTime = glfwGetTime();
 		
 		int count = ourVertexCount * ourVertexCount;
-		vector<vec3> vertices(count);
-		vector<vec3> normals(count);
-		vector<vec2> textureCoords(count);
-		vector<int> indices(6 * (ourVertexCount - 1)*(ourVertexCount - 1));
+		myVertices.reserve(count);
+		myNormals.reserve(count);
+		myTextureCoords.reserve(count);
+		myIndices.reserve(6 * (ourVertexCount - 1)*(ourVertexCount - 1));
 
 		int vertexPointer = 0;
 		for (int i = 0; i < ourVertexCount; i++) 
 		{
 			for (int j = 0; j < ourVertexCount; j++) 
 			{
-				vertices[vertexPointer].x = (float)j / ((float)ourVertexCount - 1) * ourSize;
-				vertices[vertexPointer].y = GetHeight(j, i, myGenerator);
-				vertices[vertexPointer].z = (float)i / ((float)ourVertexCount - 1) * ourSize;
-				normals[vertexPointer] = GetNormal(j, i, myGenerator);
-				textureCoords[vertexPointer].x = (float)j / ((float)ourVertexCount - 1);
-				textureCoords[vertexPointer].y = (float)i / ((float)ourVertexCount - 1);
+				myVertices[vertexPointer].x = (float)j / ((float)ourVertexCount - 1) * ourSize;
+				myVertices[vertexPointer].y = GetHeight(j, i, myGenerator);
+				myVertices[vertexPointer].z = (float)i / ((float)ourVertexCount - 1) * ourSize;
+				myNormals[vertexPointer] = GetNormal(j, i, myGenerator);
+				myTextureCoords[vertexPointer].x = (float)j / ((float)ourVertexCount - 1);
+				myTextureCoords[vertexPointer].y = (float)i / ((float)ourVertexCount - 1);
 				vertexPointer++;
 			}
 		}
@@ -89,16 +96,15 @@ public:
 				int topRight = topLeft + 1;
 				int bottomLeft = ((gz + 1)*ourVertexCount) + gx;
 				int bottomRight = bottomLeft + 1;
-				indices[pointer++] = topLeft;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = topRight;
-				indices[pointer++] = topRight;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = bottomRight;
+				myIndices[pointer++] = topLeft;
+				myIndices[pointer++] = bottomLeft;
+				myIndices[pointer++] = topRight;
+				myIndices[pointer++] = topRight;
+				myIndices[pointer++] = bottomLeft;
+				myIndices[pointer++] = bottomRight;
 			}
 		}
 		printf("Terrain Generation Time: %f\n", glfwGetTime() - startTime);
-		return aLoader.LoadToVAO(vertices, textureCoords, normals, indices);
 	}
 
 	float GetX() const { return myX; }
@@ -133,4 +139,9 @@ private:
 	RawModel myModel;
 	TerrainTexturePack& myTextures;
 	TerrainTexture& myBlendMap;
+
+	vector<vec3> myVertices;
+	vector<vec3> myNormals;
+	vector<vec2> myTextureCoords;
+	vector<int> myIndices;
 };

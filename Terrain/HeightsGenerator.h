@@ -3,6 +3,8 @@
 #include <random>
 #include <map>
 
+#include "NonCopyable.h"
+
 #define AMPLITUTE 70.0f
 
 static unsigned int g_seed;
@@ -19,7 +21,7 @@ inline int fast_rand(void) {
 	return (g_seed >> 16) & 0x7FFF;
 }
 
-class HeightsGenerator
+class HeightsGenerator : public NonCopyable
 {
 public:
 	HeightsGenerator(int aGridX, int aGridZ, int aVertexCount, int aSeed)
@@ -27,9 +29,6 @@ public:
 		, myZOffset((aGridZ + 2) * (aVertexCount-1))
 		, mySeed(aSeed)
 	{
-		// TODO:CW HACK FOR NOW
-		std::srand(1);
-		mySeed = rand() % 1000000;
 	}
 
 	float GenerateHeight(int aX, int aZ) const

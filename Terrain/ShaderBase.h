@@ -18,7 +18,7 @@ using namespace std;
 #include "glm/glm.hpp"
 using namespace glm;
 
-class ShaderBase
+class ShaderBase : public NonCopyable
 {
 	bool myHasSetup = false;
 	std::string myShaderPath = "Shaders/";
