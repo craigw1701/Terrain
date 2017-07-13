@@ -17,10 +17,11 @@ public:
 		, myTexturePack(aTexturePack)
 		, myBlendMap(aBlendMap)
 	{
-		std::srand(1);
-		mySeed = rand() % 1000000;
-		// TODO:CW spin up threads to generate 
+#ifdef _DEBUG
+		const int numTiles = 1;
+#else
 		const int numTiles = 4;
+#endif
 		for (int i = -numTiles; i < numTiles; i++)
 		{
 			for (int j = -numTiles; j < numTiles; j++)
@@ -44,7 +45,10 @@ public:
 	{
 		double startTime = glfwGetTime();
 		mySeed = rand() % 1000000;
-		printf("Starting %s Terrain Generation with seed: %d\n", GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded", mySeed);
+		printf("Starting %s Terrain Generation with seed: %d %s caching\n", 
+			GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded", 
+			mySeed,
+			GameInfo::ourGenerateTerrainCaching ? "using" : "not using");
 		vector<std::thread> threads;
 		for (Terrain* terrain : myTerrains)
 		{
@@ -54,12 +58,9 @@ public:
 				terrain->GenerateTerrain(mySeed);
 		}
 
-
-		float time = glfwGetTime();
 		for(std::thread& t : threads)
 			t.join();
-		printf("Theads finished in: %f\n", glfwGetTime() - time);
-
+		
 		for (Terrain* terrain : myTerrains)
 		{
 			terrain->Finalize(myLoader);

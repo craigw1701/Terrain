@@ -53,6 +53,10 @@ void DebugControls()
 	{
 		GameInfo::ourGenerateTerrainThreaded = !GameInfo::ourGenerateTerrainThreaded;
 	}
+	if (Input::IsPressed(GLFW_KEY_Y))
+	{
+		GameInfo::ourGenerateTerrainCaching = !GameInfo::ourGenerateTerrainCaching;
+	}
 	if (Input::IsPressed(GLFW_KEY_M))
 	{
 		std::cout.imbue(std::locale(""));
@@ -252,7 +256,7 @@ int main()
 		camera.Update(terrainManager);
 		DebugControls();
 		{
-			static float time = -3.6;
+			static float time = -3.6f;
 			float speed = (Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 10.0f : 1.0f) * GameInfo::ourDayNightSpeed;
 			time -= GameInfo::ourDeltaTime / 20.0f * speed;
 

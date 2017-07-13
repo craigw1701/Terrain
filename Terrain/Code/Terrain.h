@@ -118,11 +118,12 @@ public:
 		//printf("Terrain Generation Time: %f\n", glfwGetTime() - startTime);
 	}
 
+	// Contains code that can only be run single threaded
 	void Finalize(Loader& aLoader)
 	{
 		if (myModel.myVertexID != -1)
 		{
-			aLoader.UpdateVertexData(myVertices, myModel);
+			aLoader.UpdateVertexData(myVertices, myTextureCoords, myNormals, myModel);
 		}
 		else
 		{
@@ -152,7 +153,7 @@ private:
 
 	float GetHeight(int aX, int aZ, HeightsGenerator const& aGenerator) const
 	{
-		return aGenerator.GenerateHeight(aX, aZ);
+		return static_cast<float>(aGenerator.GenerateHeight(aX, aZ));
 	}
 
 private:

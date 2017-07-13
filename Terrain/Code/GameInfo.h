@@ -22,6 +22,12 @@ namespace GameInfo
 	bool ourDrawSkybox = true;
 	bool ourFlyCamera = false;	
 	bool ourGenerateTerrainThreaded = true;
+#ifdef _DEBUG
+	bool ourGenerateTerrainCaching = false;
+#else
+	bool ourGenerateTerrainCaching = true;
+#endif
+
 	vec3 ourPlayerSpawnPos(-100, 0, -100);
 
 	std::string ourCurrentRenderPass = "Main";
