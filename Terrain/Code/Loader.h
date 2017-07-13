@@ -20,12 +20,12 @@ public:
 	{
 		GLuint vaoID = CreateVAO();
 		BindIndicesBuffer(someIndices);
-		StoreDataInAttributeList(0, 3, somePositions);
+		GLuint vertexID = StoreDataInAttributeList(0, 3, somePositions);
 		StoreDataInAttributeList(1, 2, someUVs);
 		StoreDataInAttributeList(2, 3, someNormals);
 		UnbindVAO();
 
-		return RawModel(vaoID, someIndices.size());
+		return RawModel(vaoID, someIndices.size(), vertexID);
 	}
 
 	RawModel LoadToVAO(vector<vec2> somePositions)
@@ -142,6 +142,16 @@ public:
 		return true;
 	}
 
+	void UpdateVertexData(vector<vec3> someData, RawModel& aModel)
+	{
+		glBindVertexArray(aModel.GetVAOID());
+		glBindBuffer(GL_ARRAY_BUFFER, aModel.myVertexID);
+		glBufferData(GL_ARRAY_BUFFER, someData.size() * sizeof(vec3), &someData[0], GL_STREAM_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		UnbindVAO();
+	}
+
 private:
 	vector<GLuint> myVAOs;
 	vector<GLuint> myVBOs;
@@ -179,15 +189,16 @@ private:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void StoreDataInAttributeList(int anAttributeNumber, int aSize, vector<vec3> someData)
+	GLuint StoreDataInAttributeList(int anAttributeNumber, int aSize, vector<vec3> someData)
 	{
 		GLuint vboID;
 		glGenBuffers(1, &vboID);
 		myVBOs.push_back(vboID);
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, someData.size() * sizeof(vec3), &someData[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, someData.size() * sizeof(vec3), &someData[0], GL_STREAM_DRAW);
 		glVertexAttribPointer(anAttributeNumber, aSize, GL_FLOAT, false, 0, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		return vboID;
 	}
 
 	void UnbindVAO()

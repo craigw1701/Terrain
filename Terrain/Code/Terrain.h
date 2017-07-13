@@ -18,7 +18,6 @@ public:
 		, myX(aGridX * ourSize)
 		, myZ(aGridZ * ourSize)
 	{
-		GenerateTerrain(aLoader);
 	}
 
 	float GetHeight(float aWorldX, float aWorldZ) const
@@ -39,68 +38,96 @@ public:
 		float zCoord = fmod(terrainZ, gridSquareSize) / gridSquareSize;
 
 		float answer;
-		if (xCoord <= (1 - zCoord)) 
+		if (xCoord <= (1 - zCoord))
 		{
 			answer = BarryCentric(
 				vec3(0, GetHeight(gridX, gridZ, myGenerator), 0),
-				vec3(1, GetHeight(gridX+1, gridZ, myGenerator), 0),
-				vec3(0, GetHeight(gridX, gridZ+1, myGenerator), 1),
+				vec3(1, GetHeight(gridX + 1, gridZ, myGenerator), 0),
+				vec3(0, GetHeight(gridX, gridZ + 1, myGenerator), 1),
 				vec2(xCoord, zCoord));
 		}
 		else {
 			answer = BarryCentric(
-				vec3(1, GetHeight(gridX+1, gridZ, myGenerator), 0),
-				vec3(1, GetHeight(gridX+1, gridZ+1, myGenerator), 1),
-				vec3(0, GetHeight(gridX, gridZ+1, myGenerator), 1),
+				vec3(1, GetHeight(gridX + 1, gridZ, myGenerator), 0),
+				vec3(1, GetHeight(gridX + 1, gridZ + 1, myGenerator), 1),
+				vec3(0, GetHeight(gridX, gridZ + 1, myGenerator), 1),
 				vec2(xCoord, zCoord));
 		}
 
 		return answer;
 	}
-	
-	void GenerateTerrain(Loader& aLoader) 
-	{
-		double startTime = glfwGetTime();
-		
-		int count = ourVertexCount * ourVertexCount;
-		vector<vec3> vertices(count);
-		vector<vec3> normals(count);
-		vector<vec2> textureCoords(count);
-		vector<int> indices(6 * (ourVertexCount - 1)*(ourVertexCount - 1));
 
-		int vertexPointer = 0;
-		for (int i = 0; i < ourVertexCount; i++) 
+	void GenerateTerrain(int aSeed)
+	{
+		myGenerator.Seed(aSeed);
+		double startTime = glfwGetTime();
+
+		if (myModel.myVertexID != -1)
 		{
-			for (int j = 0; j < ourVertexCount; j++) 
+			int vertexPointer = 0;
+			for (int i = 0; i < ourVertexCount; i++)
 			{
-				vertices[vertexPointer].x = (float)j / ((float)ourVertexCount - 1) * ourSize;
-				vertices[vertexPointer].y = GetHeight(j, i, myGenerator);
-				vertices[vertexPointer].z = (float)i / ((float)ourVertexCount - 1) * ourSize;
-				normals[vertexPointer] = GetNormal(j, i, myGenerator);
-				textureCoords[vertexPointer].x = (float)j / ((float)ourVertexCount - 1);
-				textureCoords[vertexPointer].y = (float)i / ((float)ourVertexCount - 1);
-				vertexPointer++;
+				for (int j = 0; j < ourVertexCount; j++)
+				{
+					myVertices[vertexPointer].y = GetHeight(j, i, myGenerator);
+					myNormals[vertexPointer] = GetNormal(j, i, myGenerator);
+					vertexPointer++;
+				}
 			}
 		}
-		int pointer = 0;
-		for (int gz = 0; gz < ourVertexCount - 1; gz++)
+		else
 		{
-			for (int gx = 0; gx < ourVertexCount - 1; gx++)
+			int count = ourVertexCount * ourVertexCount;
+			myVertices.resize(count);
+			myNormals.resize(count);
+			myTextureCoords.resize(count);
+			myIndices.resize(6 * (ourVertexCount - 1)*(ourVertexCount - 1));
+
+			int vertexPointer = 0;
+			for (int i = 0; i < ourVertexCount; i++)
 			{
-				int topLeft = (gz*ourVertexCount) + gx;
-				int topRight = topLeft + 1;
-				int bottomLeft = ((gz + 1)*ourVertexCount) + gx;
-				int bottomRight = bottomLeft + 1;
-				indices[pointer++] = topLeft;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = topRight;
-				indices[pointer++] = topRight;
-				indices[pointer++] = bottomLeft;
-				indices[pointer++] = bottomRight;
+				for (int j = 0; j < ourVertexCount; j++)
+				{
+					myVertices[vertexPointer].x = (float)j / ((float)ourVertexCount - 1) * ourSize;
+					myVertices[vertexPointer].y = GetHeight(j, i, myGenerator);
+					myVertices[vertexPointer].z = (float)i / ((float)ourVertexCount - 1) * ourSize;
+					myNormals[vertexPointer] = GetNormal(j, i, myGenerator);
+					myTextureCoords[vertexPointer].x = (float)j / ((float)ourVertexCount - 1);
+					myTextureCoords[vertexPointer].y = (float)i / ((float)ourVertexCount - 1);
+					vertexPointer++;
+				}
+			}
+			int pointer = 0;
+			for (int gz = 0; gz < ourVertexCount - 1; gz++)
+			{
+				for (int gx = 0; gx < ourVertexCount - 1; gx++)
+				{
+					int topLeft = (gz*ourVertexCount) + gx;
+					int topRight = topLeft + 1;
+					int bottomLeft = ((gz + 1)*ourVertexCount) + gx;
+					int bottomRight = bottomLeft + 1;
+					myIndices[pointer++] = topLeft;
+					myIndices[pointer++] = bottomLeft;
+					myIndices[pointer++] = topRight;
+					myIndices[pointer++] = topRight;
+					myIndices[pointer++] = bottomLeft;
+					myIndices[pointer++] = bottomRight;
+				}
 			}
 		}
-		printf("Terrain Generation Time: %f\n", glfwGetTime() - startTime);
-		myModel = aLoader.LoadToVAO(vertices, textureCoords, normals, indices);
+		//printf("Terrain Generation Time: %f\n", glfwGetTime() - startTime);
+	}
+
+	void Finalize(Loader& aLoader)
+	{
+		if (myModel.myVertexID != -1)
+		{
+			aLoader.UpdateVertexData(myVertices, myModel);
+		}
+		else
+		{
+			myModel = aLoader.LoadToVAO(myVertices, myTextureCoords, myNormals, myIndices);
+		}
 	}
 
 	float GetX() const { return myX; }
@@ -135,4 +162,9 @@ private:
 	RawModel myModel;
 	TerrainTexturePack& myTextures;
 	TerrainTexture& myBlendMap;
+
+	vector<vec3> myVertices;
+	vector<vec3> myNormals;
+	vector<vec2> myTextureCoords;
+	vector<int> myIndices;
 };

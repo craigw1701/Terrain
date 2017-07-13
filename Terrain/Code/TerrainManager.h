@@ -20,13 +20,16 @@ public:
 		std::srand(1);
 		mySeed = rand() % 1000000;
 		// TODO:CW spin up threads to generate 
-		for (int i = -2; i < 2; i++)
+		const int numTiles = 4;
+		for (int i = -numTiles; i < numTiles; i++)
 		{
-			for (int j = -2; j < 2; j++)
+			for (int j = -numTiles; j < numTiles; j++)
 			{
 				AddTerrain(i, j);
 			}
 		}
+
+		Regenerate();
 	}
 
 	~TerrainManager()
@@ -35,6 +38,36 @@ public:
 		{
 			delete terrain;
 		}
+	}
+
+	void Regenerate()
+	{
+		double startTime = glfwGetTime();
+		mySeed = rand() % 1000000;
+		printf("Starting %s Terrain Generation with seed: %d\n", GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded", mySeed);
+		vector<std::thread> threads;
+		for (Terrain* terrain : myTerrains)
+		{
+			if(GameInfo::ourGenerateTerrainThreaded)
+				threads.push_back(std::thread(&Terrain::GenerateTerrain, terrain, mySeed));
+			else
+				terrain->GenerateTerrain(mySeed);
+		}
+
+
+		float time = glfwGetTime();
+		for(std::thread& t : threads)
+			t.join();
+		printf("Theads finished in: %f\n", glfwGetTime() - time);
+
+		for (Terrain* terrain : myTerrains)
+		{
+			terrain->Finalize(myLoader);
+		}
+		printf("-----------------------------------\n");
+		printf("Terrain Generation Finished in Time: %f\n", glfwGetTime() - startTime);
+		printf("-----------------------------------\n");
+
 	}
 
 	void AddTerrain(int aGridX, int aGridZ)

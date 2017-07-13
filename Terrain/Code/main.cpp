@@ -49,6 +49,10 @@ void DebugControls()
 	{
 		GameInfo::ourFlyCamera = !GameInfo::ourFlyCamera;
 	}
+	if (Input::IsPressed(GLFW_KEY_U))
+	{
+		GameInfo::ourGenerateTerrainThreaded = !GameInfo::ourGenerateTerrainThreaded;
+	}
 	if (Input::IsPressed(GLFW_KEY_M))
 	{
 		std::cout.imbue(std::locale(""));
@@ -266,6 +270,10 @@ int main()
 			light.myColour = mix(light.myColour, vec3(0.0, 0.02, 0.1), mix2);
 		}
 
+		if (Input::IsPressed(GLFW_KEY_KP_SUBTRACT))
+		{
+			terrainManager.Regenerate();
+		}
 		player.Update(terrainManager);
 
 		glEnable(GL_CLIP_DISTANCE0);

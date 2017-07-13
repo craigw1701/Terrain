@@ -34,15 +34,32 @@ public:
 		mySeed = rand() % 1000000;
 	}
 
+	void Seed(int aSeed)
+	{
+		if (aSeed == mySeed)
+			return;
+		pn = PerlinNoise(aSeed);
+		mySeed = aSeed;
+		myLookup.clear();
+	}
+
+	mutable std::map<unsigned int, float> myLookup;
+
 	float GenerateHeight(int aX, int aZ) const
 	{
 		float x = static_cast<float> (myXOffset + aX);
 		float z = static_cast<float>(myZOffset + aZ);
+		
+		unsigned int seed = x * 49632 + z * 325176 + mySeed;
+		auto iter = myLookup.find(seed);
+		if (iter != myLookup.end())
+			return iter->second;
 
 		double total = GetN(x, z) * AMPLITUTE * 5;
 		total += GetN(x * 4.0f, z * 4.0f) * AMPLITUTE / 2.0f;
 		total += GetN(x * 8.0f, z * 8.0f) * AMPLITUTE / 16.0f;
 
+		myLookup[seed] = total;
 		return total;
 	}
 	

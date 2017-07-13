@@ -27,8 +27,13 @@ http://www.opengl-tutorial.org/
 
 http://nehe.gamedev.net/
 
-Tasks ToDo, in vague order:
+Done:
 * Regenerate with new seeds at runtime
+ + Press "U" to switch beween threaded and single-threaded generation
+ + Press "-" to generate using a new seeds
+ + Dual core time for 16 tiles goes from 1.4seconds to 0.9seconds
+
+Tasks ToDo, in vague order:
 * Sun
 * Fonts
 * Console
@@ -41,7 +46,7 @@ Tasks ToDo, in vague order:
 * Better Model/Texture/Material loading
 * Actual GUI (buttons, sliders)
 * Particle Effect system
-* Snow/Rain
+* Snow/Rain/changing weather
 * God Rays
 * Bloom/HDR
 * Global Ilumination
@@ -54,11 +59,17 @@ Tasks ToDo, in vague order:
 * Clouds (perlin noise?)
 * Waves
 
+* Wind (noise based?)
+
 * Nav-Mesh
 * AI Navigation
 
 * Improve day/night
+* Birds - Boids?
 
+// Other things of interest
 * Flow Fields
-
+* Neural Networks
+* Genetic Algorithms
+* N-Grams and Markov Chains
 * Twitter bot - https://www.youtube.com/playlist?list=PLRqwX-V7Uu6atTSxoRiVnSuOn6JHnq2yV
