@@ -21,6 +21,8 @@ public:
 		matrix[3][0] = 0.0f;
 		matrix[3][1] = 0.0f;
 		matrix[3][2] = 0.0f;
+		myCurrentRotation += ourRotateSpeed * GameInfo::ourDeltaTime;
+		matrix = glm::rotate(matrix, radians(myCurrentRotation), glm::vec3(0, 1, 0));
 		LoadMatrix(myLocationViewMatrix, matrix);
 	}
 
@@ -31,6 +33,12 @@ public:
 		LoadFloat(myLocationDayNightTime, GameInfo::ourDayNightTime);
 	}
 
+	void ConnectTextureUnits()
+	{
+		LoadInt(myLocationCubeMapDay, 0);
+		LoadInt(myLocationCubeMapNight, 1);
+	}
+
 	void GetAllUniformLocations() override
 	{
 		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
@@ -38,6 +46,8 @@ public:
 		myLocationLightColour = GetUniformLocation("lightColour");
 		myLocationLightPosition = GetUniformLocation("lightPosition");
 		myLocationDayNightTime = GetUniformLocation("dayNightTime");
+		myLocationCubeMapDay = GetUniformLocation("cubeMap");
+		myLocationCubeMapNight = GetUniformLocation("cubeMapNight");
 	}
 
 	void BindAttributes() override
@@ -51,5 +61,10 @@ private:
 	GLuint myLocationLightColour;
 	GLuint myLocationDayNightTime;
 	GLuint myLocationLightPosition;
+	GLuint myLocationCubeMapDay;
+	GLuint myLocationCubeMapNight;
+
+	float myCurrentRotation = 0.0f;
+	static constexpr float ourRotateSpeed = 0.1f;
 
 };
