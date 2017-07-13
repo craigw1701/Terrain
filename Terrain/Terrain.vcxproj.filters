@@ -54,6 +54,9 @@
     <ClCompile Include="Code\lodepng.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Code\PerlinNoise.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Entity.h">
@@ -159,6 +162,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Code\NonCopyable.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\PerlinNoise.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>

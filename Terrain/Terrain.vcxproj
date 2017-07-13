@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClCompile Include="Code\lodepng.cpp" />
     <ClCompile Include="Code\main.cpp" />
+    <ClCompile Include="Code\PerlinNoise.cpp" />
     <ClCompile Include="Code\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="Code\ModelTexture.h" />
     <ClInclude Include="Code\NonCopyable.h" />
     <ClInclude Include="Code\ObjLoader.h" />
+    <ClInclude Include="Code\PerlinNoise.h" />
     <ClInclude Include="Code\Player.h" />
     <ClInclude Include="Code\RawModel.h" />
     <ClInclude Include="Code\Renderer.h" />

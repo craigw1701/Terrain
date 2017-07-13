@@ -2,7 +2,7 @@
 
 #include <random>
 #include <map>
-
+#include "PerlinNoise.h"
 #include "NonCopyable.h"
 
 #define AMPLITUTE 70.0f
@@ -28,6 +28,7 @@ public:
 		: myXOffset((aGridX + 2) * (aVertexCount - 1))
 		, myZOffset((aGridZ + 2) * (aVertexCount-1))
 		, mySeed(aSeed)
+		, pn(aSeed)
 	{		// TODO:CW HACK FOR NOW
 		std::srand(1);
 		mySeed = rand() % 1000000;
@@ -38,12 +39,21 @@ public:
 		float x = static_cast<float> (myXOffset + aX);
 		float z = static_cast<float>(myZOffset + aZ);
 
-		float total = GetInterpolatedNoise(x / 32.0f, z / 32.0f) * AMPLITUTE * 10.0f;
-		total += GetInterpolatedNoise(x / 8.0f, z / 8.0f) * AMPLITUTE * 2.0f;
-		total += GetInterpolatedNoise(x / 2.0f, z / 2.0f) * AMPLITUTE / 6.0f;
-		total += GetInterpolatedNoise(x, z) * AMPLITUTE / 12.0f;
+		double total = GetN(x, z) * AMPLITUTE * 5;
+		total += GetN(x * 4.0f, z * 4.0f) * AMPLITUTE / 2.0f;
+		total += GetN(x * 8.0f, z * 8.0f) * AMPLITUTE / 16.0f;
+
 		return total;
 	}
+	
+	double GetN(double x, double z) const
+	{
+		double n = pn.noise(x / 64.0f, z / 64, 0.8);
+	//	n = pow(n, 1.5);
+		return n * 2.0 - 1.0f;
+	}
+#pragma region OLD
+	/* /
 
 	float GetInterpolatedNoise(float aX, float aZ) const
 	{
@@ -81,21 +91,23 @@ public:
 		return corners + sides + center;
 	}
 
-	float GetNoise(int aX, int aZ) const
+	/*float GetNoise(int aX, int aZ) const
 	{
-		unsigned int seed = aX * 49632 + aZ * 325176 + mySeed;
+		//unsigned int seed = aX * 49632 + aZ * 325176 + mySeed;
 			
 #ifdef _DEBUG
 		// TODO:CW this isn't good enough
-		fast_srand(seed);
-		float r = static_cast <float> (fast_rand()) / static_cast <float> (32767);
+		//fast_srand(seed);
+		//float r = static_cast <float> (fast_rand()) / static_cast <float> (32767);
+		float r = pn.noise(aX / 10.0f, aZ / 10.0f, 1.0f);
 		
 #else
 		auto iter = myLookup.find(seed);
 		if (iter != myLookup.end())
 			return iter->second;
-		ra.seed(seed);
-		float r = static_cast <float> (ra()) / static_cast <float> (ra.max());
+		//ra.seed(seed);
+		//float r = static_cast <float> (ra()) / static_cast <float> (ra.max());
+		float r = pn.noise(aX / 10.0f, aZ / 10.0f, 1.0f);
 #endif
 		r = r * 2.0f;
 		r = r - 1.0f;
@@ -106,13 +118,14 @@ public:
 #endif
 		return r;
 	}
-
+private:
+	mutable std::mt19937 ra;
+	mutable std::map<unsigned int, float> myLookup;
+	*/
 private:
 	int myXOffset;
 	int myZOffset;
-
+	PerlinNoise pn;
 	int mySeed;
-	mutable std::mt19937 ra;
-	mutable std::map<unsigned int, float> myLookup;
 	
 };

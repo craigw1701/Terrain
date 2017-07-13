@@ -20,10 +20,13 @@ public:
 		std::srand(1);
 		mySeed = rand() % 1000000;
 		// TODO:CW spin up threads to generate 
-		AddTerrain(-1, -1);
-		AddTerrain(0, -1);
-		AddTerrain(0, 0);
-		AddTerrain(-1, 0);		
+		for (int i = -2; i < 2; i++)
+		{
+			for (int j = -2; j < 2; j++)
+			{
+				AddTerrain(i, j);
+			}
+		}
 	}
 
 	~TerrainManager()

@@ -106,7 +106,7 @@ private:
 	void CalculateZoon()
 	{
 		float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 50.0f : 10.0f;
-		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * speed, 20.0f, 1000.0f);
+		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * speed, 20.0f, 2000.0f);
 	}
 
 	void CalculatePitch()
