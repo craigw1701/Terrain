@@ -8,6 +8,25 @@
 #include <thread>
 #include <mutex>
 #include <vector>
+#include <sstream>
+
+static std::string locTrim(std::string aString)
+{
+	std::string s = aString;
+	while (s.find(' ') == 0)
+	{
+		s = s.substr(1);
+	}
+
+	while (s.rfind(' ') == s.size()-1)
+	{
+		s = s.substr(0, s.size() - 1);
+		
+		if (s.size() == 0)
+			return s;
+	}
+	return s;
+}
 
 class TerrainManager : public NonCopyable
 {
@@ -17,6 +36,31 @@ public:
 		, myTexturePack(aTexturePack)
 		, myBlendMap(aBlendMap)
 	{
+
+		DebugConsole::AddCommand("Terrain.EnableThreaded", "", [](std::string aFullCommand)
+		{
+			GameInfo::ourGenerateTerrainThreaded = !GameInfo::ourGenerateTerrainThreaded;
+			return GameInfo::ourGenerateTerrainThreaded ? "Threaded On" : "Threaded Off";
+		});
+		DebugConsole::AddCommand("Terrain.EnableCaching", "", [](std::string aFullCommand)
+		{
+			GameInfo::ourGenerateTerrainCaching = !GameInfo::ourGenerateTerrainCaching;
+			return GameInfo::ourGenerateTerrainCaching ? "Caching On" : "Caching Off";
+		});
+		DebugConsole::AddCommand("Terrain.Regenerate", "", [this](std::string aFullCommand)
+		{
+			std::string s = locTrim(DebugConsole::GetParam(aFullCommand, 1));
+			if (s.size() > 0)
+			{
+				mySeed = atoi(s.c_str());
+			}
+
+			Regenerate(mySeed);
+			std::ostringstream stringStream;
+			stringStream << "Generating " << (GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded") << " with seed: " << mySeed;
+			return stringStream.str();
+		});
+
 #ifdef _DEBUG
 		const int numTiles = 1;
 #else
@@ -41,10 +85,13 @@ public:
 		}
 	}
 
-	void Regenerate()
+	void Regenerate(int aSeed = -1)
 	{
 		double startTime = glfwGetTime();
-		mySeed = rand() % 1000000;
+		mySeed = aSeed;
+		if(mySeed == -1)
+			mySeed = rand() % 1000000;
+
 		printf("Starting %s Terrain Generation with seed: %d %s caching\n", 
 			GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded", 
 			mySeed,

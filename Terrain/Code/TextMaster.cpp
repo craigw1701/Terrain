@@ -36,8 +36,8 @@ void TextMaster::RemoveText(GUIText* aGUIText)
 {
 	auto batch = ourTexts.find(aGUIText->GetFont());
 	if (batch != ourTexts.end())
-	{
-		std::remove(batch->second.begin(), batch->second.end(), aGUIText);
+	{		
+		batch->second.erase(std::find(batch->second.begin(), batch->second.end(), aGUIText));
 	}
 
 	if (batch->second.size() == 0)

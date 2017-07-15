@@ -17,7 +17,12 @@ GUIText::GUIText(std::string someText, float aFontSize, FontType& aFont, vec2 aP
 	TextMaster::LoadText(this);
 }
 
-void GUIText::remove()
+GUIText::~GUIText()
+{
+	Remove();
+}
+
+void GUIText::Remove()
 {
 	TextMaster::RemoveText(this);
 }
@@ -46,6 +51,11 @@ int GUIText::GetNumberOfLines() const
 vec2 GUIText::GetPosition() const
 {
 	return myPosition;
+}
+
+void GUIText::SetPosition(vec2 aPos)
+{
+	myPosition = aPos;
 }
 
 int GUIText::GetMesh() const

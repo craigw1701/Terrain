@@ -52,6 +52,9 @@
     <Filter Include="Fonts\FontRendering">
       <UniqueIdentifier>{1619b58f-cb71-4ab5-9d27-78df8816ca6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{08c24dfa-4b61-4ea8-bd51-a8c9635df757}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -74,6 +77,15 @@
     </ClCompile>
     <ClCompile Include="Code\TextMaster.cpp">
       <Filter>Fonts\FontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\DebugConsole.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GameInfo.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Input.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="Code\TextMaster.h">
       <Filter>Fonts\FontRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\DebugConsole.h">
+      <Filter>Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

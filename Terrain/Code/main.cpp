@@ -8,6 +8,7 @@
 
 #include "Maths.h"
 #include "Camera.h"
+#include "DebugConsole.h"
 #include "EntityManager.h"
 #include "FontType.h"
 #include "GameInfo.h"
@@ -31,6 +32,13 @@
 
 void DebugControls()
 {
+	GameInfo::ourRenderTimes.clear();
+	
+	if (DebugConsole::IsActive())
+	{
+		return;
+	}
+
 	if (Input::IsPressed(GLFW_KEY_P))
 	{
 		GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
@@ -87,7 +95,6 @@ void DebugControls()
 		std::cout << std::string(70, '=') << std::endl;
 
 	}
-	GameInfo::ourRenderTimes.clear();
 }
 
 bool Setup()
@@ -123,7 +130,7 @@ bool Setup()
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	GameInfo::ourWindow = window;
+	GameInfo::SetWindow(window);
 
 	Input::Setup();
 	return true;
@@ -140,12 +147,15 @@ int main()
 		system("color 47");
 		return -1;
 	}
-
+	
 	Loader loader;
 	TextMaster::Init(&loader);
+	DebugConsole::Setup(loader);
+
+	// TODO:CW Set up proper day/night time so console can type "settime noon" or "settime 18" etc
 
 	FontType font(loader.LoadTexture("Fonts/times.png"), "data/Fonts/times.fnt");
-	GUIText text("The Quick Brown Fox Jumped Over The Lazy Dog", 1, font, vec2(0.0, 0.0), 1.0f, false);
+	//GUIText text("The Quick Brown Fox Jumped Over The Lazy Dog", 1, font, vec2(0.0, 0.0), 1.0f, false);
 	/*
 	RawModel model = loader.LoadToVAO("Tree005/tree_oak.obj");
 	ModelTexture texture(loader.LoadTexture("Tree006/Branches0018_1_S.png"));
@@ -312,9 +322,18 @@ int main()
 		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera, light);
 
-		guiRenderer.Render(guis);
-		TextMaster::Render();
-		
+		{
+			//GLint polygonMode;
+			//glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			DebugConsole::Update();
+			if (DebugConsole::IsActive())
+				guis.push_back(*DebugConsole::ourGUITexture);
+			guiRenderer.Render(guis);
+			TextMaster::Render();
+			guis.clear();
+			glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
+		}
 		// Swap buffers
 		glfwSwapBuffers(GameInfo::ourWindow);
 		glfwPollEvents();
@@ -322,7 +341,8 @@ int main()
 	} // Check if the ESC key was pressed or the window was closed
 	while (!Input::IsPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(GameInfo::ourWindow) == 0);
 
-	//TextMaster::CleanUp(); // TODO:CW FIX
+	DebugConsole::CleanUp();
+	TextMaster::CleanUp(); // TODO:CW FIX
 	//loader.CleanUp();
 	
 	// Close OpenGL window and terminate GLFW

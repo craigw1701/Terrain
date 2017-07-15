@@ -154,8 +154,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\DebugConsole.cpp" />
     <ClCompile Include="Code\FontType.cpp" />
+    <ClCompile Include="Code\GameInfo.cpp" />
     <ClCompile Include="Code\GUIText.cpp" />
+    <ClCompile Include="Code\Input.cpp" />
     <ClCompile Include="Code\lodepng.cpp" />
     <ClCompile Include="Code\main.cpp" />
     <ClCompile Include="Code\PerlinNoise.cpp" />
@@ -164,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Camera.h" />
+    <ClInclude Include="Code\DebugConsole.h" />
     <ClInclude Include="Code\Entity.h" />
     <ClInclude Include="Code\EntityManager.h" />
     <ClInclude Include="Code\FontCharacter.h" />

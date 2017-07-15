@@ -11,6 +11,8 @@
 #include "FontCharacter.h"
 #include "GameInfo.h"
 
+// TODO:CW make sure it supports fonts with kerning
+
 /**
 * Provides functionality for getting the values from a font file.
 */
@@ -105,7 +107,7 @@ public:
 					p.push_back(s2);
 			}
 		}
-		for (int i = 0; i < p.size(); i += 2)
+		for (unsigned int i = 0; i < p.size(); i += 2)
 		{
 			myValues.insert(std::pair<std::string, std::string>(p[i], p[i+1]));
 		}

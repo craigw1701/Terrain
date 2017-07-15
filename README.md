@@ -33,10 +33,14 @@ Done:
  + Press "Y" to toggle caching using a std::Map (off in debug as it's slower)
  + Press "-" to generate using a new seeds
  + Dual core time for 16 tiles goes from 1.4seconds to 0.9seconds
-
-Tasks ToDo, in vague order:
-* Fonts
+* Fonts - 14/07/2017
+ + Font Loading an Rendering working
+ + Basic word wrapping
 * Console
+ + Basic Auto-Complete
+ + Basic History
+ 
+Tasks ToDo, in vague order:
 * Fog
 * Sun
 * Shadows
@@ -68,6 +72,11 @@ Tasks ToDo, in vague order:
 
 * Nav-Mesh
 * AI Navigation
+
+* Fonts/Text
+	+ Better word formatting, wrapping
+* Console
+	+ Better console variable work
 
 * Improve day/night
 * Birds - Boids?

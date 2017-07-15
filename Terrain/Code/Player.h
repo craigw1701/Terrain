@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DebugConsole.h"
 #include "Entity.h"
 #include "Input.h"
 #include "TerrainManager.h"
@@ -58,6 +59,11 @@ private:
 
 	void CheckInputs()
 	{
+		if (DebugConsole::IsActive())
+		{
+			return;
+		}
+
 		float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 5.0f : 1.0f;
 		if (Input::IsDown(GLFW_KEY_W))
 		{

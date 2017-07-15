@@ -12,7 +12,7 @@ FontType::FontType(int aTextureAtlas, const char* aFontFile)
 
 FontType::~FontType()
 {
-	//delete myLoader;
+	// delete myLoader; // TODO:CW Fix crash
 	myLoader = nullptr;
 }
 

@@ -1,13 +1,13 @@
 #pragma once
 
 // TODO:CW FIX HACK:
-void EnableCulling()
+static void EnableCulling()
 {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 }
 
-void DisableCulling()
+static void DisableCulling()
 {
 	glDisable(GL_CULL_FACE);
 }
@@ -24,6 +24,11 @@ void DisableCulling()
 
 #include <map>
 using namespace std;
+
+// TODO:CW Write proper Debug Console Variables wrapper
+/*#define ConsoleVariable(cmd, name) static bool DebugVariable_##name = false; DebugConsole::AddCommand(cmd, "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand){ DebugVariable_##name = !DebugVariable_##name; }) 
+
+ConsoleVariable("Render.ShowEntities", Entities);*/
 
 class MasterRenderer : public NonCopyable
 {
@@ -43,6 +48,39 @@ public:
 
 		myTerrainShader.Setup();
 		myTerrainRenderer.Setup(myProjectionMatrix);
+
+		DebugConsole::AddCommand("Render.Wireframe", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand) 
+		{
+			std::string s = DebugConsole::GetParam(aFullCommand, 1);
+			if (s.size() > 0)
+			{
+				int value = atoi(s.c_str());
+				GameInfo::ourWireframeMode = value;
+			}
+			else
+			{
+				GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
+			}
+			glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
+			return GameInfo::ourWireframeMode ? "Wireframe On" : "Wireframe Off";
+		});
+		DebugConsole::AddCommand("Render.ShowWater", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand)
+		{
+			GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
+			return GameInfo::ourDrawWater ? "Water On" : "Water Off";
+		});
+		DebugConsole::AddCommand("Render.ShowEntities", "", [](std::string aFullCommand)
+		{
+			GameInfo::ourDrawEntities = !GameInfo::ourDrawEntities;
+			return GameInfo::ourDrawEntities ? "Entities On" : "Entities Off";
+		});
+		DebugConsole::AddCommand("Render.ShowTerrain", "", [](std::string aFullCommand)
+		{
+			GameInfo::ourDrawTerrain = !GameInfo::ourDrawTerrain;
+			return GameInfo::ourDrawTerrain ? "Terrain On" : "Terrain Off";
+		});
+
+		
 	}
 
 	~MasterRenderer()

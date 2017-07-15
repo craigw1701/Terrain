@@ -69,10 +69,12 @@ public:
 			//aLHS.myFont == aRHS.myFont && // TODO:CW
 			aLHS.myCenterText == aRHS.myCenterText;
 	}
+
+	~GUIText();
 	/**
 	* Remove the text from the screen.
 	*/
-	void remove();
+	void Remove();
 
 	/**
 	* @return The font used by this text.
@@ -109,6 +111,7 @@ public:
 	*         right.
 	*/
 	vec2 GetPosition() const;
+	void SetPosition(vec2 aPos);
 
 	/**
 	* @return the ID of the text's VAO, which contains all the vertex data for
