@@ -154,19 +154,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Code\FontType.cpp" />
+    <ClCompile Include="Code\GUIText.cpp" />
     <ClCompile Include="Code\lodepng.cpp" />
     <ClCompile Include="Code\main.cpp" />
     <ClCompile Include="Code\PerlinNoise.cpp" />
+    <ClCompile Include="Code\TextMaster.cpp" />
     <ClCompile Include="Code\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Camera.h" />
     <ClInclude Include="Code\Entity.h" />
     <ClInclude Include="Code\EntityManager.h" />
+    <ClInclude Include="Code\FontCharacter.h" />
+    <ClInclude Include="Code\FontMetaFile.h" />
+    <ClInclude Include="Code\FontRenderer.h" />
+    <ClInclude Include="Code\FontShader.h" />
+    <ClInclude Include="Code\FontType.h" />
     <ClInclude Include="Code\GameInfo.h" />
     <ClInclude Include="Code\GL.h" />
     <ClInclude Include="Code\GUIRenderer.h" />
     <ClInclude Include="Code\GUIShader.h" />
+    <ClInclude Include="Code\GUIText.h" />
     <ClInclude Include="Code\GUITexture.h" />
     <ClInclude Include="Code\HeightsGenerator.h" />
     <ClInclude Include="Code\Input.h" />
@@ -190,14 +199,21 @@
     <ClInclude Include="Code\TerrainRenderer.h" />
     <ClInclude Include="Code\TerrainShader.h" />
     <ClInclude Include="Code\TerrainTexture.h" />
+    <ClInclude Include="Code\TextLine.h" />
+    <ClInclude Include="Code\TextMaster.h" />
+    <ClInclude Include="Code\TextMeshCreator.h" />
+    <ClInclude Include="Code\TextMeshData.h" />
     <ClInclude Include="Code\texture.h" />
     <ClInclude Include="Code\TexturedModel.h" />
+    <ClInclude Include="Code\TextWord.h" />
     <ClInclude Include="Code\WaterFrameBuffer.h" />
     <ClInclude Include="Code\WaterRenderer.h" />
     <ClInclude Include="Code\WaterShader.h" />
     <ClInclude Include="Code\WaterTile.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\font.fragmentshader" />
+    <None Include="Shaders\font.vertexshader" />
     <None Include="Shaders\gui.fragmentshader" />
     <None Include="Shaders\gui.vertexshader" />
     <None Include="Shaders\skybox.fragmentshader" />

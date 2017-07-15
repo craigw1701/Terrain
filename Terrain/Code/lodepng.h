@@ -23,8 +23,7 @@ freely, subject to the following restrictions:
     distribution.
 */
 
-#ifndef LODEPNG_H
-#define LODEPNG_H
+#pragma once
 
 #include <string.h> /*for size_t*/
 
@@ -901,8 +900,6 @@ TODO:
 [ ] allow user to provide custom color conversion functions, e.g. for premultiplied alpha, padding bits or not, ...
 [ ] allow user to give data (void*) to custom allocator
 */
-
-#endif /*LODEPNG_H inclusion guard*/
 
 /*
 LodePNG Documentation

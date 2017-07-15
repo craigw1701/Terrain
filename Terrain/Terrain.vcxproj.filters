@@ -43,6 +43,15 @@
     <Filter Include="Input">
       <UniqueIdentifier>{79473598-d473-45cb-a1a7-58c34b252771}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fonts">
+      <UniqueIdentifier>{9e221b02-5a50-4c1d-9f51-847956ed5813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fonts\FontMeshCreator">
+      <UniqueIdentifier>{c4d650ab-381b-4338-9bc6-9719b30b9122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fonts\FontRendering">
+      <UniqueIdentifier>{1619b58f-cb71-4ab5-9d27-78df8816ca6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -56,6 +65,15 @@
     </ClCompile>
     <ClCompile Include="Code\PerlinNoise.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\GUIText.cpp">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\FontType.cpp">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\TextMaster.cpp">
+      <Filter>Fonts\FontMeshCreator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +185,39 @@
     <ClInclude Include="Code\PerlinNoise.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Code\FontCharacter.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\FontMetaFile.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\FontType.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\GUIText.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TextLine.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TextMeshCreator.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TextMeshData.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TextWord.h">
+      <Filter>Fonts\FontMeshCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\FontRenderer.h">
+      <Filter>Fonts\FontRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\FontShader.h">
+      <Filter>Fonts\FontRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\TextMaster.h">
+      <Filter>Fonts\FontRendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\gui.fragmentshader">
@@ -198,6 +249,12 @@
     </None>
     <None Include="Shaders\watershader.fragmentshader">
       <Filter>Water</Filter>
+    </None>
+    <None Include="Shaders\font.vertexshader">
+      <Filter>Fonts\FontRendering</Filter>
+    </None>
+    <None Include="Shaders\font.fragmentshader">
+      <Filter>Fonts\FontRendering</Filter>
     </None>
   </ItemGroup>
 </Project>

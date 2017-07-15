@@ -10,6 +10,9 @@ using namespace std;
 
 #include "gl.h"
 
+#include "GameInfo.h"
+#include "NonCopyable.h"
+
 class ShaderBase : public NonCopyable
 {
 	bool myHasSetup = false;
@@ -72,6 +75,11 @@ protected:
 	void LoadFloat(GLuint aLocation, float aValue)
 	{
 		glUniform1f(aLocation, aValue);
+	}
+
+	void LoadVector(GLuint aLocation, vec2 aVector)
+	{
+		glUniform2f(aLocation, aVector.x, aVector.y);
 	}
 
 	void LoadVector(GLuint aLocation, vec3 aVector)

@@ -22,7 +22,7 @@ inline int fast_rand(void) {
 	return (g_seed >> 16) & 0x7FFF;
 }
 
-float BarryCentric(vec3 p1, vec3 p2, vec3 p3, vec2 pos) 
+static float BarryCentric(vec3 p1, vec3 p2, vec3 p3, vec2 pos)
 {
 	float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 	float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
@@ -32,7 +32,7 @@ float BarryCentric(vec3 p1, vec3 p2, vec3 p3, vec2 pos)
 }
 #include "Camera.h" // TODO:CW FIX ALL THE HACKS
 
-glm::mat4 CreateTransformMatrix(glm::vec3 aTranslation, glm::vec3 aRotation, float aScale)
+static glm::mat4 CreateTransformMatrix(glm::vec3 aTranslation, glm::vec3 aRotation, float aScale)
 {
 	glm::mat4 matrix(1.0f);
 	matrix = glm::translate(matrix, aTranslation);
@@ -44,7 +44,7 @@ glm::mat4 CreateTransformMatrix(glm::vec3 aTranslation, glm::vec3 aRotation, flo
 	return matrix;
 }
 
-glm::mat4 CreateTransformationMatrix(vec2 aTranslation, vec2 aScale) 
+static glm::mat4 CreateTransformationMatrix(vec2 aTranslation, vec2 aScale)
 {
 	glm::mat4 matrix(1.0f);
 	matrix = glm::translate(matrix, vec3(aTranslation, 0));
@@ -52,7 +52,7 @@ glm::mat4 CreateTransformationMatrix(vec2 aTranslation, vec2 aScale)
 	return matrix;
 }
 
-glm::mat4 CreateViewMatrix(Camera const& aCamera)
+static glm::mat4 CreateViewMatrix(Camera const& aCamera)
 {
 	glm::mat4 matrix(1.0f);
 
@@ -65,12 +65,12 @@ glm::mat4 CreateViewMatrix(Camera const& aCamera)
 	return matrix;
 }
 
-float RandFloat(float aMin, float aMax)
+static float RandFloat(float aMin, float aMax)
 {
 	return aMin + static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (aMax - aMin));
 }
 
-vec2 RandVector(vec2 aMin, vec2 aMax)
+static vec2 RandVector(vec2 aMin, vec2 aMax)
 {
 	vec2 vec;
 
@@ -80,7 +80,7 @@ vec2 RandVector(vec2 aMin, vec2 aMax)
 	return vec;
 }
 
-vec3 RandVector(vec3 aMin, vec3 aMax)
+static vec3 RandVector(vec3 aMin, vec3 aMax)
 {
 	vec3 vec;
 

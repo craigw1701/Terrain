@@ -16,6 +16,16 @@ public:
 	{
 
 	}
+	GLuint LoadToVAO(vector<vec2> somePositions, vector<vec2> someUVs)
+	{
+		GLuint vaoID = CreateVAO();
+		GLuint vertexID = StoreDataInAttributeList(0, 2, somePositions);
+		GLuint uvID = StoreDataInAttributeList(1, 2, someUVs);
+		UnbindVAO();
+
+		return vaoID;
+	}
+
 	RawModel LoadToVAO(vector<vec3> somePositions, vector<vec2> someUVs, vector<vec3> someNormals, vector<int> someIndices)
 	{
 		GLuint vaoID = CreateVAO();
@@ -94,8 +104,13 @@ public:
 		myTextures.push_back(textureID);
 		return textureID;
 	}
+
+	GLuint LoadFontTextureAtlas(const char* aFileName)
+	{
+		return LoadTexture(aFileName, 0.0f);
+	}
 	
-	GLuint LoadTexture(const char* aFileName)
+	GLuint LoadTexture(const char* aFileName, float aLODBias = -0.4f)
 	{
 		std::string fileName;
 		std::string extension;
@@ -108,7 +123,7 @@ public:
 		}
 		else if (extension.compare("png") == 0)
 		{
-			textureID = DecodeOneStep(fileName.c_str());
+			textureID = DecodeOneStep(fileName.c_str(), aLODBias);
 		}
 		else
 		{

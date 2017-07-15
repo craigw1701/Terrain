@@ -30,14 +30,15 @@ http://nehe.gamedev.net/
 Done:
 * Regenerate with new seeds at runtime
  + Press "U" to switch beween threaded and single-threaded generation
+ + Press "Y" to toggle caching using a std::Map (off in debug as it's slower)
  + Press "-" to generate using a new seeds
  + Dual core time for 16 tiles goes from 1.4seconds to 0.9seconds
 
 Tasks ToDo, in vague order:
-* Sun
 * Fonts
 * Console
 * Fog
+* Sun
 * Shadows
 * LOD
 * Mouse picking
@@ -54,12 +55,16 @@ Tasks ToDo, in vague order:
 * Lens Flare
 
 * Procedrual Trees (fractal, l-systems) - https://www.youtube.com/watch?v=-wiverLQl1Q&list=PLRqwX-V7Uu6bXUJvjnMWGU5SmjhI-OXef
-* Procedrual grass
+* Procedrual Grass
 
-* Clouds (perlin noise?)
+* (Volumetric) Clouds (perlin noise?)
 * Waves
+* Rivers
+* Waterfalls
 
 * Wind (noise based?)
+
+* Volumentic Terrain Generation - https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch01.html
 
 * Nav-Mesh
 * AI Navigation

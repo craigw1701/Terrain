@@ -21,7 +21,7 @@
 // - More secure. Change another line and you can inject code.
 // - Loading from memory, stream, etc
 
-bool LoadOBJ(
+static bool LoadOBJ(
 	const char * path,
 	std::vector<glm::vec3> & out_vertices,
 	std::vector<glm::vec2> & out_uvs,

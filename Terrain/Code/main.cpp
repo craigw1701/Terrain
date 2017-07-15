@@ -9,8 +9,10 @@
 #include "Maths.h"
 #include "Camera.h"
 #include "EntityManager.h"
+#include "FontType.h"
 #include "GameInfo.h"
 #include "GUIRenderer.h"
+#include "GUIText.h"
 #include "GUITexture.h"
 #include "Input.h"
 #include "Loader.h"
@@ -20,6 +22,7 @@
 #include "StaticShader.h"
 #include "TerrainManager.h"
 #include "TerrainTexture.h"
+#include "TextMaster.h"
 #include "TexturedModel.h"
 #include "WaterFrameBuffer.h"
 #include "WaterRenderer.h"
@@ -139,6 +142,10 @@ int main()
 	}
 
 	Loader loader;
+	TextMaster::Init(&loader);
+
+	FontType font(loader.LoadTexture("Fonts/times.png"), "data/Fonts/times.fnt");
+	GUIText text("The Quick Brown Fox Jumped Over The Lazy Dog", 1, font, vec2(0.0, 0.0), 1.0f, false);
 	/*
 	RawModel model = loader.LoadToVAO("Tree005/tree_oak.obj");
 	ModelTexture texture(loader.LoadTexture("Tree006/Branches0018_1_S.png"));
@@ -306,6 +313,7 @@ int main()
 		waterRenderer.Render(waters, camera, light);
 
 		guiRenderer.Render(guis);
+		TextMaster::Render();
 		
 		// Swap buffers
 		glfwSwapBuffers(GameInfo::ourWindow);
@@ -314,6 +322,7 @@ int main()
 	} // Check if the ESC key was pressed or the window was closed
 	while (!Input::IsPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(GameInfo::ourWindow) == 0);
 
+	//TextMaster::CleanUp(); // TODO:CW FIX
 	//loader.CleanUp();
 	
 	// Close OpenGL window and terminate GLFW
