@@ -19,7 +19,7 @@
 class FontMetaFile 
 {
 public:
-	static constexpr double LINE_HEIGHT = 0.03f;
+	static constexpr float LINE_HEIGHT = 0.03f;
 	static const int SPACE_ASCII = 32;
 
 private:
@@ -67,6 +67,8 @@ public:
 		LoadCharacterData(imageWidth);
 		Close();
 	}
+	FontMetaFile(const FontMetaFile& aFile) = default;
+	FontMetaFile(FontMetaFile&& aFile) = default;
 
 	double GetSpaceWidth() const
 	{

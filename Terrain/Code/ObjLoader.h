@@ -36,20 +36,17 @@ static bool LoadOBJ(
 	out_normals.clear();
 	out_indices.clear();
 
-	//std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
- 	//std::vector<glm::vec3> temp_vertices;
  	std::vector<glm::vec2> temp_uvs;
  	std::vector<glm::vec3> temp_normals;
-
-	//std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
 
 
 	FILE * file = fopen(path, "r");
-	if (file == NULL) {
+	if (file == NULL) 
+	{
 		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		getchar();
+		system("pause");
 		return false;
 	}
 

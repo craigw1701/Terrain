@@ -21,7 +21,12 @@ GLuint loadBMP_custom(const char * imagepath){
 
 	// Open the file
 	FILE * file = fopen(imagepath,"rb");
-	if (!file)							    {printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0;}
+	if (!file)							    
+	{
+		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); 
+		system("pause"); 
+		return 0;
+	}
 
 	// Read the header, i.e. the 54 first bytes
 
@@ -126,7 +131,8 @@ GLuint loadDDS(const char * imagepath){
 	/* try to open the file */ 
 	fp = fopen(imagepath, "rb"); 
 	if (fp == NULL){
-		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); 
+		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); 
+		system("pause");
 		return 0;
 	}
    
@@ -148,12 +154,13 @@ GLuint loadDDS(const char * imagepath){
 	unsigned int fourCC      = *(unsigned int*)&(header[80]);
 
  
-	unsigned char * buffer;
-	unsigned int bufsize;
-	/* how big is it going to be including all mipmaps? */ 
-	bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize; 
-	buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char)); 
-	fread(buffer, 1, bufsize, fp); 
+	/* how big is it going to be including all mipmaps? */
+	unsigned int bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
+	unsigned char * buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char));
+	if (buffer != nullptr)
+	{
+		fread(buffer, 1, bufsize, fp);
+	}
 	/* close the file pointer */ 
 	fclose(fp);
 

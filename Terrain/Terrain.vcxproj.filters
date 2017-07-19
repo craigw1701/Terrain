@@ -233,6 +233,9 @@
     <ClInclude Include="Code\DebugConsole.h">
       <Filter>Debug</Filter>
     </ClInclude>
+    <ClInclude Include="Code\StringUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\gui.fragmentshader">

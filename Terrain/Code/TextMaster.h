@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <vector>
 
 //#include ".h"
@@ -14,8 +15,8 @@ class TextMaster
 {
 private:
 	static Loader* ourLoader;
-	static FontRenderer* ourRenderer;
-	static std::map<FontType, std::vector<GUIText*>> ourTexts;
+	static std::unique_ptr<FontRenderer> ourRenderer;
+	static std::map<FontType*, std::vector<GUIText*>> ourTexts;
 public:
 	static void Init(Loader* aLoader);
 

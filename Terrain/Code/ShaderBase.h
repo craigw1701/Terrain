@@ -123,7 +123,7 @@ private:
 		else 
 		{
 			printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
-			getchar();
+			system("pause");
 			return 0;
 		}
 
@@ -140,7 +140,7 @@ private:
 		else 
 		{
 			printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", fragment_file_path);
-			getchar();
+			system("pause");
 			return 0;
 		}
 

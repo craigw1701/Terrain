@@ -10,6 +10,7 @@
 class Terrain : public NonCopyable
 {
 public:
+	using TerrainList = std::vector<std::unique_ptr<Terrain>>;
 	Terrain(int aGridX, int aGridZ, Loader& aLoader, TerrainTexturePack& aTexturePack, TerrainTexture& aBlendMap, int aSeed)
 		: myTextures(aTexturePack)
 		, myBlendMap(aBlendMap)

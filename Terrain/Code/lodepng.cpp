@@ -5562,9 +5562,10 @@ static unsigned preProcessScanlines(unsigned char** out, size_t* outsize, const 
     if(!(*out)) error = 83; /*alloc fail*/
 
     adam7 = (unsigned char*)lodepng_malloc(passstart[7]);
-    if(!adam7 && passstart[7]) error = 83; /*alloc fail*/
+    if(adam7 == nullptr && passstart[7]) 
+		error = 83; /*alloc fail*/
 
-    if(!error)
+    if(adam7 != nullptr && !error)
     {
       unsigned i;
 

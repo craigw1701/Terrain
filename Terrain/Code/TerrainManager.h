@@ -2,6 +2,7 @@
 
 #include "NonCopyable.h"
 #include "Loader.h"
+#include "StringUtils.h"
 #include "Terrain.h"
 #include "TerrainTexture.h"
 
@@ -9,24 +10,7 @@
 #include <mutex>
 #include <vector>
 #include <sstream>
-
-static std::string locTrim(std::string aString)
-{
-	std::string s = aString;
-	while (s.find(' ') == 0)
-	{
-		s = s.substr(1);
-	}
-
-	while (s.rfind(' ') == s.size()-1)
-	{
-		s = s.substr(0, s.size() - 1);
-		
-		if (s.size() == 0)
-			return s;
-	}
-	return s;
-}
+#include <memory>
 
 class TerrainManager : public NonCopyable
 {
@@ -36,30 +20,34 @@ public:
 		, myTexturePack(aTexturePack)
 		, myBlendMap(aBlendMap)
 	{
-
-		DebugConsole::AddCommand("Terrain.EnableThreaded", "", [](std::string aFullCommand)
+		DebugConsole* console = DebugConsole::GetInstance();
+		if (console)
 		{
-			GameInfo::ourGenerateTerrainThreaded = !GameInfo::ourGenerateTerrainThreaded;
-			return GameInfo::ourGenerateTerrainThreaded ? "Threaded On" : "Threaded Off";
-		});
-		DebugConsole::AddCommand("Terrain.EnableCaching", "", [](std::string aFullCommand)
-		{
-			GameInfo::ourGenerateTerrainCaching = !GameInfo::ourGenerateTerrainCaching;
-			return GameInfo::ourGenerateTerrainCaching ? "Caching On" : "Caching Off";
-		});
-		DebugConsole::AddCommand("Terrain.Regenerate", "", [this](std::string aFullCommand)
-		{
-			std::string s = locTrim(DebugConsole::GetParam(aFullCommand, 1));
-			if (s.size() > 0)
+			console->AddCommand("Terrain.EnableThreaded", "", [](std::string somePerams)
 			{
-				mySeed = atoi(s.c_str());
-			}
+				GameInfo::ourGenerateTerrainThreaded = !GameInfo::ourGenerateTerrainThreaded;
+				return GameInfo::ourGenerateTerrainThreaded ? "Threaded On" : "Threaded Off";
+			});
+			console->AddCommand("Terrain.EnableCaching", "", [](std::string somePerams)
+			{
+				GameInfo::ourGenerateTerrainCaching = !GameInfo::ourGenerateTerrainCaching;
+				return GameInfo::ourGenerateTerrainCaching ? "Caching On" : "Caching Off";
+			});
+			console->AddCommand("Terrain.Regenerate", "", [this](std::string somePerams)
+			{
+				std::string s = TrimWhitespace(DebugConsole::GetInstance()->GetParam(somePerams, 1));
+				if (s.size() > 0)
+				{
+					mySeed = atoi(s.c_str());
+				}
 
-			Regenerate(mySeed);
-			std::ostringstream stringStream;
-			stringStream << "Generating " << (GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded") << " with seed: " << mySeed;
-			return stringStream.str();
-		});
+				Regenerate(mySeed);
+				std::ostringstream stringStream;
+				stringStream << "Generating " << (GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded") << " with seed: " << mySeed;
+				return stringStream.str();
+			});
+			console->AddVariable("Terrain.Seed", mySeed);
+		}
 
 #ifdef _DEBUG
 		const int numTiles = 1;
@@ -79,10 +67,7 @@ public:
 
 	~TerrainManager()
 	{
-		for (Terrain* terrain : myTerrains)
-		{
-			delete terrain;
-		}
+		myTerrains.clear();
 	}
 
 	void Regenerate(int aSeed = -1)
@@ -97,10 +82,10 @@ public:
 			mySeed,
 			GameInfo::ourGenerateTerrainCaching ? "using" : "not using");
 		vector<std::thread> threads;
-		for (Terrain* terrain : myTerrains)
+		for (auto& terrain : myTerrains)
 		{
 			if(GameInfo::ourGenerateTerrainThreaded)
-				threads.push_back(std::thread(&Terrain::GenerateTerrain, terrain, mySeed));
+				threads.push_back(std::thread(&Terrain::GenerateTerrain, terrain.get(), mySeed));
 			else
 				terrain->GenerateTerrain(mySeed);
 		}
@@ -108,7 +93,7 @@ public:
 		for(std::thread& t : threads)
 			t.join();
 		
-		for (Terrain* terrain : myTerrains)
+		for (auto& terrain : myTerrains)
 		{
 			terrain->Finalize(myLoader);
 		}
@@ -120,9 +105,9 @@ public:
 
 	void AddTerrain(int aGridX, int aGridZ)
 	{
-		Terrain* t = new Terrain(aGridX, aGridZ, myLoader, myTexturePack, myBlendMap, mySeed);
+		std::unique_ptr<Terrain> t = std::make_unique<Terrain>(aGridX, aGridZ, myLoader, myTexturePack, myBlendMap, mySeed);
 		unique_lock<mutex> l{ myMutex };
-		myTerrains.push_back(t);
+		myTerrains.push_back(std::move(t));
 	}
 
 	float GetHeight(float aWorldX, float aWorldZ) const
@@ -130,7 +115,7 @@ public:
 		int vertexCount = (Terrain::ourVertexCount - 1);
 		float gridSquareSize = Terrain::ourSize / vertexCount;
 
-		for (Terrain const* terrain : myTerrains)
+		for (auto const& terrain : myTerrains)
 		{
 			float terrainX = aWorldX - terrain->GetX();
 			float terrainZ = aWorldZ - terrain->GetZ();
@@ -149,12 +134,13 @@ public:
 		return GameInfo::ourWaterHeight;
 	}
 
-	std::vector<Terrain*> const& GetTerrains() const { return myTerrains; }
+	std::vector<std::unique_ptr<Terrain>> const& GetTerrains() const { return myTerrains; }
+
 private:
 	Loader& myLoader;
 	TerrainTexturePack& myTexturePack;
 	TerrainTexture& myBlendMap;
-	std::vector<Terrain*> myTerrains;
+	std::vector<std::unique_ptr<Terrain>> myTerrains;
 	int mySeed;
 
 	mutex myMutex;

@@ -23,16 +23,16 @@ void main(void)
 	vec3 blendMapColour = vec3(0);// texture(blendMap, pass_textureCoods);
 	
 	{	// Grass
-		float y = clamp(1 - (abs(20 - (vertexWorldPos.y )) / 20), 0, 0.9);
+		float y = clamp(1 - (abs(20 - (vertexWorldPos.y )) / 20), 0.0, 0.9);
 		blendMapColour += vec3(0, 0, y);
 	}
 	
 	{	// Flowers
-		float y = clamp(1 - (abs(20 - (vertexWorldPos.y + 20)) / 20), 0, 0.9);
+		float y = clamp(1 - (abs(20 - (vertexWorldPos.y + 20)) / 20), 0.0, 0.9);
 		blendMapColour += vec3(y, 0, 0);
 	}
 	{	// Mud
-		float y = clamp(1 - (abs(30 - (vertexWorldPos.y + 60)) / 30), 0, 0.9);
+		float y = clamp(1 - (abs(30 - (vertexWorldPos.y + 60)) / 30), 0.0, 0.9);
 		blendMapColour += vec3(0, y, 0);
 	}
 

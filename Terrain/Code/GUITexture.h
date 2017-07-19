@@ -12,6 +12,7 @@ public:
 		, myPosition(aPosition)
 		, myScale(aScale)
 	{}
+	~GUITexture() = default;
 
 	GLuint myTextureID;
 	vec2 myPosition;

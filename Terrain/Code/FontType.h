@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 class TextMeshCreator;
 class GUIText;
@@ -12,7 +13,7 @@ class FontType
 {
 private:
 	int myTextureAtlas;
-	TextMeshCreator* myLoader;
+	std::shared_ptr<TextMeshCreator> myLoader;
 
 public:
 	/**
@@ -26,6 +27,7 @@ public:
 	*            the texture atlas.
 	*/
 	FontType(int aTextureAtlas, const char* aFontFile);
+	//FontType(FontType const& aFont);
 	~FontType();
 
 	bool operator< (const FontType& rhs) const

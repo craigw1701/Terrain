@@ -73,6 +73,8 @@ Tasks ToDo, in vague order:
 * Nav-Mesh
 * AI Navigation
 
+* First Person Camera
+
 * Fonts/Text
 	+ Better word formatting, wrapping
 * Console

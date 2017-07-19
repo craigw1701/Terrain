@@ -7,8 +7,14 @@
 FontType::FontType(int aTextureAtlas, const char* aFontFile)
 {
 	myTextureAtlas = aTextureAtlas;
-	myLoader = new TextMeshCreator(aFontFile);
+	myLoader = std::make_shared<TextMeshCreator>(aFontFile);
 }
+/*
+FontType::FontType(FontType const& aFont)
+	: myTextureAtlas(aFont.myTextureAtlas)
+	, myLoader(new TextMeshCreator(*aFont.myLoader.get()))
+{
+}*/
 
 FontType::~FontType()
 {

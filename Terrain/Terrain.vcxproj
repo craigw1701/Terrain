@@ -198,6 +198,7 @@
     <ClInclude Include="Code\SkyboxRenderer.h" />
     <ClInclude Include="Code\SkyboxShader.h" />
     <ClInclude Include="Code\StaticShader.h" />
+    <ClInclude Include="Code\StringUtils.h" />
     <ClInclude Include="Code\Terrain.h" />
     <ClInclude Include="Code\TerrainManager.h" />
     <ClInclude Include="Code\TerrainRenderer.h" />

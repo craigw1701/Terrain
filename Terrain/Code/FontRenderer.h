@@ -19,14 +19,14 @@ public:
 	//	shader.cleanUp();
 	}
 
-	void Render(std::map<FontType, std::vector<GUIText*>>& someTexts)
+	void Render(std::map<FontType*, std::vector<GUIText*>>& someTexts)
 	{
 		Prepare();
 
 		for (auto& iter = someTexts.begin(); iter != someTexts.end(); iter++)
 		{
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, iter->first.GetTextureAtlas());
+			glBindTexture(GL_TEXTURE_2D, iter->first->GetTextureAtlas());
 			for (GUIText const* text : iter->second)
 			{
 				RenderText(*text);

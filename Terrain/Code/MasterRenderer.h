@@ -49,38 +49,43 @@ public:
 		myTerrainShader.Setup();
 		myTerrainRenderer.Setup(myProjectionMatrix);
 
-		DebugConsole::AddCommand("Render.Wireframe", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand) 
+		if (DebugConsole* console = DebugConsole::GetInstance())
 		{
-			std::string s = DebugConsole::GetParam(aFullCommand, 1);
-			if (s.size() > 0)
+			console->AddCommand("Render.Wireframe", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand)
 			{
-				int value = atoi(s.c_str());
-				GameInfo::ourWireframeMode = value;
-			}
-			else
-			{
-				GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
-			}
-			glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
-			return GameInfo::ourWireframeMode ? "Wireframe On" : "Wireframe Off";
-		});
-		DebugConsole::AddCommand("Render.ShowWater", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand)
-		{
-			GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
-			return GameInfo::ourDrawWater ? "Water On" : "Water Off";
-		});
-		DebugConsole::AddCommand("Render.ShowEntities", "", [](std::string aFullCommand)
-		{
-			GameInfo::ourDrawEntities = !GameInfo::ourDrawEntities;
-			return GameInfo::ourDrawEntities ? "Entities On" : "Entities Off";
-		});
-		DebugConsole::AddCommand("Render.ShowTerrain", "", [](std::string aFullCommand)
-		{
-			GameInfo::ourDrawTerrain = !GameInfo::ourDrawTerrain;
-			return GameInfo::ourDrawTerrain ? "Terrain On" : "Terrain Off";
-		});
+				std::string s = DebugConsole::GetInstance()->GetParam(aFullCommand, 1);
+				if (s.size() > 0)
+				{
+					int value = atoi(s.c_str());
+					GameInfo::ourWireframeMode = value != 0;
+				}
+				else
+				{
+					GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
+				}
+				glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
+				return GameInfo::ourWireframeMode ? "Wireframe On" : "Wireframe Off";
+			});
+			console->AddVariable("Render.ShowWater", GameInfo::ourDrawWater);
+			console->AddVariable("Render.ShowEntities", GameInfo::ourDrawEntities);
+			console->AddVariable("Render.ShowTerrain", GameInfo::ourDrawTerrain);
 
-		
+			/*console->AddCommand("Render.ShowWater", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand)
+			{
+				GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
+				return GameInfo::ourDrawWater ? "Water On" : "Water Off";
+			});
+			console->AddCommand("Render.ShowEntities", "", [](std::string aFullCommand)
+			{
+				GameInfo::ourDrawEntities = !GameInfo::ourDrawEntities;
+				return GameInfo::ourDrawEntities ? "Entities On" : "Entities Off";
+			});
+			console->AddCommand("Render.ShowTerrain", "", [](std::string aFullCommand)
+			{
+				GameInfo::ourDrawTerrain = !GameInfo::ourDrawTerrain;
+				return GameInfo::ourDrawTerrain ? "Terrain On" : "Terrain Off";
+			});*/
+		}
 	}
 
 	~MasterRenderer()
@@ -92,12 +97,12 @@ public:
 		return myProjectionMatrix; 
 	}
 
-	void RenderScene(vector<Entity> const& someEntities, vector<Terrain*> const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
+	void RenderScene(vector<Entity> const& someEntities, Terrain::TerrainList const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
 	{
 		double startTime = glfwGetTime();
 
-		for (Terrain const* terrain : someTerrain)
-			ProcessTerrain(terrain);
+		for (auto const& terrain : someTerrain)
+			ProcessTerrain(terrain.get());
 
 		for (Entity const& entity : someEntities)
 			ProcessEntity(entity);

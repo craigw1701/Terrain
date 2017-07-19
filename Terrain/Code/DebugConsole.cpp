@@ -4,64 +4,61 @@
 #include "GUITexture.h"
 #include "FontMetaFile.h"
 #include "Loader.h"
+#include "StringUtils.h"
 
-bool DebugConsole::ourIsActive = false;
-bool DebugConsole::ourRefreshText = false;
+unique_ptr<DebugConsole> DebugConsole::ourInstance = nullptr;
 
-FontType* DebugConsole::ourFont = nullptr;
-GUIText* DebugConsole::ourCurrentText = nullptr;
-GUIText* DebugConsole::ourToolTip = nullptr;
-GUITexture* DebugConsole::ourGUITexture = nullptr;
+DebugConsole::DebugConsole() 
+: myCurrentText(nullptr)
+, myToolTip(nullptr)
+, myFont(nullptr)
+{
 
-std::vector<GUIText*> DebugConsole::ourHistoryTexts;
-std::vector<GUIText*> DebugConsole::ourAutoCompleteTexts;
-std::string DebugConsole::ourInputText = "";
+}
 
+DebugConsole::~DebugConsole()
+{
 
-int DebugConsole::ourCursorPosition = 0;
-int DebugConsole::ourHistoryPosition = -1;
-int DebugConsole::ourAutoCompletePosition = -1;
+}
 
-std::vector<std::string> DebugConsole::ourAutoComplete;
-std::vector<std::pair<std::string, bool>> DebugConsole::ourHistory;
-std::map<std::string, DebugConsole::DebugCommandData> DebugConsole::ourCommands;
+void DebugConsole::AddVariable(void* aVar, DebugConsoleVarType aType, const char* aName)
+{
+	// TODO:CW Check main thread?
+	std::string nameLower = ToLower(aName);
+
+	myVariables[nameLower] = std::make_unique<DebugConsoleVar>(aName, aVar, aType, myVariableIndex++);
+}
 
 void DebugConsole::Setup(Loader& aLoader)
 {
-	ourFont = new FontType(aLoader.LoadTexture("Fonts/times.png"), "data/Fonts/times.fnt");
+	if (ourInstance)
+		return;
+
+	ourInstance = std::unique_ptr<DebugConsole>(new DebugConsole());
+	ourInstance->myFont = std::make_unique<FontType>(aLoader.LoadTexture("Fonts/times.png"), "data/Fonts/times.fnt");
+	ourInstance->myGUITexture = make_unique<GUITexture>(aLoader.LoadTexture("DebugConsoleTexture.png"), vec2(0.0f, 0.5f), vec2(1.0f, 0.5f));
 
 	glfwSetCharCallback(GameInfo::ourWindow, &DebugConsole::CharacterInputCallback);
 	glfwSetKeyCallback(GameInfo::ourWindow, &DebugConsole::KeyInputCallback);
 
-	ourGUITexture = new GUITexture(aLoader.LoadTexture("DebugConsoleTexture.png"), vec2(0.0f, 0.5f), vec2(1.0f, 0.5f));
-
-	ResetConsole();
+	ourInstance->ResetConsole();
 }
 
-std::string DebugConsole::GetParam(std::string aCommand, int aParam)
+std::string DebugConsole::GetParam(std::string aCommand, int aParam) const
 {
-	int index = aCommand.find(' ');
-	if (index == -1)
-		return "";
-
-	std::string temp = aCommand.substr(index, aCommand.find(' ', index + 1));
-
-	return temp;
+	return aCommand.substr(0, aCommand.find(' '));
 }
 
 void DebugConsole::CleanUp()
 {
-	Close();
-}
-
-static std::string ToLower(std::string aString)
-{
-	std::string s;
-	s.reserve(aString.size());
-	for (auto& c : aString)
-		s += tolower(c);
-
-	return s;
+	if (ourInstance)
+	{
+		ourInstance->myVariables.clear();
+		ourInstance->myCommands.clear();
+		ourInstance->myGUITexture = nullptr;
+		ourInstance->Close();
+		ourInstance = nullptr;
+	}
 }
 
 void DebugConsole::AddCommand(const char* aCommand, const char* aAutoComplete, std::function<std::string(std::string)> aCommandFunc)
@@ -70,45 +67,35 @@ void DebugConsole::AddCommand(const char* aCommand, const char* aAutoComplete, s
 	data.myFullCommand = aCommand;
 	data.myAutoCompleteText = aAutoComplete;
 	data.myFunc = aCommandFunc;
-	ourCommands[ToLower(aCommand)] = data;
+	myCommands[ToLower(aCommand)] = data;
 }
 
 bool DebugConsole::IsActive() 
 { 
-	return ourIsActive; 
+	return ourInstance ? ourInstance->myIsActive : false;
 }
 
 void DebugConsole::Open() 
 { 
-	for (auto& history : ourHistory)
+	for (auto& history : myHistory)
 	{
 		AddHistory(history.first.c_str(), history.second, true);
 	}
-	ourIsActive = true; 
+	myIsActive = true; 
 }
 
 void DebugConsole::Close()
 {
-	ourIsActive = false;
-	delete ourCurrentText;
-	ourCurrentText = nullptr;
-	delete ourToolTip;
-	ourToolTip = nullptr;
-	for (GUIText* text : ourHistoryTexts)
-	{
-		delete text;
-	}
-	ourHistoryTexts.clear();
-	for (GUIText* text : ourAutoCompleteTexts)
-	{
-		delete text;
-	}
-	ourAutoCompleteTexts.clear();
+	myIsActive = false;
+	myCurrentText = nullptr;
+	myToolTip = nullptr;
+	myHistoryTexts.clear();
+	myAutoCompleteTexts.clear();
 }
 
 void DebugConsole::Toggle()
 {
-	if (ourIsActive)
+	if (myIsActive)
 		Close();
 	else
 		Open();
@@ -116,54 +103,63 @@ void DebugConsole::Toggle()
 
 void DebugConsole::Update()
 {
-	if (ourIsActive == false)
+	if (myIsActive == false)
 		return;
 
-	if (ourRefreshText)
+	if (myRefreshText)
 	{
-		delete ourCurrentText;
-		ourCurrentText = nullptr;
+		myCurrentText = nullptr;
 	}
 
-	if (ourCurrentText == nullptr)
+	if (myCurrentText == nullptr)
 	{
 		std::string text = "> ";
-		if (ourAutoCompletePosition != -1)
+		if (myAutoCompletePosition != -1)
 		{
-			text += ourAutoComplete[ourAutoCompletePosition] + "|";
+			text += myAutoComplete[myAutoCompletePosition] + "|";
 		}
-		else if (ourHistoryPosition != -1)
+		else if (myHistoryPosition != -1)
 		{
-			text += ourHistory[ourHistoryPosition].first + "|";
+			text += myHistory[myHistoryPosition].first + "|";
 		}
 		else
 		{
-			text += ourInputText.substr(0, ourCursorPosition) + "|" + ourInputText.substr(ourCursorPosition);
+			text += myInputText.substr(0, myCursorPosition) + "|" + myInputText.substr(myCursorPosition);
 		}
 
 
 		float yPos = 0.4f;
-		ourCurrentText = new GUIText(text.c_str(), 1, *ourFont, vec2(0.0, yPos), 1.0f, false);
-		yPos -= FontMetaFile::LINE_HEIGHT * ourCurrentText->GetFontSize();
+		myCurrentText = std::make_unique<GUIText>(text.c_str(), 1.0f, *myFont, vec2(0.0, yPos), 1.0f, false);
+		yPos -= FontMetaFile::LINE_HEIGHT * myCurrentText->GetFontSize();
 		
-		for (int i = ourHistoryTexts.size() - 1; i >= 0; i--)
+		for (int i = myHistoryTexts.size() - 1; i >= 0; i--)
 		{				
-			yPos -= FontMetaFile::LINE_HEIGHT * ourHistoryTexts.back()->GetFontSize();
-			ourHistoryTexts[i]->SetPosition(vec2(0, yPos));
+			yPos -= FontMetaFile::LINE_HEIGHT * myHistoryTexts.back()->GetFontSize();
+			myHistoryTexts[i]->SetPosition(vec2(0, yPos));
 		}
 		
 		yPos = 0.4f;
-		for (int i = 0; i < ourAutoCompleteTexts.size(); i++)
+		for (unsigned int i = 0; i < myAutoCompleteTexts.size(); i++)
 		{
-			yPos += FontMetaFile::LINE_HEIGHT * ourCurrentText->GetFontSize();
-			ourAutoCompleteTexts[i]->SetPosition(vec2(0, yPos));
+			yPos += FontMetaFile::LINE_HEIGHT * myCurrentText->GetFontSize();
+			myAutoCompleteTexts[i]->SetPosition(vec2(0, yPos));
 		}
 	}
 }
 
+
 void DebugConsole::CharacterInputCallback(GLFWwindow* aWindow, unsigned int aChar)
 {
-	if (ourIsActive == false)
+	if (ourInstance == nullptr)
+		return;
+	ourInstance->CharacterInputCallback_Internal(aWindow, aChar);
+}
+
+void DebugConsole::CharacterInputCallback_Internal(GLFWwindow* aWindow, unsigned int aChar)
+{
+	if(ourInstance == nullptr)
+		return;
+	if (myIsActive == false)
 	{
 		if (aChar == GLFW_KEY_GRAVE_ACCENT)
 		{
@@ -180,17 +176,25 @@ void DebugConsole::CharacterInputCallback(GLFWwindow* aWindow, unsigned int aCha
 			return;
 		}
 		MakeSelection();
-		ourInputText = ourInputText.substr(0, ourCursorPosition) + char(aChar) + ourInputText.substr(ourCursorPosition);
-		ourCursorPosition++;
-		ourRefreshText = true;
+		myInputText = myInputText.substr(0, myCursorPosition) + char(aChar) + myInputText.substr(myCursorPosition);
+		myCursorPosition++;
+		myRefreshText = true;
 	}
 
-	UpdateAutoComplete(ourInputText);
+	UpdateAutoComplete(myInputText);
 }
 
 void DebugConsole::KeyInputCallback(GLFWwindow* aWindow, int aChar, int scanCode, int anAction, int aMods)
 {
-	std::string currentText = ourInputText;
+	if (ourInstance == nullptr)
+		return;
+
+	ourInstance->KeyInputCallback_Internal(aWindow, aChar, scanCode, anAction, aMods);
+}
+
+void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int scanCode, int anAction, int aMods)
+{
+	std::string currentText = myInputText;
 	if (anAction == GLFW_RELEASE)
 		return;
 	
@@ -201,125 +205,133 @@ void DebugConsole::KeyInputCallback(GLFWwindow* aWindow, int aChar, int scanCode
 		{
 			ResetConsole();
 		}
-		else if (ourCursorPosition > 0)
+		else if (myCursorPosition > 0)
 		{
-			ourInputText = ourInputText.substr(0, ourCursorPosition-1) + ourInputText.substr(ourCursorPosition);
-			ourCursorPosition--;
-			ourRefreshText = true;
+			myInputText = myInputText.substr(0, myCursorPosition-1) + myInputText.substr(myCursorPosition);
+			myCursorPosition--;
+			myRefreshText = true;
 		}
-		currentText = ourInputText;
+		currentText = myInputText;
 	}
 	else if (aChar == GLFW_KEY_LEFT)
 	{
 		currentText = MakeSelection();
-		ourCursorPosition = ourCursorPosition > 0 ? ourCursorPosition - 1 : 0;
+		myCursorPosition = myCursorPosition > 0 ? myCursorPosition - 1 : 0;
 	}
 	else if (aChar == GLFW_KEY_RIGHT)
 	{
 		currentText = MakeSelection();
-		ourCursorPosition = ourCursorPosition < ourInputText.size() ? ourCursorPosition + 1 : ourInputText.size();
+		myCursorPosition = static_cast<unsigned int>(myCursorPosition) < myInputText.size() ? myCursorPosition + 1 : myInputText.size();
 	}
 	else if (aChar == GLFW_KEY_UP)
 	{
-		if (ourAutoCompleteTexts.size() != 0)
+		if (myAutoCompleteTexts.size() != 0)
 		{
-			ourAutoCompletePosition--;
-			if (ourAutoCompletePosition < -1)
-				ourAutoCompletePosition = ourAutoComplete.size() - 1;
+			myAutoCompletePosition--;
+			if (myAutoCompletePosition < -1)
+				myAutoCompletePosition = myAutoComplete.size() - 1;
 
-			if(ourAutoCompletePosition != -1)
-				currentText = ourAutoComplete[ourAutoCompletePosition];
+			if(myAutoCompletePosition != -1)
+				currentText = myAutoComplete[myAutoCompletePosition];
 		}
 		else
 		{
-			int pos = ourHistoryPosition == -1 ? (ourHistory.size() - 1) : ourHistoryPosition - 1;
+			int pos = myHistoryPosition == -1 ? (myHistory.size() - 1) : myHistoryPosition - 1;
 			for (int i = pos; i >= 0; i--)
 			{
-				if (!ourHistory[i].second)
+				if (!myHistory[i].second)
 				{
-					ourHistoryPosition = i;
-					ourRefreshText = true;
-					currentText = ourHistory[ourHistoryPosition].first;
+					myHistoryPosition = i;
+					myRefreshText = true;
+					currentText = myHistory[myHistoryPosition].first;
 					UpdateAutoComplete(currentText);
 					return;
 				}
 			}
-			ourHistoryPosition = -1;
+			myHistoryPosition = -1;
 		}
 	}
 	else if (aChar == GLFW_KEY_DOWN)
 	{
-		if (ourAutoCompleteTexts.size() != 0)
+		if (myAutoCompleteTexts.size() != 0)
 		{
-			ourAutoCompletePosition++;
-			if (ourAutoCompletePosition >= ourAutoComplete.size())
-				ourAutoCompletePosition = -1;
+			myAutoCompletePosition++;
+			if (static_cast<unsigned int>(myAutoCompletePosition) >= myAutoComplete.size())
+				myAutoCompletePosition = -1;
 
-			if (ourAutoCompletePosition != -1)
-				currentText = ourAutoComplete[ourAutoCompletePosition];
+			if (myAutoCompletePosition != -1)
+				currentText = myAutoComplete[myAutoCompletePosition];
 		}	
 		else
 		{
-			for (int i = ourHistoryPosition + 1; i < ourHistory.size(); i++)
+			for (unsigned int i = myHistoryPosition + 1; i < myHistory.size(); i++)
 			{
-				if (!ourHistory[i].second)
+				if (!myHistory[i].second)
 				{
-					ourHistoryPosition = i;
-					ourRefreshText = true;
-					currentText = ourHistory[ourHistoryPosition].first;
+					myHistoryPosition = i;
+					myRefreshText = true;
+					currentText = myHistory[myHistoryPosition].first;
 					UpdateAutoComplete(currentText);
 					return;
 				}
 			}
-			ourHistoryPosition = -1;
+			myHistoryPosition = -1;
 		}
 	}
 	else if (aChar == GLFW_KEY_HOME)
 	{
 		currentText = MakeSelection();
-		ourCursorPosition = 0;
+		myCursorPosition = 0;
 	}
 	else if (aChar == GLFW_KEY_END)
 	{
 		currentText = MakeSelection();
-		ourCursorPosition = ourInputText.size();
+		myCursorPosition = myInputText.size();
 	}
 	else if (aChar == GLFW_KEY_ENTER || aChar == GLFW_KEY_KP_ENTER)
 	{
 		currentText = MakeSelection();
-		if (ourInputText.size() != 0)
+		if (myInputText.size() != 0)
 		{
 			std::string reply = "Invalid Command";
-			int index = ourInputText.find(' ');
-			std::string command = ToLower(ourInputText.substr(0, index));
+			int index = myInputText.find(' ');
+			std::string command = ToLower(myInputText.substr(0, index));
 
-			auto& iter = ourCommands.find(command);
-			if (iter != ourCommands.end())
+			auto& iter = myCommands.find(command);
+			if (iter != myCommands.end())
 			{
-				reply = ourCommands[command].myFunc(ourInputText.c_str());
+				std::string parameters = TrimWhitespace(myInputText.substr(command.length()));
+				reply = myCommands[command].myFunc(parameters);
 			}
-			AddHistory(ourInputText.c_str(), false);
+			else
+			{
+				auto& variableIter = myVariables.find(command);
+				if (variableIter != myVariables.end())
+				{
+					std::string parameters = TrimWhitespace(myInputText.substr(command.length()));
+					if (parameters.size() != 0)
+						myVariables[command]->Set(parameters.c_str());
+
+					myVariables[command]->Get(reply);
+				}
+			}
+			AddHistory(myInputText.c_str(), false);
 			AddHistory(reply.c_str(), true);
 			ResetConsole();
 		}
 	}
 
-	UpdateAutoComplete(ourInputText);
+	UpdateAutoComplete(myInputText);
 }
 
 void DebugConsole::UpdateAutoComplete(std::string aCurrentText)
 {
-	for (auto& s : ourAutoCompleteTexts)
-	{
-		delete s;
-	}
-	ourAutoComplete.clear();
-	ourAutoCompleteTexts.clear();
+	myAutoComplete.clear();
+	myAutoCompleteTexts.clear();
 
 	if (aCurrentText.size() == 0)
 	{
-		delete ourToolTip;
-		ourToolTip = nullptr;
+		myToolTip = nullptr;
 		return;
 	}
 
@@ -327,77 +339,86 @@ void DebugConsole::UpdateAutoComplete(std::string aCurrentText)
 	std::string command = aCurrentText.substr(0, index);
 
 	DebugCommandData data;
-	for (auto& p : ourCommands)
+	for (auto& p : myCommands)
 	{
 		if (p.first.find(ToLower(command)) != -1)
 		{
 			data = p.second;
-			ourAutoComplete.push_back(p.second.myFullCommand);
+			myAutoComplete.push_back(p.second.myFullCommand);
 		}
 	}
-
-	if (ourAutoComplete.size() < 5)
+	
+	DebugConsoleVar* debugVar = nullptr;
+	for (auto& var : myVariables)
 	{
-		for (auto& s : ourAutoComplete)
+		if (var.first.find(ToLower(command)) != -1)
 		{
-			ourAutoCompleteTexts.push_back(new GUIText(s, 1.0f, *ourFont, vec2(0, 0), 1.0f, false));
+			debugVar = var.second.get();
+			myAutoComplete.push_back(var.second->GetName());
 		}
 	}
 
-	if (ourAutoComplete.size() == 1)
+	if (myAutoComplete.size() < 5)
 	{
-		float y = 0.4f - FontMetaFile::LINE_HEIGHT * ourCurrentText->GetFontSize();
-		delete ourToolTip;
+		for (auto& s : myAutoComplete)
+		{
+			myAutoCompleteTexts.push_back(std::make_unique<GUIText>(s, 1.0f, *myFont, vec2(0, 0), 1.0f, false));
+		}
+	}
+
+	if (myAutoComplete.size() == 1 && debugVar == nullptr) // TODO:CW Support tooltips on variables
+	{
+		float y = 0.4f - FontMetaFile::LINE_HEIGHT * myCurrentText->GetFontSize();
+		myToolTip = nullptr;
 		std::string toolTip = data.myFullCommand + " " + data.myAutoCompleteText;
-		ourToolTip = new GUIText(toolTip, 1.0f, *ourFont, vec2(0, y), 1.0f, false);
-		ourToolTip->SetColour(0, 0.5, 0.5);
-		ourRefreshText = true;
+		myToolTip = std::make_unique<GUIText>(toolTip, 1.0f, *myFont, vec2(0, y), 1.0f, false);
+		myToolTip->SetColour(0, 0.5, 0.5);
+		myRefreshText = true;
 	}
 	else
 	{
-		delete ourToolTip;
-		ourToolTip = nullptr;
+		myToolTip = nullptr;
 	}
 }
 
 std::string DebugConsole::MakeSelection()
 {
-	if (ourAutoCompletePosition != -1)
+	if (myAutoCompletePosition != -1)
 	{
-		ourInputText = ourAutoComplete[ourAutoCompletePosition] + " ";
-		ourCursorPosition = ourInputText.size();
-		ourAutoCompletePosition = -1;
+		myInputText = myAutoComplete[myAutoCompletePosition] + " ";
+		myCursorPosition = myInputText.size();
+		myAutoCompletePosition = -1;
 	
 	}
-	if (ourHistoryPosition != -1)
+	if (myHistoryPosition != -1)
 	{
-		ourInputText = ourHistory[ourHistoryPosition].first + " ";
-		ourCursorPosition = ourInputText.size();
-		ourHistoryPosition = -1;
+		myInputText = myHistory[myHistoryPosition].first + " ";
+		myCursorPosition = myInputText.size();
+		myHistoryPosition = -1;
 	}
-	ourRefreshText = true;
+	myRefreshText = true;
 	
-	return ourInputText;
+	return myInputText;
 }
 
 void DebugConsole::AddHistory(const char* aText, bool aReply, bool aIsReadding)
 {
-	GUIText* guiText = new GUIText(aText, 1, *ourFont, vec2(0.0, 0), 1.0f, false);
+	unique_ptr<GUIText> guiText = std::make_unique<GUIText>(aText, 1.0f, *myFont, vec2(0.0, 0), 1.0f, false);
 	if (aReply)
-		guiText->SetColour(1, 0, 0);
+		guiText->SetColour(0.6f, 0.6f, 0.6f);
 	else
-		guiText->SetColour(0, 1, 0);		
+		guiText->SetColour(0.8f, 0.8f, 0.8f);		
 
 	if(!aIsReadding)
-		ourHistory.push_back(std::pair<std::string, bool>(aText, aReply));
-	ourHistoryTexts.push_back(guiText);
+		myHistory.push_back(std::pair<std::string, bool>(aText, aReply));
+	myHistoryTexts.push_back(std::move(guiText));
 }
 
 void DebugConsole::ResetConsole()
 {
-	ourInputText = "";
-	ourCursorPosition = 0;
-	ourHistoryPosition = -1;
-	ourAutoCompletePosition = -1;
-	ourRefreshText = true;
+	myInputText = "";
+	myCursorPosition = 0;
+	myHistoryPosition = -1;
+	myAutoCompletePosition = -1;
+	myRefreshText = true;
 }

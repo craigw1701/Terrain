@@ -326,9 +326,12 @@ int main()
 			//GLint polygonMode;
 			//glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			DebugConsole::Update();
-			if (DebugConsole::IsActive())
-				guis.push_back(*DebugConsole::ourGUITexture);
+			if (DebugConsole *console = DebugConsole::GetInstance())
+			{
+				console->Update();
+				if (console->IsActive())
+					guis.push_back(*console->myGUITexture);
+			}
 			guiRenderer.Render(guis);
 			TextMaster::Render();
 			guis.clear();
