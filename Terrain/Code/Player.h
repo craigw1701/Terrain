@@ -60,9 +60,10 @@ private:
 	void CheckInputs()
 	{
 		if (DebugConsole::IsActive())
-		{
 			return;
-		}
+
+		if(GameInfo::ourFlyCamera)
+			return;
 
 		float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 5.0f : 1.0f;
 		if (Input::IsDown(GLFW_KEY_W))

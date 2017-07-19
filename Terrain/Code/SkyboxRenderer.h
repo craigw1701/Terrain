@@ -23,11 +23,12 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(Camera const& aCamera, Light const& aSun)
+	void Render(Camera const& aCamera, Light const& aSun, vec3 aFogColour)
 	{
 		myShader.Start();
 		myShader.LoadLight(aSun);
 		myShader.LoadViewMatrix(aCamera);
+		myShader.LoadFogColour(aFogColour);
 		glDisable(GL_DEPTH_TEST);
 		glBindVertexArray(myCube.GetVAOID());
 		glEnableVertexAttribArray(0);

@@ -6,6 +6,7 @@
 #include "gl.h"
 
 GameInfo::HeightInfo GameInfo::ourHeightInfo;
+vec3 GameInfo::ourFogColour = vec3(0.5f, 0.5f, 0.5f);
 float GameInfo::ourDeltaTime = 0.0f;
 float GameInfo::ourDayNightTime = 0.0f;
 int GameInfo::ourScreenWidth = 1024;
@@ -18,7 +19,7 @@ bool GameInfo::ourDrawEntities = true;
 bool GameInfo::ourDrawTerrain = true;
 bool GameInfo::ourDrawWater = true;
 bool GameInfo::ourDrawSkybox = true;
-bool GameInfo::ourFlyCamera = false;
+bool GameInfo::ourFlyCamera = true;
 bool GameInfo::ourGenerateTerrainThreaded = true;
 
 #ifdef _DEBUG

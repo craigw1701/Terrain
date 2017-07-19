@@ -9,6 +9,11 @@ uniform samplerCube cubeMapNight;
 uniform float dayNightTime;
 uniform vec3 lightColour;
 
+uniform vec3 fogColour;
+
+const float lowerFogLimit = -10.0;
+const float upperFogLimit = 300.0;
+
 void main(void)
 {
     out_Color = mix(
@@ -16,4 +21,8 @@ void main(void)
 	vec4(lightColour, 1), 0.5);
 
 	//out_Color = mix(out_Color, vec4(0,1,0,1), clamp(sunDistance / 10000.0f, 0.0f, 1.0f));
+
+	float factor = (textureCoords.y - lowerFogLimit) / (upperFogLimit - lowerFogLimit);
+	factor = clamp(factor, 0.0, 1.0);
+	out_Color = mix(vec4(fogColour, 1.0), out_Color, factor);
 }

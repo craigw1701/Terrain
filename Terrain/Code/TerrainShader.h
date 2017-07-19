@@ -35,6 +35,7 @@ protected:
 		myLocationBTexture = GetUniformLocation("bTexture");
 		myLocationBlendTexture = GetUniformLocation("blendMap");
 		myLocationPlane = GetUniformLocation("plane");
+		myLocationSkyColour = GetUniformLocation("skyColour");
 	}
 
 public:
@@ -66,6 +67,11 @@ public:
 		LoadVector(myLocationLightColour, aLight.myColour);
 	}
 
+	void LoadSkyColour(vec3 aColour)
+	{
+		LoadVector(myLocationSkyColour, aColour);
+	}
+
 	void LoadShineVariables(float aDamper, float aReflectivity)
 	{
 		LoadFloat(myLocationShineDamper, aDamper);
@@ -92,4 +98,6 @@ private:
 	GLuint myLocationBTexture;
 	GLuint myLocationBlendTexture;
 	GLuint myLocationPlane;
+
+	GLuint myLocationSkyColour;
 };

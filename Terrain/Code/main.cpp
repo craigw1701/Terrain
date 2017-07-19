@@ -238,6 +238,7 @@ int main()
 			light.myColour = mix(light.myColour, vec3(0.0, 0.02, 0.1), mix2);
 		}
 
+		GameInfo::ourFogColour = mix(vec3(0.5f, 0.5f, 0.5f), light.myColour, 0.4);
 		if (Input::IsPressed(GLFW_KEY_KP_SUBTRACT))
 		{
 			terrainManager.Regenerate();
@@ -267,7 +268,7 @@ int main()
 
 		renderer.ProcessEntity(player);
 		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, 1, 0, 6));
-		waterRenderer.Render(waters, camera, light);
+		waterRenderer.Render(waters, camera, light, GameInfo::ourFogColour);
 
 		{
 			//GLint polygonMode;

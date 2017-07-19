@@ -24,6 +24,7 @@ public:
 		float lacunarity = 0.2f;
 	};
 	static HeightInfo ourHeightInfo;
+	static vec3 ourFogColour;
 
 	static float ourDeltaTime;
 	static float ourDayNightTime;

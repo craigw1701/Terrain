@@ -30,13 +30,13 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(vector<WaterTile>& someWater, Camera& aCamera, Light& aLight)
+	void Render(vector<WaterTile>& someWater, Camera& aCamera, Light& aLight, vec3 aSkyColour)
 	{
 		if (!GameInfo::ourDrawWater)
 			return;
 
 		DisableCulling();
-		PrepareRender(aCamera, aLight);
+		PrepareRender(aCamera, aLight, aSkyColour);
 		for (WaterTile& waterTile : someWater)
 		{
 			mat4 modelMatrix = CreateTransformMatrix(waterTile.myCenterPos, vec3(0, 0, 0), waterTile.TILE_SIZE);
@@ -49,10 +49,11 @@ public:
 	}
 
 private:
-	void PrepareRender(Camera& aCamera, Light& aLight)
+	void PrepareRender(Camera& aCamera, Light& aLight, vec3 aSkyColour)
 	{
 		myShader.Start();
 		myShader.LoadViewMatrix(aCamera);
+		myShader.LoadSkyColour(aSkyColour);
 		myMoveFactor += WAVE_SPEED * GameInfo::ourDeltaTime;
 		myMoveFactor = myMoveFactor - (int)myMoveFactor;
 		myShader.LoadMoveFactor(myMoveFactor);

@@ -32,6 +32,12 @@ public:
 		myLocationLightColour = GetUniformLocation("lightColour");
 		myLocationLightPosition = GetUniformLocation("lightPos");
 		myLocationDepthMap = GetUniformLocation("depthMap");
+		myLocationSkyColour = GetUniformLocation("skyColour");
+	}
+
+	void LoadSkyColour(vec3 aColour)
+	{
+		LoadVector(myLocationSkyColour, aColour);
 	}
 
 	void LoadProjectionMatrix(mat4 aMatrix)
@@ -84,4 +90,5 @@ private:
 	GLuint myLocationLightColour;
 	GLuint myLocationLightPosition;
 	GLuint myLocationDepthMap;
+	GLuint myLocationSkyColour;
 };

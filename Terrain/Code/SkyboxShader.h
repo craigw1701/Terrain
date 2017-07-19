@@ -33,6 +33,11 @@ public:
 		LoadFloat(myLocationDayNightTime, GameInfo::ourDayNightTime);
 	}
 
+	void LoadFogColour(vec3 aColour)
+	{
+		LoadVector(myLocationFogColour, aColour);
+	}
+
 	void ConnectTextureUnits()
 	{
 		LoadInt(myLocationCubeMapDay, 0);
@@ -48,6 +53,7 @@ public:
 		myLocationDayNightTime = GetUniformLocation("dayNightTime");
 		myLocationCubeMapDay = GetUniformLocation("cubeMap");
 		myLocationCubeMapNight = GetUniformLocation("cubeMapNight");
+		myLocationFogColour = GetUniformLocation("fogColour");
 	}
 
 	void BindAttributes() override
@@ -63,6 +69,7 @@ private:
 	GLuint myLocationLightPosition;
 	GLuint myLocationCubeMapDay;
 	GLuint myLocationCubeMapNight;
+	GLuint myLocationFogColour;
 
 	float myCurrentRotation = 0.0f;
 	static constexpr float ourRotateSpeed = 0.1f;

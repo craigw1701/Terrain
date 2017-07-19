@@ -117,7 +117,7 @@ private:
 		
 		if (GameInfo::ourDrawSkybox)
 		{
-			mySkyboxRenderer.Render(aCamera, aSun);
+			mySkyboxRenderer.Render(aCamera, aSun, GameInfo::ourFogColour);
 		}
 		
 		if (GameInfo::ourDrawEntities)
@@ -139,6 +139,7 @@ private:
 			myTerrainShader.LoadClipPlane(aClipPlane);
 			myTerrainShader.LoadLight(aSun);
 			myTerrainShader.LoadViewMatrix(aCamera);
+			myTerrainShader.LoadSkyColour(GameInfo::ourFogColour);
 			myTerrainRenderer.Render(myTerrains);
 			GameInfo::SetRenderTime(glfwGetTime() - startTime);
 			myTerrainShader.Stop();
