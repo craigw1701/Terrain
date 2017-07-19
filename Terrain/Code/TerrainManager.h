@@ -23,19 +23,9 @@ public:
 		DebugConsole* console = DebugConsole::GetInstance();
 		if (console)
 		{
-			console->AddCommand("Terrain.EnableThreaded", "", [](std::string somePerams)
+			console->AddCommand("Terrain.Regenerate", "", [this](std::string someParams)
 			{
-				GameInfo::ourGenerateTerrainThreaded = !GameInfo::ourGenerateTerrainThreaded;
-				return GameInfo::ourGenerateTerrainThreaded ? "Threaded On" : "Threaded Off";
-			});
-			console->AddCommand("Terrain.EnableCaching", "", [](std::string somePerams)
-			{
-				GameInfo::ourGenerateTerrainCaching = !GameInfo::ourGenerateTerrainCaching;
-				return GameInfo::ourGenerateTerrainCaching ? "Caching On" : "Caching Off";
-			});
-			console->AddCommand("Terrain.Regenerate", "", [this](std::string somePerams)
-			{
-				std::string s = TrimWhitespace(DebugConsole::GetInstance()->GetParam(somePerams, 1));
+				std::string s = TrimWhitespace(DebugConsole::GetInstance()->GetParam(someParams, 1));
 				if (s.size() > 0)
 				{
 					mySeed = atoi(s.c_str());
@@ -46,8 +36,21 @@ public:
 				stringStream << "Generating " << (GameInfo::ourGenerateTerrainThreaded ? "threaded" : "single-threaded") << " with seed: " << mySeed;
 				return stringStream.str();
 			});
+			console->AddVariable("Terrain.Threaded", GameInfo::ourGenerateTerrainThreaded);
+			console->AddVariable("Terrain.Caching", GameInfo::ourGenerateTerrainCaching);
 			console->AddVariable("Terrain.Seed", mySeed);
+
+
+			console->AddVariable("Terrain.octives", GameInfo::ourHeightInfo.octives);
+			console->AddVariable("Terrain.amplitude", GameInfo::ourHeightInfo.amplitude);
+			console->AddVariable("Terrain.frequency", GameInfo::ourHeightInfo.frequency);
+			console->AddVariable("Terrain.scale", GameInfo::ourHeightInfo.theScale);
+			console->AddVariable("Terrain.persistance", GameInfo::ourHeightInfo.persistance);
+			console->AddVariable("Terrain.lacunarity", GameInfo::ourHeightInfo.lacunarity);
+			console->AddVariable("Terrain.terrainHeight", GameInfo::ourHeightInfo.terrainHeight);
 		}
+
+
 
 #ifdef _DEBUG
 		const int numTiles = 1;
@@ -61,8 +64,6 @@ public:
 				AddTerrain(i, j);
 			}
 		}
-
-		Regenerate();
 	}
 
 	~TerrainManager()

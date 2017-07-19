@@ -5,8 +5,6 @@
 #include "PerlinNoise.h"
 #include "NonCopyable.h"
 
-#define AMPLITUTE 70.0f
-
 class HeightsGenerator : public NonCopyable
 {
 public:
@@ -39,10 +37,21 @@ public:
 			if (iter != myLookup.end())
 				return iter->second;
 		}
+		
+		float amplitude = GameInfo::ourHeightInfo.amplitude;
+		float frequency = GameInfo::ourHeightInfo.frequency;
+		double total = 0;
+		for(int i = 0; i < GameInfo::ourHeightInfo.octives; i++)
+		{ 
+			float sampleX = x * GameInfo::ourHeightInfo.theScale * frequency;
+			float sampleZ = z * GameInfo::ourHeightInfo.theScale * frequency;
+			total += GetN(sampleX, sampleZ) * amplitude;
 
-		double total = GetN(x, z) * AMPLITUTE * 5;
-		total += GetN(x * 4.0f, z * 4.0f) * AMPLITUTE / 2.0f;
-		total += GetN(x * 8.0f, z * 8.0f) * AMPLITUTE / 16.0f;
+			amplitude *= GameInfo::ourHeightInfo.lacunarity;
+			frequency *= GameInfo::ourHeightInfo.persistance;
+		}
+
+		total *= GameInfo::ourHeightInfo.terrainHeight;
 		
 		if (GameInfo::ourGenerateTerrainCaching)
 			myLookup[seed] = total;
@@ -52,7 +61,7 @@ public:
 	
 	double GetN(double x, double z) const
 	{
-		double n = pn.noise(x / 64.0f, z / 64, 0.8);
+		double n = pn.noise(x, z, 0.8);
 	//	n = pow(n, 1.5);
 		return n * 2.0 - 1.0f;
 	}

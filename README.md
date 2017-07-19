@@ -39,8 +39,11 @@ Done:
 * Console
  + Basic Auto-Complete
  + Basic History
+ + Able to add any existing variable to be changable in the Debug Console
+ + Able to add any "Command" that calls a function from the Debug Console
  
 Tasks ToDo, in vague order:
+* Gamestates (Load all systems first, then load the "level")
 * Fog
 * Sun
 * Shadows
@@ -57,6 +60,8 @@ Tasks ToDo, in vague order:
 * Global Ilumination
 * Geometry Shaders
 * Lens Flare
+* Resource Manager (fonts, objects, etc - make assets?)
+* Debug Screens (for showing real-time information, i.e. rendering information)
 
 * Procedrual Trees (fractal, l-systems) - https://www.youtube.com/watch?v=-wiverLQl1Q&list=PLRqwX-V7Uu6bXUJvjnMWGU5SmjhI-OXef
 * Procedrual Grass

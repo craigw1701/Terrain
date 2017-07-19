@@ -150,70 +150,34 @@ int main()
 	
 	Loader loader;
 	TextMaster::Init(&loader);
+
+	// Temp Loading code for now
+	{
+		FontType font(loader.LoadTexture("Fonts/times.png"), "data/Fonts/times.fnt");
+		GUIText *loadingText = new GUIText("Loading...", 1.0f, font, vec2(0.0, 0.5), 1.0f, true);
+		loadingText->SetColour(1.0f, 0.0f, 0.0f);
+		TextMaster::Render();
+		glfwSwapBuffers(GameInfo::ourWindow);
+		glfwPollEvents();
+		delete loadingText;
+		loadingText = nullptr;
+	}
+
 	DebugConsole::Setup(loader);
 
 	// TODO:CW Set up proper day/night time so console can type "settime noon" or "settime 18" etc
 
-	FontType font(loader.LoadTexture("Fonts/times.png"), "data/Fonts/times.fnt");
-	//GUIText text("The Quick Brown Fox Jumped Over The Lazy Dog", 1, font, vec2(0.0, 0.0), 1.0f, false);
-	/*
-	RawModel model = loader.LoadToVAO("Tree005/tree_oak.obj");
-	ModelTexture texture(loader.LoadTexture("Tree006/Branches0018_1_S.png"));
-	TexturedModel texturedModel(model, texture);
-	texture.myHasTransparency = true;
-	/*texture.myReflectivity = 0.2f;
-	texture.myShineDamper = 1;
-	texture.myHasTransparency = true;
-	texture.myUseFakeLighting = true;
-*/
-	//RawModel treeModel = loader.LoadToVAO("Tree001/Tree.obj");
-	//ModelTexture treeTexture(loader.LoadTexture("white.png"));
-	//TexturedModel texturedTreeModel(treeModel, texture);
-	//treeTexture.myReflectivity = 0.2f;
-	//treeTexture.myShineDamper = 1;
-
-
-	//RawModel grassModel = loader.LoadToVAO("Tree002/tree.obj");
-	//ModelTexture grassTexture(loader.LoadTexture("Tree002/DB2X2_L01.png"));
-	//TexturedModel texturedGrassModel(grassModel, texture);
-	/*grassTexture.myReflectivity = 0.2f;
-	grassTexture.myShineDamper = 1;
-	grassTexture.myHasTransparency = true;
-	texture.myUseFakeLighting = true;*/
 	
-	/*
-	for (int i = 0; i < 400; i++)
-	{
-		float x = rand() % 100 - 50;
-		float y = 0;
-		float z = rand() % 100 - 50;
-
-		float rY = rand() % 180;
-		float rS = float((rand() % 3) + 3.0f) / 20.0f;
-		entityManager.AddEntity(texturedGrassModel, glm::vec3(x, y, z), glm::vec3(180, rY, 0), rS);
-	}*/
-
-
+	
 	Light light(vec3(2000, 100, -200), vec3(0.988, 0.831, 0.25));
-	ModelTexture grass = loader.LoadTexture("grass.bmp");
-	grass.myReflectivity = 1;
-	grass.myShineDamper = 10;
 
 	TerrainTexture blendMap = loader.LoadTexture("blendMap.png");
 	TerrainTexturePack texturePack("grass.png", "grassFlowers.png", "mud.png", "grassy2.png", loader);
 	TerrainManager terrainManager(loader, texturePack, blendMap);
 
-	EntityManager entityManager(terrainManager);;
-
-
+	EntityManager entityManager(terrainManager);
 	vector<GUITexture> guis;
-	/*GUITexture gui = GUITexture(loader.LoadTexture("grassTexture.png"), vec2(0.5f, 0.5f), vec2(0.25f, 0.25f));
-	GUITexture gui2 = GUITexture(loader.LoadTexture("fern.png"), vec2(0.3f, 0.75f), vec2(0.4f, 0.4f));
-
-	guis.push_back(gui);
-	guis.push_back(gui2);*/
-
-
+	
 	RawModel bunnyModel = loader.LoadToVAO("stanfordBunny.obj");
 	ModelTexture bunnyTexture(loader.LoadTexture("white.png"));
 	TexturedModel texturedBunnyModel(bunnyModel, bunnyTexture);
@@ -231,34 +195,17 @@ int main()
 	WaterRenderer waterRenderer(loader, waterShader, fbos);
 	waterRenderer.Setup(renderer.GetProjectionMatrix());
 	vector<WaterTile> waters;
-	waters.push_back(WaterTile(vec3(75, GameInfo::ourWaterHeight, -500)));
-	
-	/*const float range = 500.0;
-	const int num = 250;
-
-	for (int i = 0; i < num; i++)
-	{
-		entityManager.AddEntityRandom(texturedModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(1, 5));
-	}
-
-	for (int i = 0; i < num; i++)
-	{
-		entityManager.AddEntityRandom(texturedGrassModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(5, 25));
-	}
-
-	for (int i = 0; i < num; i++)
-	{
-		entityManager.AddEntityRandom(texturedTreeModel, vec3(-range, 0, -range), vec3(range, 0, range), vec2(0.1, 0.5));
-	}*/
 
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));
 
-
-	//system("color 20");
+	//system("color 20"); // TODO:CW add console commands to show all FBOs
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
 	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
-	
+
+	cout << "Loading took: " << glfwGetTime() - startLoadTime << endl;
+	terrainManager.Regenerate();
+	waters.push_back(WaterTile(vec3(75, GameInfo::ourWaterHeight, -500)));
 	cout << "Loading took: " << glfwGetTime() - startLoadTime << endl;
 
 	double currentFrame = glfwGetTime();

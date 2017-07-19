@@ -12,6 +12,19 @@ struct GLFWwindow;
 class GameInfo
 {
 public:
+
+	struct HeightInfo
+	{
+		float terrainHeight = 50.0f;
+		float octives = 4;
+		float amplitude = 15;
+		float frequency = 1;
+		float theScale = 0.005f;
+		float persistance = 3.0f;
+		float lacunarity = 0.2f;
+	};
+	static HeightInfo ourHeightInfo;
+
 	static float ourDeltaTime;
 	static float ourDayNightTime;
 	static int ourScreenWidth;

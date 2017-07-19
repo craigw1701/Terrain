@@ -5,6 +5,7 @@
 
 #include "gl.h"
 
+GameInfo::HeightInfo GameInfo::ourHeightInfo;
 float GameInfo::ourDeltaTime = 0.0f;
 float GameInfo::ourDayNightTime = 0.0f;
 int GameInfo::ourScreenWidth = 1024;

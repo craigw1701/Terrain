@@ -11,7 +11,7 @@ public:
 
 	}
 
-	float TILE_SIZE = 2000;
+	float TILE_SIZE = 5000;
 
 	vec3 myCenterPos;
 };

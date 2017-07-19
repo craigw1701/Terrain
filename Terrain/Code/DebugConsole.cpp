@@ -46,6 +46,7 @@ void DebugConsole::Setup(Loader& aLoader)
 
 std::string DebugConsole::GetParam(std::string aCommand, int aParam) const
 {
+	//TODO:CW have this return the "aParm'th" parmeter
 	return aCommand.substr(0, aCommand.find(' '));
 }
 

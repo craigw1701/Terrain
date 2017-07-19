@@ -51,40 +51,18 @@ public:
 
 		if (DebugConsole* console = DebugConsole::GetInstance())
 		{
-			console->AddCommand("Render.Wireframe", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand)
-			{
-				std::string s = DebugConsole::GetInstance()->GetParam(aFullCommand, 1);
-				if (s.size() > 0)
-				{
-					int value = atoi(s.c_str());
-					GameInfo::ourWireframeMode = value != 0;
-				}
-				else
-				{
-					GameInfo::ourWireframeMode = !GameInfo::ourWireframeMode;
-				}
-				glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
-				return GameInfo::ourWireframeMode ? "Wireframe On" : "Wireframe Off";
-			});
+			console->AddVariable("Render.Wireframe", GameInfo::ourWireframeMode);
 			console->AddVariable("Render.ShowWater", GameInfo::ourDrawWater);
 			console->AddVariable("Render.ShowEntities", GameInfo::ourDrawEntities);
 			console->AddVariable("Render.ShowTerrain", GameInfo::ourDrawTerrain);
-
-			/*console->AddCommand("Render.ShowWater", "[x] - 0 = off, 1 = on; empty = toggle", [](std::string aFullCommand)
+			console->AddVariable("Render.FOV", myFOV);
+			console->AddVariable("Render.NearPlane", myNearPlane);
+			console->AddVariable("Render.FarPlane", myFarPlane);
+			console->AddCommand("Render.UpdateProjection", "", [this](std::string someParams)
 			{
-				GameInfo::ourDrawWater = !GameInfo::ourDrawWater;
-				return GameInfo::ourDrawWater ? "Water On" : "Water Off";
+				myProjectionMatrix = glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane);
+				return "Updated Projection";
 			});
-			console->AddCommand("Render.ShowEntities", "", [](std::string aFullCommand)
-			{
-				GameInfo::ourDrawEntities = !GameInfo::ourDrawEntities;
-				return GameInfo::ourDrawEntities ? "Entities On" : "Entities Off";
-			});
-			console->AddCommand("Render.ShowTerrain", "", [](std::string aFullCommand)
-			{
-				GameInfo::ourDrawTerrain = !GameInfo::ourDrawTerrain;
-				return GameInfo::ourDrawTerrain ? "Terrain On" : "Terrain Off";
-			});*/
 		}
 	}
 
@@ -99,6 +77,7 @@ public:
 
 	void RenderScene(vector<Entity> const& someEntities, Terrain::TerrainList const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
 	{
+		glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
 		double startTime = glfwGetTime();
 
 		for (auto const& terrain : someTerrain)
@@ -108,6 +87,8 @@ public:
 			ProcessEntity(entity);
 
 		Render(aSun, aCamera, aClipPlane);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		GameInfo::SetRenderTime(glfwGetTime() - startTime);
 	}

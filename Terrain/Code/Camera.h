@@ -14,6 +14,11 @@ public:
 		, myPosition(0, 0, 0)
 		, myRotation(20, 0, 0)
 	{
+		if (DebugConsole* console = DebugConsole::GetInstance())
+		{
+			console->AddVariable("Camera.NearZoom", myNearZoom);
+			console->AddVariable("Camera.FarZoom", myFarZoom);
+		}
 	}
 
 	void Update(TerrainManager& aTerrainManager)
@@ -106,7 +111,7 @@ private:
 	void CalculateZoon()
 	{
 		float speed = Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 50.0f : 10.0f;
-		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * speed, 20.0f, 2000.0f);
+		myDistanceFromPlayer = clamp(myDistanceFromPlayer - Input::GetScrollDelta().y * speed, myNearZoom, myFarZoom);
 	}
 
 	void CalculatePitch()
@@ -130,6 +135,9 @@ private:
 	Player& myPlayer;
 	float myDistanceFromPlayer = 50.0f;
 	float myAngleAroundPlayer = 0.0f;
+
+	float myNearZoom = 20.0f;
+	float myFarZoom = 2000.0f;
 public:
 	vec3 myPosition;
 	vec3 myRotation;
