@@ -25,6 +25,7 @@ public:
 
 private:
 	static void ScrollCallback(GLFWwindow* aWindow, double aXoffset, double aYoffset);
+	static void WindowFocusCallback(GLFWwindow* aWindow, int aIsInFocus);
 
 	/*static void CharacterInputCallback(GLFWwindow* aWindow, unsigned int aChar)
 	{
@@ -38,4 +39,5 @@ private:
 	static int locThisFrameMouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
 	static vec2 locThisFrameCursorPos;
 	static vec2 locLastFrameCursorPos;
+	static vec2 locDeltaCursorPos;
 };

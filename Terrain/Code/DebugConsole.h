@@ -5,6 +5,7 @@
 #include <functional>
 #include <string>
 #include <memory>
+#include "GL.h"
 
 class FontType;
 class GUIText;
@@ -22,6 +23,7 @@ enum class DebugConsoleVarType
 	BOOL,
 	INT,
 	FLOAT,
+	VEC3,
 };
 
 class DebugConsoleVar
@@ -50,7 +52,9 @@ public:
 
 	bool Set(std::string aString) 
 	{
-		if (myType == DebugConsoleVarType::BOOL)
+		switch (myType)
+		{
+		case DebugConsoleVarType::BOOL:
 		{
 			bool& theVar = *static_cast<bool*>(myVariablePtr);
 			if (aString.find("true") != -1)
@@ -66,34 +70,50 @@ public:
 			}
 			return true;
 		}
-		else if (myType == DebugConsoleVarType::INT)
+		case DebugConsoleVarType::INT:
 		{
 			*static_cast<int*>(myVariablePtr) = atoi(aString.c_str());
 			return true;
 		}
-		else if (myType == DebugConsoleVarType::FLOAT)
+		case DebugConsoleVarType::FLOAT:
 		{
 			*static_cast<float*>(myVariablePtr) = static_cast<float>(atof(aString.c_str()));
 			return true;
+		}
+		case DebugConsoleVarType::VEC3:
+			break;
+		default:
+			break;
 		}
 		return false; 
 	}
 	bool Get(std::string& aReturnedString) 
 	{
-		if (myType == DebugConsoleVarType::BOOL)
+		switch (myType)
+		{
+		case DebugConsoleVarType::BOOL:
 		{
 			aReturnedString = BuildReply(*static_cast<bool*>(myVariablePtr) ? "true" : "false");
 			return true;
 		}
-		else if (myType == DebugConsoleVarType::INT)
+		case DebugConsoleVarType::INT:
 		{
 			aReturnedString = BuildReply(std::to_string(*static_cast<int*>(myVariablePtr)));
 			return true;
 		}
-		else if (myType == DebugConsoleVarType::FLOAT)
+		case DebugConsoleVarType::FLOAT:
 		{
 			aReturnedString = BuildReply(std::to_string(*static_cast<float*>(myVariablePtr)));
 			return true;
+		}
+		case DebugConsoleVarType::VEC3:
+		{
+			vec3& v = *static_cast<vec3*>(myVariablePtr);
+			aReturnedString = BuildReply(std::to_string(v.x) + " " + std::to_string(v.y) + " " + std::to_string(v.z));
+			return true;
+		}
+		default:
+			break;
 		}
 		return false;
 	}
@@ -130,6 +150,7 @@ public:
 	void AddVariable(const char* aName, bool& aBool) { AddVariable(&aBool, DebugConsoleVarType::BOOL, aName); }
 	void AddVariable(const char* aName, int& anInt) { AddVariable(&anInt, DebugConsoleVarType::INT, aName); }
 	void AddVariable(const char* aName, float& aFloat) { AddVariable(&aFloat, DebugConsoleVarType::FLOAT, aName); }
+	void AddVariable(const char* aName, vec3& aVec3) { AddVariable(&aVec3, DebugConsoleVarType::VEC3, aName); }
 	
 private:
 	struct DebugCommandData

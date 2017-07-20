@@ -12,11 +12,16 @@ vec2 Input::locLastFrameScrollDelta;
 int Input::locThisFrameMouseButtons[GLFW_MOUSE_BUTTON_LAST + 1] = { 0 };
 vec2 Input::locThisFrameCursorPos;
 vec2 Input::locLastFrameCursorPos;
+vec2 Input::locDeltaCursorPos;
 
 
 void Input::Setup()
 {
 	glfwSetScrollCallback(GameInfo::ourWindow, &Input::ScrollCallback);
+	glfwSetWindowFocusCallback(GameInfo::ourWindow, &Input::WindowFocusCallback);
+	double halfX = GameInfo::ourScreenWidth / 2.0f;
+	double halfY = GameInfo::ourScreenHeight / 2.0f;
+	glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
 }
 
 void Input::UpdateInput()
@@ -31,14 +36,20 @@ void Input::UpdateInput()
 		// TODO:CW LAST BUTTONS?
 		locThisFrameMouseButtons[i] = glfwGetMouseButton(GameInfo::ourWindow, i);
 	}
-	locLastFrameCursorPos = locThisFrameCursorPos;
+	if (!GameInfo::ourWindowIsFocused)
+		return;
+
+	double halfX = GameInfo::ourScreenWidth / 2.0f;
+	double halfY = GameInfo::ourScreenHeight / 2.0f;
+
 	double x, y;
 	glfwGetCursorPos(GameInfo::ourWindow, &x, &y);
-	locThisFrameCursorPos.x = static_cast<float>(x);
-	locThisFrameCursorPos.y = static_cast<float>(y);
+	locDeltaCursorPos = vec2(halfX, halfY) - vec2(x, y);
 
 	locLastFrameScrollDelta = locThisFrameScrollDelta;
 	locThisFrameScrollDelta = vec2(0.0f);
+
+	glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
 }
 
 bool Input::IsMouseButtonDown(int aKey)
@@ -48,7 +59,7 @@ bool Input::IsMouseButtonDown(int aKey)
 
 vec2 Input::MousePosDelta()
 {
-	return locLastFrameCursorPos - locThisFrameCursorPos;
+	return locDeltaCursorPos;// locLastFrameCursorPos - locThisFrameCursorPos;
 }
 
 bool Input::IsPressed(int aKey)
@@ -74,6 +85,16 @@ vec2 Input::GetScrollDelta()
 void Input::ScrollCallback(GLFWwindow* aWindow, double aXoffset, double aYoffset)
 {
 	locThisFrameScrollDelta = vec2(aXoffset, aYoffset);
+}
+
+void Input::WindowFocusCallback(GLFWwindow* aWindow, int aIsInFocus)
+{
+	GameInfo::ourWindowIsFocused = aIsInFocus == GLFW_TRUE;
+
+	double halfX = GameInfo::ourScreenWidth / 2.0f;
+	double halfY = GameInfo::ourScreenHeight / 2.0f;
+	glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
+	locDeltaCursorPos = vec2(0, 0);
 }
 
 /*static void CharacterInputCallback(GLFWwindow* aWindow, unsigned int aChar)

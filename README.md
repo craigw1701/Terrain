@@ -41,13 +41,14 @@ Done:
  + Basic History
  + Able to add any existing variable to be changable in the Debug Console
  + Able to add any "Command" that calls a function from the Debug Console
+* Fog
+ + Add basic fog for Terrain, water and the skybox
  
 Tasks ToDo, in vague order:
-* Gamestates (Load all systems first, then load the "level")
-* Fog
 * Sun
 * Shadows
 * LOD
+* Gamestates (Load all systems first, then load the "level")
 * Mouse picking
 * Level "editor" (placing objects)
 * Saving/Loading
@@ -94,3 +95,8 @@ Tasks ToDo, in vague order:
 * Genetic Algorithms
 * N-Grams and Markov Chains
 * Twitter bot - https://www.youtube.com/playlist?list=PLRqwX-V7Uu6atTSxoRiVnSuOn6JHnq2yV
+
+-1705.92 385.123
+-2342.868
+
+18 150 0

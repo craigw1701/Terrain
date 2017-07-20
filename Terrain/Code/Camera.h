@@ -12,14 +12,16 @@ class Camera : public NonCopyable
 public:
 	Camera(Player& aPlayer)
 		: myPlayer(aPlayer)
-		, myPosition(0, 0, 0)
-		, myRotation(20, 0, 0)
+		, myPosition(-1705.92f, 385.123f, -2342.868f)
+		, myRotation(18, 150, 0)
 	{
 		if (DebugConsole* console = DebugConsole::GetInstance())
 		{
 			console->AddVariable("Camera.NearZoom", myNearZoom);
 			console->AddVariable("Camera.FarZoom", myFarZoom);
-			//console->AddVariable("Camera.Position", myPosition);
+			console->AddVariable("Camera.Position", myPosition);
+			console->AddVariable("Camera.Rotation", myRotation);
+			console->AddVariable("Camera.AngleAroundPlayer", myAngleAroundPlayer);
 		}
 	}
 
@@ -32,22 +34,20 @@ public:
 		float offsetX = aHorizontalDistance * sin(radians(theta));
 		float offsetZ = aHorizontalDistance * cos(radians(theta));
 
-		return vec3(offsetX, -aVerticalDistance, offsetZ);
+		return normalize(vec3(offsetX, -aVerticalDistance, offsetZ));
 	}
 	vec3 GetR()
 	{
-		float aHorizontalDistance = cos(radians(myRotation.x));
-		float aVerticalDistance = sin(radians(myRotation.x));
-
-		float theta = myAngleAroundPlayer - 90.0f;
-		float offsetX = aHorizontalDistance * sin(radians(theta));
-		float offsetZ = aHorizontalDistance * cos(radians(theta));
-
-		return vec3(offsetX, -aVerticalDistance, offsetZ);
+		vec3 forward = GetF();
+		vec3 right = cross(forward, vec3(0, 1, 0));
+		return normalize(right);
 	}
 
 	void Update(TerrainManager& aTerrainManager)
 	{
+		if (DebugConsole::IsActive())
+			return;
+
 		if (GameInfo::ourFlyCamera)
 		{
 			UpdateFlyCamera();
@@ -67,8 +67,8 @@ private:
 	void UpdateFlyCamera()
 	{
 		myAngleAroundPlayer += Input::MousePosDelta().x;
-		myRotation.x = clamp(myRotation.x - Input::MousePosDelta().y, -90.0f, 90.0f);
-		myRotation.y = 180 - (myPlayer.myRotation.y + myAngleAroundPlayer);
+		myRotation.x = clamp(myRotation.x - Input::MousePosDelta().y, -89.9f, 89.9f);
+		myRotation.y = 180 - (myAngleAroundPlayer);
 
 		vec3 forward = GetF();
 		vec3 right = GetR();
@@ -84,6 +84,10 @@ private:
 			direction += right * speed;
 		if (Input::IsDown(GLFW_KEY_A))
 			direction -= right * speed;
+		if (Input::IsDown(GLFW_KEY_Q))
+			direction += vec3(0, 1, 0) * speed;
+		if (Input::IsDown(GLFW_KEY_Z))
+			direction -= vec3(0, 1, 0) * speed;
 
 		myPosition += direction;
 		return;
@@ -166,7 +170,7 @@ private:
 	
 	Player& myPlayer;
 	float myDistanceFromPlayer = 50.0f;
-	float myAngleAroundPlayer = 0.0f;
+	float myAngleAroundPlayer = -331.0f;
 
 	float myNearZoom = 20.0f;
 	float myFarZoom = 2000.0f;
