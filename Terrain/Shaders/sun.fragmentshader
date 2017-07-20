@@ -1,0 +1,13 @@
+#version 400 core
+
+in vec2 pass_textureCoords;
+
+out vec4 out_colour;
+
+uniform sampler2D sunTexture;
+uniform vec3 sunColour;
+
+void main(void)
+{
+    out_colour = vec4(sunColour, texture(sunTexture, pass_textureCoords).a);
+}

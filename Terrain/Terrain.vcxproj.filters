@@ -55,6 +55,9 @@
     <Filter Include="Debug">
       <UniqueIdentifier>{08c24dfa-4b61-4ea8-bd51-a8c9635df757}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Skybox\Sun">
+      <UniqueIdentifier>{2807626d-c458-4320-9daf-605f89646274}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\main.cpp">
@@ -236,6 +239,15 @@
     <ClInclude Include="Code\StringUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Code\SunShader.h">
+      <Filter>Skybox\Sun</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\SunRenderer.h">
+      <Filter>Skybox\Sun</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Sun.h">
+      <Filter>Skybox\Sun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\gui.fragmentshader">
@@ -273,6 +285,12 @@
     </None>
     <None Include="Shaders\font.fragmentshader">
       <Filter>Fonts\FontRendering</Filter>
+    </None>
+    <None Include="Shaders\sun.vertexshader">
+      <Filter>Skybox\Sun</Filter>
+    </None>
+    <None Include="Shaders\sun.fragmentshader">
+      <Filter>Skybox\Sun</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "Maths.h"
 #include "RawModel.h"
 #include "SkyboxShader.h"
+#include "Sun.h"
 
 #define SKYBOX_SIZE 500.0f
 class SkyboxRenderer
@@ -23,10 +24,10 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(Camera const& aCamera, Light const& aSun, vec3 aFogColour)
+	void Render(Camera const& aCamera, Sun const& aSun, vec3 aFogColour)
 	{
 		myShader.Start();
-		myShader.LoadLight(aSun);
+		myShader.LoadLight(aSun.GetLight());
 		myShader.LoadViewMatrix(aCamera);
 		myShader.LoadFogColour(aFogColour);
 		glDisable(GL_DEPTH_TEST);

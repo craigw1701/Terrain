@@ -30,13 +30,13 @@ public:
 		myShader.Stop();
 	}
 
-	void Render(vector<WaterTile>& someWater, Camera& aCamera, Light& aLight, vec3 aSkyColour)
+	void Render(vector<WaterTile>& someWater, Camera& aCamera, Sun& aSun, vec3 aSkyColour)
 	{
 		if (!GameInfo::ourDrawWater)
 			return;
 
 		DisableCulling();
-		PrepareRender(aCamera, aLight, aSkyColour);
+		PrepareRender(aCamera, aSun, aSkyColour);
 		for (WaterTile& waterTile : someWater)
 		{
 			mat4 modelMatrix = CreateTransformMatrix(waterTile.myCenterPos, vec3(0, 0, 0), waterTile.TILE_SIZE);
@@ -49,7 +49,7 @@ public:
 	}
 
 private:
-	void PrepareRender(Camera& aCamera, Light& aLight, vec3 aSkyColour)
+	void PrepareRender(Camera const& aCamera, Sun const& aSun, vec3 aSkyColour)
 	{
 		myShader.Start();
 		myShader.LoadViewMatrix(aCamera);
@@ -57,7 +57,7 @@ private:
 		myMoveFactor += WAVE_SPEED * GameInfo::ourDeltaTime;
 		myMoveFactor = myMoveFactor - (int)myMoveFactor;
 		myShader.LoadMoveFactor(myMoveFactor);
-		myShader.LoadLight(aLight);
+		myShader.LoadLight(aSun.GetLight());
 		glBindVertexArray(myQuad.GetVAOID());
 		glEnableVertexAttribArray(0);
 		glActiveTexture(GL_TEXTURE0);

@@ -45,7 +45,7 @@ public:
 		LoadMatrix(myLocationProjectionMatrix, aMatrix);
 	}
 
-	void LoadViewMatrix(Camera& aCamera)
+	void LoadViewMatrix(Camera const& aCamera)
 	{
 		mat4 viewMatrix = CreateViewMatrix(aCamera);
 		LoadMatrix(myLocationViewMatrix, viewMatrix);
@@ -66,7 +66,7 @@ public:
 		LoadInt(myLocationDepthMap, 4);
 	}
 
-	void LoadLight(Light& aSun)
+	void LoadLight(Light const& aSun)
 	{
 		LoadVector(myLocationLightColour, aSun.myColour);
 		LoadVector(myLocationLightPosition, aSun.myPosition);

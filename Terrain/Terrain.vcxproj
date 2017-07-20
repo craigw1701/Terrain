@@ -199,6 +199,9 @@
     <ClInclude Include="Code\SkyboxShader.h" />
     <ClInclude Include="Code\StaticShader.h" />
     <ClInclude Include="Code\StringUtils.h" />
+    <ClInclude Include="Code\Sun.h" />
+    <ClInclude Include="Code\SunRenderer.h" />
+    <ClInclude Include="Code\SunShader.h" />
     <ClInclude Include="Code\Terrain.h" />
     <ClInclude Include="Code\TerrainManager.h" />
     <ClInclude Include="Code\TerrainRenderer.h" />
@@ -225,6 +228,8 @@
     <None Include="Shaders\skybox.vertexshader" />
     <None Include="Shaders\staticshader.fragmentshader" />
     <None Include="Shaders\staticshader.vertexshader" />
+    <None Include="Shaders\sun.fragmentshader" />
+    <None Include="Shaders\sun.vertexshader" />
     <None Include="Shaders\terrain.fragmentshader" />
     <None Include="Shaders\terrain.vertexshader" />
     <None Include="Shaders\watershader.fragmentshader" />

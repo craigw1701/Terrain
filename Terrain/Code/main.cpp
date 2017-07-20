@@ -29,8 +29,10 @@
 #include "WaterRenderer.h"
 #include "WaterShader.h"
 #include "WaterTile.h"
+#include "Sun.h"
+#include "SunRenderer.h"
 
-void DebugControls()
+void DebugControls(TerrainManager& aTerrainManager)
 {
 	GameInfo::ourRenderTimes.clear();
 	
@@ -93,7 +95,10 @@ void DebugControls()
 			<< std::setw(30) << total 
 			<< std::setw(10) << right << totalVerts << endl;
 		std::cout << std::string(70, '=') << std::endl;
-
+	}
+	if (Input::IsPressed(GLFW_KEY_F12))
+	{
+		aTerrainManager.Regenerate();
 	}
 }
 
@@ -166,11 +171,7 @@ int main()
 	DebugConsole::Setup(loader);
 
 	// TODO:CW Set up proper day/night time so console can type "settime noon" or "settime 18" etc
-
-	
-	
-	Light light(vec3(2000, 100, -200), vec3(0.988, 0.831, 0.25));
-
+		
 	TerrainTexture blendMap = loader.LoadTexture("blendMap.png");
 	TerrainTexturePack texturePack("grass.png", "grassFlowers.png", "mud.png", "grassy2.png", loader);
 	TerrainManager terrainManager(loader, texturePack, blendMap);
@@ -188,7 +189,11 @@ int main()
 
 	Camera camera(player);
 
-	MasterRenderer renderer(loader);
+	ModelTexture sunTexture(loader.LoadTexture("sun.png"));
+
+	Sun sun(sunTexture, 120);
+	SunRenderer sunRenderer(loader);
+	MasterRenderer renderer(loader, sunRenderer);
 
 	WaterFrameBuffer fbos;
 	WaterShader waterShader;
@@ -198,6 +203,7 @@ int main()
 
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup(mat4(1));
+
 
 	//system("color 20"); // TODO:CW add console commands to show all FBOs
 	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
@@ -214,35 +220,12 @@ int main()
 		Input::UpdateInput();
 		currentFrame = glfwGetTime();
 		GameInfo::ourDeltaTime = (float)(currentFrame - lastFrame);
-
 		lastFrame = currentFrame;
 
 		camera.Update(terrainManager);
-		DebugControls();
-		{
-			static float time = -3.6f;
-			float speed = (Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 10.0f : 1.0f) * GameInfo::ourDayNightSpeed;
-			time -= GameInfo::ourDeltaTime / 20.0f * speed;
-
-			if (Input::IsPressed(GLFW_KEY_KP_ADD))
-			{
-				time += 3.14f / 8.0f;
-			}
-			light.myPosition.y = sin(time) * 2000.0f;
-			light.myPosition.x = cos(time) * 2000.0f;	
-
-			GameInfo::ourDayNightTime = 1-(pow(1-dot(normalize(light.myPosition), vec3(0, 1, 0)), 3));
-			float mix1 = clamp(GameInfo::ourDayNightTime, 0.0f, 1.0f);
-			float mix2 = clamp(-GameInfo::ourDayNightTime, 0.0f, 1.0f);
-			light.myColour = mix(vec3(0.992, 0.369, 0.325), vec3(0.988, 0.831, 0.25), mix1);
-			light.myColour = mix(light.myColour, vec3(0.0, 0.02, 0.1), mix2);
-		}
-
-		GameInfo::ourFogColour = mix(vec3(0.5f, 0.5f, 0.5f), light.myColour, 0.4);
-		if (Input::IsPressed(GLFW_KEY_KP_SUBTRACT))
-		{
-			terrainManager.Regenerate();
-		}
+		DebugControls(terrainManager);
+		sun.Update();
+		
 		player.Update(terrainManager);
 
 		glEnable(GL_CLIP_DISTANCE0);
@@ -253,7 +236,7 @@ int main()
 			camera.myPosition.y -= distance;
 			camera.InvertCamera();
 			renderer.ProcessEntity(player);
-			renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, 1, 0, -GameInfo::ourWaterHeight + 5.0f));
+			renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), sun, camera, vec4(0, 1, 0, -GameInfo::ourWaterHeight + 5.0f));
 			camera.myPosition.y += distance;
 			camera.InvertCamera();
 		}
@@ -261,14 +244,14 @@ int main()
 		fbos.BindRefractionFrameBuffer();
 		//renderer.ProcessEntity(player);
 		// TODO:CW don't draw any of these entites under the water?
-		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, -1, 0, GameInfo::ourWaterHeight + 1.0f));
+		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), sun, camera, vec4(0, -1, 0, GameInfo::ourWaterHeight + 1.0f));
 		fbos.UnbindCurrentFrameBuffer();
 		
 		glDisable(GL_CLIP_DISTANCE0);
-
 		renderer.ProcessEntity(player);
-		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), light, camera, vec4(0, 1, 0, 6));
-		waterRenderer.Render(waters, camera, light, GameInfo::ourFogColour);
+		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), sun, camera, vec4(0, 1, 0, 6));
+		waterRenderer.Render(waters, camera, sun, GameInfo::ourFogColour);
+			
 
 		{
 			//GLint polygonMode;

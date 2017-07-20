@@ -23,6 +23,7 @@ static void DisableCulling()
 #include "TexturedModel.h"
 
 #include <map>
+#include "SunRenderer.h"
 using namespace std;
 
 // TODO:CW Write proper Debug Console Variables wrapper
@@ -33,13 +34,14 @@ ConsoleVariable("Render.ShowEntities", Entities);*/
 class MasterRenderer : public NonCopyable
 {
 public:
-	MasterRenderer(Loader& aLoader)
+	MasterRenderer(Loader& aLoader, SunRenderer& aSunRenderer)
 		: myProjectionMatrix(glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane))
 		, myEntityShader()
 		, myTerrainShader()
 		, myEntityRenderer(myEntityShader)
 		, myTerrainRenderer(myTerrainShader)
 		, mySkyboxRenderer(aLoader, myProjectionMatrix)
+		, mySunRenderer(aSunRenderer)
 	{
 		EnableCulling();
 
@@ -55,6 +57,7 @@ public:
 			console->AddVariable("Render.ShowWater", GameInfo::ourDrawWater);
 			console->AddVariable("Render.ShowEntities", GameInfo::ourDrawEntities);
 			console->AddVariable("Render.ShowTerrain", GameInfo::ourDrawTerrain);
+			console->AddVariable("Render.ShowSkybox", GameInfo::ourDrawSkybox);
 			console->AddVariable("Render.FOV", myFOV);
 			console->AddVariable("Render.NearPlane", myNearPlane);
 			console->AddVariable("Render.FarPlane", myFarPlane);
@@ -75,7 +78,7 @@ public:
 		return myProjectionMatrix; 
 	}
 
-	void RenderScene(vector<Entity> const& someEntities, Terrain::TerrainList const& someTerrain, Light const& aSun, Camera const& aCamera, vec4 aClipPlane)
+	void RenderScene(vector<Entity> const& someEntities, Terrain::TerrainList const& someTerrain, Sun const& aSun, Camera const& aCamera, vec4 aClipPlane)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GameInfo::ourWireframeMode ? GL_LINE : GL_FILL);
 		double startTime = glfwGetTime();
@@ -111,7 +114,7 @@ public:
 	}
 
 private:
-	void Render(Light const& aSun, Camera const& aCamera, vec4 aClipPlane) 
+	void Render(Sun const& aSun, Camera const& aCamera, vec4 aClipPlane) 
 	{
 		Prepare();
 		
@@ -119,13 +122,14 @@ private:
 		{
 			mySkyboxRenderer.Render(aCamera, aSun, GameInfo::ourFogColour);
 		}
-		
+
+		mySunRenderer.Render(aSun, aCamera, myProjectionMatrix);
 		if (GameInfo::ourDrawEntities)
 		{
 			double startTime = glfwGetTime();
 			myEntityShader.Start();
 			myEntityShader.LoadClipPlane(aClipPlane);
-			myEntityShader.LoadLight(aSun);
+			myEntityShader.LoadLight(aSun.GetLight());
 			myEntityShader.LoadViewMatrix(aCamera);
 			myEntityRenderer.Render(myEntities);
 			GameInfo::SetRenderTime(glfwGetTime() - startTime);
@@ -134,10 +138,11 @@ private:
 
 		if (GameInfo::ourDrawTerrain)
 		{
+			EnableCulling();
 			double startTime = glfwGetTime();
 			myTerrainShader.Start();
 			myTerrainShader.LoadClipPlane(aClipPlane);
-			myTerrainShader.LoadLight(aSun);
+			myTerrainShader.LoadLight(aSun.GetLight());
 			myTerrainShader.LoadViewMatrix(aCamera);
 			myTerrainShader.LoadSkyColour(GameInfo::ourFogColour);
 			myTerrainRenderer.Render(myTerrains);
@@ -170,6 +175,7 @@ private:
 	StaticShader myEntityShader;
 	EntityRenderer myEntityRenderer;
 	SkyboxRenderer mySkyboxRenderer;
+	SunRenderer& mySunRenderer;
 
 	TerrainShader myTerrainShader;
 	TerrainRenderer myTerrainRenderer;
