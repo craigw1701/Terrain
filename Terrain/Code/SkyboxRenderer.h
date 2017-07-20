@@ -10,7 +10,7 @@
 class SkyboxRenderer
 {
 public:
-	SkyboxRenderer(Loader& aLoader, mat4 aProjectionMatrix)
+	SkyboxRenderer(Loader& aLoader, glm::mat4 aProjectionMatrix)
 		: myCube(aLoader.LoadToVAO(myVertices))
 	{
 		

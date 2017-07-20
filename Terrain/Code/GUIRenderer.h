@@ -14,7 +14,7 @@ public:
 	{		
 	}
 
-	void Setup(glm::mat4 aProjectionMatrix)
+	void Setup()
 	{
 		myShader.Setup();
 	}

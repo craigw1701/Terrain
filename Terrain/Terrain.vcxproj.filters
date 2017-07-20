@@ -90,6 +90,9 @@
     <ClCompile Include="Code\Input.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Code\ShaderBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Entity.h">

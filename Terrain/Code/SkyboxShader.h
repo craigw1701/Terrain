@@ -11,11 +11,7 @@ public:
 		: ShaderBase("skybox")
 	{
 	}
-
-	void LoadProjectionMatrix(mat4 aMatrix) {
-		LoadMatrix(myLocationProjectionMatrix, aMatrix);
-	}
-
+	
 	void LoadViewMatrix(Camera const& aCamera) {
 		mat4 matrix = CreateViewMatrix(aCamera);
 		matrix[3][0] = 0.0f;
@@ -38,7 +34,7 @@ public:
 		LoadVector(myLocationFogColour, aColour);
 	}
 
-	void ConnectTextureUnits()
+	void ConnectTextureUnits() override
 	{
 		LoadInt(myLocationCubeMapDay, 0);
 		LoadInt(myLocationCubeMapNight, 1);
@@ -46,7 +42,6 @@ public:
 
 	void GetAllUniformLocations() override
 	{
-		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
 		myLocationViewMatrix = GetUniformLocation("viewMatrix");
 		myLocationLightColour = GetUniformLocation("lightColour");
 		myLocationLightPosition = GetUniformLocation("lightPosition");
@@ -60,9 +55,8 @@ public:
 	{
 		BindAttribute(0, "position");
 	}
-
+	
 private:
-	GLuint myLocationProjectionMatrix;
 	GLuint myLocationViewMatrix;
 	GLuint myLocationLightColour;
 	GLuint myLocationDayNightTime;

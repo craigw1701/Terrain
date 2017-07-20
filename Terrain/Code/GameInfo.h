@@ -43,6 +43,7 @@ public:
 	static bool ourFlyCamera;
 	static bool ourGenerateTerrainThreaded;
 	static bool ourGenerateTerrainCaching;
+	static glm::mat4 ourProjectionMatrix;
 
 	static void SetWindow(GLFWwindow* aWindow);
 	static vec3 ourPlayerSpawnPos;

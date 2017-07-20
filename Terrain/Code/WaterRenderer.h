@@ -22,11 +22,11 @@ public:
 		myShader.Setup();
 	}
 
-	void Setup(glm::mat4 aProjectionMatrix)
+	void Setup()
 	{
 		myShader.Start();
 		myShader.ConnectTextureUnits();
-		myShader.LoadProjectionMatrix(aProjectionMatrix);
+		myShader.LoadProjectionMatrix(GameInfo::ourProjectionMatrix);
 		myShader.Stop();
 	}
 

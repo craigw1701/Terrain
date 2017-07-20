@@ -23,6 +23,7 @@ bool GameInfo::ourDrawWater = true;
 bool GameInfo::ourDrawSkybox = true;
 bool GameInfo::ourFlyCamera = true;
 bool GameInfo::ourGenerateTerrainThreaded = true;
+glm::mat4 GameInfo::ourProjectionMatrix(1);
 
 #ifdef _DEBUG
 bool GameInfo::ourGenerateTerrainCaching = false;

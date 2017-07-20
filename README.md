@@ -45,6 +45,8 @@ Done:
  + Add basic fog for Terrain, water and the skybox
 * Sun
  + Added a sun texture that follows the sun light source across the sky, changing colour when it becomes dusk/dawn
+* Shader Hot Reloading
+ + Added basic Hot Realoding of Shaders, just saving a shader will have it reload. Also useful to recover from errors.
  
 Tasks ToDo, in vague order:
 * Shadows
@@ -73,7 +75,6 @@ Tasks ToDo, in vague order:
 * Rivers
 * Waterfalls
 
-* Shader Hot Reloading
 * Shader Base Classes or Components to stop so much duplication?
 
 * Wind (noise based?)
@@ -99,3 +100,13 @@ Tasks ToDo, in vague order:
 * Genetic Algorithms
 * N-Grams and Markov Chains
 * Twitter bot - https://www.youtube.com/playlist?list=PLRqwX-V7Uu6atTSxoRiVnSuOn6JHnq2yV
+
+
+Temp Cam posiion
+-1790.22 169.96 -2122.62
+2.9 502 0
+
+-1705.92 385.123
+-2342.868
+
+18 150 0

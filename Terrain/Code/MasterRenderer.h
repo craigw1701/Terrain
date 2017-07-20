@@ -43,13 +43,14 @@ public:
 		, mySkyboxRenderer(aLoader, myProjectionMatrix)
 		, mySunRenderer(aSunRenderer)
 	{
+		GameInfo::ourProjectionMatrix = myProjectionMatrix;
 		EnableCulling();
 
 		myEntityShader.Setup();
-		myEntityRenderer.Setup(myProjectionMatrix);
+		myEntityRenderer.Setup();
 
 		myTerrainShader.Setup();
-		myTerrainRenderer.Setup(myProjectionMatrix);
+		myTerrainRenderer.Setup();
 
 		if (DebugConsole* console = DebugConsole::GetInstance())
 		{
@@ -123,7 +124,7 @@ private:
 			mySkyboxRenderer.Render(aCamera, aSun, GameInfo::ourFogColour);
 		}
 
-		mySunRenderer.Render(aSun, aCamera, myProjectionMatrix);
+		mySunRenderer.Render(aSun, aCamera);
 		if (GameInfo::ourDrawEntities)
 		{
 			double startTime = glfwGetTime();

@@ -162,6 +162,7 @@
     <ClCompile Include="Code\lodepng.cpp" />
     <ClCompile Include="Code\main.cpp" />
     <ClCompile Include="Code\PerlinNoise.cpp" />
+    <ClCompile Include="Code\ShaderBase.cpp" />
     <ClCompile Include="Code\TextMaster.cpp" />
     <ClCompile Include="Code\texture.cpp" />
   </ItemGroup>

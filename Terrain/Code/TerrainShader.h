@@ -23,7 +23,6 @@ protected:
 	virtual void GetAllUniformLocations() override
 	{
 		myLocationTransofmationMatrix = GetUniformLocation("transformationMatrix");
-		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
 		myLocationViewMatrix = GetUniformLocation("viewMatrix");
 		myLocationLightPosition = GetUniformLocation("lightPos");
 		myLocationLightColour = GetUniformLocation("lightColour");
@@ -42,10 +41,6 @@ public:
 	void LoadTransformationMatrix(glm::mat4 aMatrix)
 	{
 		LoadMatrix(myLocationTransofmationMatrix, aMatrix);
-	}
-	void LoadProjectionMatrix(glm::mat4 aMatrix)
-	{
-		LoadMatrix(myLocationProjectionMatrix, aMatrix);
 	}
 	void LoadViewMatrix(Camera const& aCamera)
 	{
@@ -85,7 +80,6 @@ public:
 
 private:
 	GLuint myLocationTransofmationMatrix;
-	GLuint myLocationProjectionMatrix;
 	GLuint myLocationViewMatrix;
 	GLuint myLocationLightPosition;
 	GLuint myLocationLightColour;

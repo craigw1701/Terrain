@@ -20,7 +20,6 @@ public:
 
 	void GetAllUniformLocations() override
 	{
-		myLocationProjectionMatrix = GetUniformLocation("projectionMatrix");
 		myLocationViewMatrix = GetUniformLocation("viewMatrix");
 		myLocationModelMatrix = GetUniformLocation("modelMatrix");
 		myLocationReflectionTexture = GetUniformLocation("reflectionTexture");
@@ -38,11 +37,6 @@ public:
 	void LoadSkyColour(vec3 aColour)
 	{
 		LoadVector(myLocationSkyColour, aColour);
-	}
-
-	void LoadProjectionMatrix(mat4 aMatrix)
-	{
-		LoadMatrix(myLocationProjectionMatrix, aMatrix);
 	}
 
 	void LoadViewMatrix(Camera const& aCamera)
@@ -80,7 +74,6 @@ public:
 private:
 	GLuint myLocationModelMatrix;
 	GLuint myLocationViewMatrix;
-	GLuint myLocationProjectionMatrix;
 	GLuint myLocationReflectionTexture;
 	GLuint myLocationRefractionTexture;
 	GLuint myLocationDUDVMap;

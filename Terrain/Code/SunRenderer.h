@@ -20,11 +20,10 @@ public:
 		myShader.Setup();
 		myShader.Start();
 		myShader.ConnectTextureUnits();
-		//myShader.LoadTransformationMatrix(aProjectionMatrix)
 		myShader.Stop();
 	}
 
-	void Render(Sun const& aSun, Camera const& aCamera, glm::mat4 aProjectionMatrix)
+	void Render(Sun const& aSun, Camera const& aCamera)
 	{
 		DisableCulling();
 		Antialias(true);
@@ -35,7 +34,7 @@ public:
 		myShader.Start();
 
 		//mat4 matrix = CreateTransformationMatrix(vec2(0.5, 0.5), vec2(1,1));
-		mat4 matrix = CalculateMvpMatrix(aSun, aCamera, aProjectionMatrix);
+		mat4 matrix = CalculateMvpMatrix(aSun, aCamera);
 		myShader.LoadTransformationMatrix(matrix);
 		myShader.LoadSunColour(aSun.GetColour());
 
@@ -71,7 +70,7 @@ private:
 		}
 	}
 	
-	mat4 CalculateMvpMatrix(Sun const& sun, Camera const& camera, glm::mat4 aProjectionMatrix)
+	mat4 CalculateMvpMatrix(Sun const& sun, Camera const& camera)
 	{
 		mat4 modelMatrix(1);
 		vec3 sunPos = sun.GetWorldPosition(camera.myPosition);
@@ -80,7 +79,7 @@ private:
 		mat4 modelViewMat = ApplyViewMatrix(modelMatrix, CreateViewMatrix(camera));
 		modelViewMat = glm::scale(modelViewMat, glm::vec3(sun.GetScale()));
 				
-		return aProjectionMatrix * modelViewMat;
+		return GameInfo::ourProjectionMatrix * modelViewMat;
 	}
 
 	//TODO:CW watch particle tutorial

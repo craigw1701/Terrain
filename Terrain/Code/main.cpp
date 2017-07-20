@@ -1,9 +1,4 @@
 // Include standard headers
-#include <stdio.h>
-#include <stdlib.h>
-#include <locale.h>
-#include <iomanip>
-
 #include "gl.h"
 
 #include "Maths.h"
@@ -31,6 +26,15 @@
 #include "WaterTile.h"
 #include "Sun.h"
 #include "SunRenderer.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <iomanip>
+#include <iostream>
+
+
+using namespace std;
 
 void DebugControls(TerrainManager& aTerrainManager)
 {
@@ -198,11 +202,11 @@ int main()
 	WaterFrameBuffer fbos;
 	WaterShader waterShader;
 	WaterRenderer waterRenderer(loader, waterShader, fbos);
-	waterRenderer.Setup(renderer.GetProjectionMatrix());
+	waterRenderer.Setup();
 	vector<WaterTile> waters;
 
 	GUIRenderer guiRenderer(loader);
-	guiRenderer.Setup(mat4(1));
+	guiRenderer.Setup();
 
 
 	//system("color 20"); // TODO:CW add console commands to show all FBOs
@@ -251,8 +255,7 @@ int main()
 		renderer.ProcessEntity(player);
 		renderer.RenderScene(entityManager.GetEntities(), terrainManager.GetTerrains(), sun, camera, vec4(0, 1, 0, 6));
 		waterRenderer.Render(waters, camera, sun, GameInfo::ourFogColour);
-			
-
+		
 		{
 			//GLint polygonMode;
 			//glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
@@ -271,6 +274,8 @@ int main()
 		// Swap buffers
 		glfwSwapBuffers(GameInfo::ourWindow);
 		glfwPollEvents();
+		
+		ShaderBase::CheckReloadShaders();
 
 	} // Check if the ESC key was pressed or the window was closed
 	while (!Input::IsPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(GameInfo::ourWindow) == 0);
