@@ -47,7 +47,7 @@ Done:
 Tasks ToDo, in vague order:
 * Sun
 * Shadows
-* LOD
+* LOD - Geomipmapping
 * Gamestates (Load all systems first, then load the "level")
 * Mouse picking
 * Level "editor" (placing objects)
@@ -71,6 +71,9 @@ Tasks ToDo, in vague order:
 * Waves
 * Rivers
 * Waterfalls
+
+* Shader Hot Reloading
+* Shader Base Classes or Components to stop so much duplication?
 
 * Wind (noise based?)
 

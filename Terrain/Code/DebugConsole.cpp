@@ -8,6 +8,33 @@
 
 unique_ptr<DebugConsole> DebugConsole::ourInstance = nullptr;
 
+vector<std::string> GetParameters(std::string aString)
+{
+	vector<std::string> params;
+	int startIndex = 0;
+	for (unsigned int i = 0; i < aString.size(); i++)
+	{
+		if (aString[i] == ',' || aString[i] == ' ')
+		{
+			if (startIndex != i)
+			{
+				std::string n = aString.substr(startIndex, i - startIndex);
+				params.push_back(n);
+			}
+			startIndex = i + 1;
+		}
+	}
+
+
+	if (startIndex != aString.size())
+	{
+		std::string n = aString.substr(startIndex, -1);
+		params.push_back(n);
+	}
+
+	return params;
+}
+
 DebugConsole::DebugConsole() 
 : myCurrentText(nullptr)
 , myToolTip(nullptr)
@@ -62,7 +89,7 @@ void DebugConsole::CleanUp()
 	}
 }
 
-void DebugConsole::AddCommand(const char* aCommand, const char* aAutoComplete, std::function<std::string(std::string)> aCommandFunc)
+void DebugConsole::AddCommand(const char* aCommand, const char* aAutoComplete, std::function<DebugConsoleCommandFunc> aCommandFunc)
 {
 	DebugCommandData data;
 	data.myFullCommand = aCommand;
@@ -92,6 +119,10 @@ void DebugConsole::Close()
 	myToolTip = nullptr;
 	myHistoryTexts.clear();
 	myAutoCompleteTexts.clear();
+	
+	double halfX = GameInfo::ourScreenWidth / 2.0f;
+	double halfY = GameInfo::ourScreenHeight / 2.0f;
+	glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
 }
 
 void DebugConsole::Toggle()
@@ -234,6 +265,8 @@ void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int
 
 			if(myAutoCompletePosition != -1)
 				currentText = myAutoComplete[myAutoCompletePosition];
+
+			return;
 		}
 		else
 		{
@@ -245,6 +278,7 @@ void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int
 					myHistoryPosition = i;
 					myRefreshText = true;
 					currentText = myHistory[myHistoryPosition].first;
+					myAutoCompletePosition = -1;
 					UpdateAutoComplete(currentText);
 					return;
 				}
@@ -262,6 +296,8 @@ void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int
 
 			if (myAutoCompletePosition != -1)
 				currentText = myAutoComplete[myAutoCompletePosition];
+			
+			return;
 		}	
 		else
 		{
@@ -272,6 +308,7 @@ void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int
 					myHistoryPosition = i;
 					myRefreshText = true;
 					currentText = myHistory[myHistoryPosition].first;
+					myAutoCompletePosition = -1;
 					UpdateAutoComplete(currentText);
 					return;
 				}
@@ -302,7 +339,8 @@ void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int
 			if (iter != myCommands.end())
 			{
 				std::string parameters = TrimWhitespace(myInputText.substr(command.length()));
-				reply = myCommands[command].myFunc(parameters);
+				vector<std::string> params = GetParameters(parameters);
+				reply = myCommands[command].myFunc(params);
 			}
 			else
 			{
@@ -310,8 +348,9 @@ void DebugConsole::KeyInputCallback_Internal(GLFWwindow* aWindow, int aChar, int
 				if (variableIter != myVariables.end())
 				{
 					std::string parameters = TrimWhitespace(myInputText.substr(command.length()));
-					if (parameters.size() != 0)
-						myVariables[command]->Set(parameters.c_str());
+					vector<std::string> params = GetParameters(parameters);
+					if (params.size() != 0)
+						myVariables[command]->Set(params);
 
 					myVariables[command]->Get(reply);
 				}
@@ -422,4 +461,102 @@ void DebugConsole::ResetConsole()
 	myHistoryPosition = -1;
 	myAutoCompletePosition = -1;
 	myRefreshText = true;
+}
+
+std::string DebugConsoleVar::BuildReply(std::string const& aReply)
+{
+	return myName + " = " + aReply;
+}
+
+const char* DebugConsoleVar::GetName() const
+{
+	return myName.c_str();
+}
+
+bool DebugConsoleVar::Set(std::vector<std::string> someParams)
+{
+	switch (myType)
+	{
+	case DebugConsoleVarType::BOOL:
+	{
+		if (someParams.size() == 1)
+		{
+			bool& theVar = *static_cast<bool*>(myVariablePtr);
+			if (someParams[0].find("true") != -1)
+				theVar = true;
+			else if (someParams[0].find("false") != -1)
+				theVar = false;
+			else if (someParams[0].size() == 1)
+			{
+				if (someParams[0].find("0") != -1)
+					theVar = false;
+				else
+					theVar = true;
+			}
+			return true;
+		}
+		break;
+	}
+	case DebugConsoleVarType::INT:
+	{
+		if (someParams.size() == 1)
+		{
+			*static_cast<int*>(myVariablePtr) = atoi(someParams[0].c_str());
+			return true;
+		}
+		break;
+	}
+	case DebugConsoleVarType::FLOAT:
+	{
+		if (someParams.size() == 1)
+		{
+			*static_cast<float*>(myVariablePtr) = static_cast<float>(atof(someParams[0].c_str()));
+			return true;
+		}
+		break;
+	}
+	case DebugConsoleVarType::VEC3:
+	{
+		if (someParams.size() == 3)
+		{
+			*static_cast<vec3*>(myVariablePtr) = vec3(atof(someParams[0].c_str()), atof(someParams[1].c_str()), atof(someParams[2].c_str()));
+			return true;
+		}
+		break;
+	}
+	default:
+		break;
+	}
+	return false;
+}
+
+bool DebugConsoleVar::Get(std::string& aReturnedString)
+{
+	switch (myType)
+	{
+	case DebugConsoleVarType::BOOL:
+	{
+		aReturnedString = BuildReply(*static_cast<bool*>(myVariablePtr) ? "true" : "false");
+		return true;
+	}
+	case DebugConsoleVarType::INT:
+	{
+		aReturnedString = BuildReply(std::to_string(*static_cast<int*>(myVariablePtr)));
+		return true;
+	}
+	case DebugConsoleVarType::FLOAT:
+	{
+		aReturnedString = BuildReply(std::to_string(*static_cast<float*>(myVariablePtr)));
+		return true;
+	}
+	case DebugConsoleVarType::VEC3:
+	{
+		vec3& v = *static_cast<vec3*>(myVariablePtr);
+		aReturnedString = BuildReply(std::to_string(v.x) + " " + std::to_string(v.y) + " " + std::to_string(v.z));
+		return true;
+	}
+	default:
+		break;
+	}
+	return false;
 }

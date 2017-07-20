@@ -23,12 +23,15 @@ public:
 		DebugConsole* console = DebugConsole::GetInstance();
 		if (console)
 		{
-			console->AddCommand("Terrain.Regenerate", "", [this](std::string someParams)
+			console->AddCommand("Terrain.Regenerate", "", [this](std::vector<std::string> someParams) -> std::string
 			{
-				std::string s = TrimWhitespace(DebugConsole::GetInstance()->GetParam(someParams, 1));
-				if (s.size() > 0)
+				if (someParams.size() == 1)
 				{
-					mySeed = atoi(s.c_str());
+					mySeed = atoi(someParams[0].c_str());
+				}
+				else if (someParams.size() > 1)
+				{
+					return std::string("Too many arguments, expects 0 or 1");
 				}
 
 				Regenerate(mySeed);

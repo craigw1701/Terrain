@@ -4,6 +4,7 @@
 
 #include "GameInfo.h"
 #include "NonCopyable.h"
+#include "DebugConsole.h"
 
 int Input::locThisFrameKeys[GLFW_KEY_LAST + 1] = { 0 };
 int Input::locLastFrameKeys[GLFW_KEY_LAST + 1] = { 0 };
@@ -44,12 +45,20 @@ void Input::UpdateInput()
 
 	double x, y;
 	glfwGetCursorPos(GameInfo::ourWindow, &x, &y);
-	locDeltaCursorPos = vec2(halfX, halfY) - vec2(x, y);
+	if (DebugConsole::IsActive())
+	{
+		locDeltaCursorPos = locLastFrameCursorPos - vec2(x, y);
+	}
+	else
+	{
+		locDeltaCursorPos = vec2(halfX, halfY) - vec2(x, y);
+		glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
+	}
+	locLastFrameCursorPos = vec2(x, y);
 
 	locLastFrameScrollDelta = locThisFrameScrollDelta;
 	locThisFrameScrollDelta = vec2(0.0f);
 
-	glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
 }
 
 bool Input::IsMouseButtonDown(int aKey)
@@ -59,7 +68,7 @@ bool Input::IsMouseButtonDown(int aKey)
 
 vec2 Input::MousePosDelta()
 {
-	return locDeltaCursorPos;// locLastFrameCursorPos - locThisFrameCursorPos;
+	return locDeltaCursorPos;
 }
 
 bool Input::IsPressed(int aKey)

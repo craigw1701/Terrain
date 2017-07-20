@@ -33,10 +33,7 @@ class DebugConsoleVar
 	DebugConsoleVarType myType;
 	int myIndex;
 
-	std::string BuildReply(std::string const& aReply)
-	{
-		return myName + " = " + aReply;
-	}
+	std::string BuildReply(std::string const& aReply);
 public:
 	DebugConsoleVar() {}
 	DebugConsoleVar(const char* aName, void* aVariable, DebugConsoleVarType aVarType, int aIndex)
@@ -48,75 +45,10 @@ public:
 		//DebugConsole::Register(this);
 	}
 
-	const char* GetName() const { return myName.c_str(); }
+	const char* GetName() const;
 
-	bool Set(std::string aString) 
-	{
-		switch (myType)
-		{
-		case DebugConsoleVarType::BOOL:
-		{
-			bool& theVar = *static_cast<bool*>(myVariablePtr);
-			if (aString.find("true") != -1)
-				theVar = true;
-			else if (aString.find("false") != -1)
-				theVar = false;
-			else if (aString.size() == 1)
-			{
-				if (aString.find("0") != -1)
-					theVar = false;
-				else
-					theVar = true;
-			}
-			return true;
-		}
-		case DebugConsoleVarType::INT:
-		{
-			*static_cast<int*>(myVariablePtr) = atoi(aString.c_str());
-			return true;
-		}
-		case DebugConsoleVarType::FLOAT:
-		{
-			*static_cast<float*>(myVariablePtr) = static_cast<float>(atof(aString.c_str()));
-			return true;
-		}
-		case DebugConsoleVarType::VEC3:
-			break;
-		default:
-			break;
-		}
-		return false; 
-	}
-	bool Get(std::string& aReturnedString) 
-	{
-		switch (myType)
-		{
-		case DebugConsoleVarType::BOOL:
-		{
-			aReturnedString = BuildReply(*static_cast<bool*>(myVariablePtr) ? "true" : "false");
-			return true;
-		}
-		case DebugConsoleVarType::INT:
-		{
-			aReturnedString = BuildReply(std::to_string(*static_cast<int*>(myVariablePtr)));
-			return true;
-		}
-		case DebugConsoleVarType::FLOAT:
-		{
-			aReturnedString = BuildReply(std::to_string(*static_cast<float*>(myVariablePtr)));
-			return true;
-		}
-		case DebugConsoleVarType::VEC3:
-		{
-			vec3& v = *static_cast<vec3*>(myVariablePtr);
-			aReturnedString = BuildReply(std::to_string(v.x) + " " + std::to_string(v.y) + " " + std::to_string(v.z));
-			return true;
-		}
-		default:
-			break;
-		}
-		return false;
-	}
+	bool Set(std::vector<std::string> someParams);
+	bool Get(std::string& aReturnedString);
 
 	// TODO:CW add callback
 	// TODO:CW Support ranges
@@ -130,7 +62,7 @@ class DebugConsole
 public:
 	~DebugConsole();
 
-	//typedef DebugConsoleCommandFunc std::function<const char*(std::string)>;
+	using DebugConsoleCommandFunc = std::string(std::vector<std::string>);
 	static DebugConsole* GetInstance() { return ourInstance.get(); }
 	static void Setup(Loader& aLoader);
 	static void CleanUp();
@@ -141,7 +73,7 @@ public:
 	void Toggle();
 
 	void Update();
-	void AddCommand(const char* aCommand, const char* aAutoComplete, std::function<std::string(std::string)> aCommandFunc);
+	void AddCommand(const char* aCommand, const char* aAutoComplete, std::function<DebugConsoleCommandFunc> aCommandFunc);
 	//static void Register(, const char* aAutoComplete, std::function<std::string(std::string)> aCommandFunc);
 	std::string GetParam(std::string aCommand, int aParam) const;
 
@@ -157,7 +89,7 @@ private:
 	{
 		std::string myFullCommand;
 		std::string myAutoCompleteText;
-		std::function<std::string(std::string)> myFunc;
+		std::function<std::string(std::vector<std::string>)> myFunc;
 		//DebugConsole::DebugConsoleCommandFunc myFunc;
 	};
 	void AddVariable(void* aVar, DebugConsoleVarType aType, const char* aName);

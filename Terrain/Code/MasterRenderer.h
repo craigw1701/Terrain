@@ -58,7 +58,7 @@ public:
 			console->AddVariable("Render.FOV", myFOV);
 			console->AddVariable("Render.NearPlane", myNearPlane);
 			console->AddVariable("Render.FarPlane", myFarPlane);
-			console->AddCommand("Render.UpdateProjection", "", [this](std::string someParams)
+			console->AddCommand("Render.UpdateProjection", "", [this](std::vector<std::string> someParams)
 			{
 				myProjectionMatrix = glm::perspectiveFov(myFOV, (float)GameInfo::ourScreenWidth, (float)GameInfo::ourScreenHeight, myNearPlane, myFarPlane);
 				return "Updated Projection";
