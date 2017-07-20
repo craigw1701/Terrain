@@ -47,10 +47,20 @@ void Input::UpdateInput()
 	glfwGetCursorPos(GameInfo::ourWindow, &x, &y);
 	if (DebugConsole::IsActive())
 	{
+		if (!GameInfo::ourIsShowingCursor)
+		{
+			GameInfo::ourIsShowingCursor = true;
+			glfwSetInputMode(GameInfo::ourWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 		locDeltaCursorPos = locLastFrameCursorPos - vec2(x, y);
 	}
 	else
 	{
+		if (GameInfo::ourIsShowingCursor)
+		{
+			GameInfo::ourIsShowingCursor = false;
+			glfwSetInputMode(GameInfo::ourWindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		}
 		locDeltaCursorPos = vec2(halfX, halfY) - vec2(x, y);
 		glfwSetCursorPos(GameInfo::ourWindow, halfX, halfY);
 	}

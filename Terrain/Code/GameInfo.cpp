@@ -15,6 +15,7 @@ float GameInfo::ourWaterHeight = -20;
 float GameInfo::ourDayNightSpeed = 0.0f;
 GLFWwindow* GameInfo::ourWindow = nullptr;
 bool GameInfo::ourWindowIsFocused = true;
+bool GameInfo::ourIsShowingCursor = true;
 bool GameInfo::ourWireframeMode = false;
 bool GameInfo::ourDrawEntities = true;
 bool GameInfo::ourDrawTerrain = true;

@@ -34,6 +34,7 @@ public:
 	static float ourDayNightSpeed;
 	static GLFWwindow* ourWindow;
 	static bool ourWindowIsFocused;
+	static bool ourIsShowingCursor;
 	static bool ourWireframeMode;
 	static bool ourDrawEntities;
 	static bool ourDrawTerrain;
