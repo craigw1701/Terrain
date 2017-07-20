@@ -43,9 +43,10 @@ Done:
  + Able to add any "Command" that calls a function from the Debug Console
 * Fog
  + Add basic fog for Terrain, water and the skybox
+* Sun
+ + Added a sun texture that follows the sun light source across the sky, changing colour when it becomes dusk/dawn
  
 Tasks ToDo, in vague order:
-* Sun
 * Shadows
 * LOD - Geomipmapping
 * Gamestates (Load all systems first, then load the "level")
@@ -98,8 +99,3 @@ Tasks ToDo, in vague order:
 * Genetic Algorithms
 * N-Grams and Markov Chains
 * Twitter bot - https://www.youtube.com/playlist?list=PLRqwX-V7Uu6atTSxoRiVnSuOn6JHnq2yV
-
--1705.92 385.123
--2342.868
-
-18 150 0
