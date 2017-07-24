@@ -56,7 +56,7 @@ public:
 	*/
 	GUIText(std::string someText, float aFontSize, FontType& aFont, vec2 aPosition, float aMaxLineLength, bool aIsCentered);
 
-	friend bool operator==(GUIText const& aLHS, GUIText const& aRHS)
+/*	friend bool operator==(GUIText const& aLHS, GUIText const& aRHS)
 	{
 		return aLHS.myTextString == aRHS.myTextString &&
 			aLHS.myFontSize == aRHS.myFontSize &&
@@ -68,7 +68,7 @@ public:
 			aLHS.myNumberOfLines == aRHS.myNumberOfLines &&
 			//aLHS.myFont == aRHS.myFont && // TODO:CW
 			aLHS.myCenterText == aRHS.myCenterText;
-	}
+	}*/
 
 	~GUIText();
 	/**

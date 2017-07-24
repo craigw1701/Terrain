@@ -19,9 +19,15 @@ public:
 		LoadMatrix(myLocationTranformationMatrix, aMatrix);
 	}
 
+	void LoadIsDepthTexture(bool aIsDepth)
+	{
+		LoadBoolean(myLocationIsDepthTexture, aIsDepth);
+	}
+
 	void GetAllUniformLocations() override
 	{
 		myLocationTranformationMatrix = GetUniformLocation("transformationMatrix");
+		myLocationIsDepthTexture = GetUniformLocation("isDepthTexture");
 	}
 
 	void BindAttributes() override
@@ -31,4 +37,5 @@ public:
 
 private:
 	GLuint myLocationTranformationMatrix;
+	GLuint myLocationIsDepthTexture;
 };

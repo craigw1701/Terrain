@@ -33,6 +33,7 @@
 #include <iomanip>
 #include <iostream>
 
+static int fboIndex = -1;
 
 using namespace std;
 
@@ -43,6 +44,11 @@ void DebugControls(TerrainManager& aTerrainManager)
 	if (DebugConsole::IsActive())
 	{
 		return;
+	}
+
+	if (Input::IsPressed(GLFW_KEY_F11))
+	{
+		fboIndex++;
 	}
 
 	if (Input::IsPressed(GLFW_KEY_P))
@@ -106,6 +112,18 @@ void DebugControls(TerrainManager& aTerrainManager)
 	}
 }
 
+void DisplayDebugFBOs(vector<GUITexture> &guis)
+{
+	if (FBO::ourFBOs.size() > 0)
+	{
+		if (fboIndex >= FBO::ourFBOs.size())
+			fboIndex = -1;
+
+		if (fboIndex != -1)
+			guis.push_back(GUITexture(FBO::ourFBOs[fboIndex].myFBOID, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f), FBO::ourFBOs[fboIndex].myType == FBO::FBOType::DEPTH_TEXTURE));
+	}
+}
+
 bool Setup()
 {
 	// Initialise GLFW
@@ -143,6 +161,17 @@ bool Setup()
 
 	Input::Setup();
 	return true;
+}
+
+
+void DisplayDebugConsole(vector<GUITexture> &guis)
+{
+	if (DebugConsole *console = DebugConsole::GetInstance())
+	{
+		console->Update();
+		if (console->IsActive())
+			guis.push_back(*console->myGUITexture);
+	}
 }
 
 int main()
@@ -207,12 +236,7 @@ int main()
 
 	GUIRenderer guiRenderer(loader);
 	guiRenderer.Setup();
-
-
-	//system("color 20"); // TODO:CW add console commands to show all FBOs
-	//guis.push_back(GUITexture(fbos.myReflectionTexture, vec2(-0.5, 0.5f), vec2(0.3f, 0.3f)));
-	//guis.push_back(GUITexture(fbos.myRefractionDepthTexture, vec2(0.5, 0.5f), vec2(0.3f, 0.3f)));
-
+	
 	cout << "Loading took: " << glfwGetTime() - startLoadTime << endl;
 	terrainManager.Regenerate();
 	waters.push_back(WaterTile(vec3(75, GameInfo::ourWaterHeight, -500)));
@@ -257,15 +281,11 @@ int main()
 		waterRenderer.Render(waters, camera, sun, GameInfo::ourFogColour);
 		
 		{
-			//GLint polygonMode;
-			//glGetIntegerv(GL_POLYGON_MODE, &polygonMode);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			if (DebugConsole *console = DebugConsole::GetInstance())
-			{
-				console->Update();
-				if (console->IsActive())
-					guis.push_back(*console->myGUITexture);
-			}
+
+			DisplayDebugFBOs(guis);
+			DisplayDebugConsole(guis);
+
 			guiRenderer.Render(guis);
 			TextMaster::Render();
 			guis.clear();

@@ -2,6 +2,47 @@
 
 #include "Maths.h"
 
+struct FBO
+{
+	enum class FBOType
+	{
+		DEPTH_TEXTURE,
+		DEPTH_BUFFER,
+		COLOUR_TEXTURE,
+		NONE
+	};
+	FBO() :myFBOID(-1), myType(FBOType::NONE) {}
+	FBO(GLuint aFBOID, FBOType aType)
+		: myFBOID(aFBOID)
+		, myType(aType)
+	{
+		ourFBOs.push_back(*this);
+	}
+
+	friend bool operator==(FBO const& aLHS, FBO const& aRHS)
+	{
+		return aLHS.myFBOID == aRHS.myFBOID && aLHS.myType == aRHS.myType;
+	}
+
+	void Cleanup()
+	{
+		auto& iter = find(ourFBOs.begin(), ourFBOs.end(), *this);
+		if (iter != ourFBOs.end())
+			ourFBOs.erase(iter);
+
+		if(myType == FBOType::DEPTH_BUFFER)
+			glDeleteRenderbuffers(1, &myFBOID);
+		else if(myType != FBOType::NONE)
+			glDeleteTextures(1, &myFBOID);
+	}
+
+	GLuint myFBOID;
+	FBOType myType;
+	static vector<FBO> ourFBOs;
+};
+
+__declspec(selectany) vector<FBO> FBO::ourFBOs;
+
 class WaterFrameBuffer
 {
 public:
@@ -14,12 +55,12 @@ public:
 	~WaterFrameBuffer()
 	{
 		glDeleteFramebuffers(1, &myReflectionFrameBuffer);
-		glDeleteTextures(1, &myReflectionTexture);
-		glDeleteRenderbuffers(1, &myReflectionDepthBuffer);
+		myReflectionTexture.Cleanup();
+		myReflectionDepthBuffer.Cleanup();
 
 		glDeleteFramebuffers(1, &myRefractionFrameBuffer);
-		glDeleteTextures(1, &myRefractionTexture);
-		glDeleteTextures(1, &myRefractionDepthTexture);
+		myRefractionTexture.Cleanup();
+		myRefractionDepthTexture.Cleanup();
 	}
 
 	void BindReflectionFrameBuffer() //call before rendering to this FBO
@@ -67,7 +108,7 @@ private:
 		return frameBuffer;
 	}
 
-	GLuint CreateTextureAttachment(int width, int height) {
+	FBO CreateTextureAttachment(int width, int height) {
 		GLuint texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -75,19 +116,22 @@ private:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
-		return texture;
+		FBO fbo(texture, FBO::FBOType::COLOUR_TEXTURE);
+		return fbo;
 	}
 
-	GLuint CreateDepthBufferAttachment(int width, int height) {
+	FBO CreateDepthBufferAttachment(int width, int height) {
 		GLuint depthBuffer;
 		glGenRenderbuffers(1, &depthBuffer);
 		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER, depthBuffer);
-		return depthBuffer;
+		
+		FBO fbo(depthBuffer, FBO::FBOType::DEPTH_BUFFER);
+		return fbo;
 	}
 
-	GLuint CreateDepthTextureAttachment(int width, int height) {
+	FBO CreateDepthTextureAttachment(int width, int height) {
 		GLuint texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -95,7 +139,9 @@ private:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
-		return texture;
+
+		FBO fbo(texture, FBO::FBOType::DEPTH_TEXTURE);
+		return fbo;
 	}
 
 
@@ -113,10 +159,10 @@ public:
 	int REFRACTION_HEIGHT = 720;
 
 	GLuint myReflectionFrameBuffer;
-	GLuint myReflectionTexture;
-	GLuint myReflectionDepthBuffer;
+	FBO myReflectionTexture;
+	FBO myReflectionDepthBuffer;
 
 	GLuint myRefractionFrameBuffer;
-	GLuint myRefractionTexture;
-	GLuint myRefractionDepthTexture;
+	FBO myRefractionTexture;
+	FBO myRefractionDepthTexture;
 };

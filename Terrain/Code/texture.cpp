@@ -24,7 +24,7 @@ GLuint loadBMP_custom(const char * imagepath){
 	if (!file)							    
 	{
 		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); 
-		system("pause"); 
+		//system("pause"); 
 		return 0;
 	}
 
@@ -132,7 +132,7 @@ GLuint loadDDS(const char * imagepath){
 	fp = fopen(imagepath, "rb"); 
 	if (fp == NULL){
 		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); 
-		system("pause");
+		//system("pause");
 		return 0;
 	}
    

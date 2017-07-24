@@ -62,6 +62,9 @@ void ShaderBase::CheckReloadShader()
 
 		//printf("buffer:%s\n", buffer);
 		GLuint programID = LoadShaders(vertexFile.c_str(), fragmentFile.c_str());
+		if (programID == -1)
+			return;
+
 		if (programID != myProgramID)
 		{
 			myProgramID = programID;
@@ -186,8 +189,8 @@ GLuint ShaderBase::LoadShaders(const char * vertex_file_path, const char * fragm
 			char buffer2[MAX_PATH];
 			strerror_s(buffer2, MAX_PATH);
 			printf("%s - Impossible to open %s. Are you in the right directory (%s)!\n", buffer2, vertex_file_path, buffer);
-			system("pause");
-			return 0;
+			//system("pause");
+			return -1;
 		}
 	}
 
@@ -209,8 +212,8 @@ GLuint ShaderBase::LoadShaders(const char * vertex_file_path, const char * fragm
 			char buffer2[MAX_PATH];
 			strerror_s(buffer2, MAX_PATH);
 			printf("%s - Impossible to open %s. Are you in the right directory (%s)!\n", buffer2, fragment_file_path, buffer);
-			system("pause");
-			return 0;
+			//system("pause");
+			return -1;
 		}
 	}
 

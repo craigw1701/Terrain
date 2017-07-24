@@ -46,7 +46,7 @@ static bool LoadOBJ(
 	if (file == NULL) 
 	{
 		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		system("pause");
+		//system("pause");
 		return false;
 	}
 

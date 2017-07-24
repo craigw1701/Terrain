@@ -26,7 +26,10 @@ public:
 	void Update()
 	{
 		static float time = -3.6f;
+		static float lastSpeed = 0.0f;
 		float speed = (Input::IsDown(GLFW_KEY_LEFT_SHIFT) ? 10.0f : 1.0f) * GameInfo::ourDayNightSpeed;
+		speed = (speed + lastSpeed * 40.0f) / 41.0f;
+		lastSpeed = speed;
 		time -= GameInfo::ourDeltaTime / 20.0f * speed;
 
 		if (Input::IsPressed(GLFW_KEY_KP_ADD))

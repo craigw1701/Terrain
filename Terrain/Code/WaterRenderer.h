@@ -61,15 +61,15 @@ private:
 		glBindVertexArray(myQuad.GetVAOID());
 		glEnableVertexAttribArray(0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, myFBOs.myReflectionTexture);
+		glBindTexture(GL_TEXTURE_2D, myFBOs.myReflectionTexture.myFBOID);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionTexture);
+		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionTexture.myFBOID);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, myDUDVMap);
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, myNormalMap);
 		glActiveTexture(GL_TEXTURE4);
-		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionDepthTexture);
+		glBindTexture(GL_TEXTURE_2D, myFBOs.myRefractionDepthTexture.myFBOID);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
