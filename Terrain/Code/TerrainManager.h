@@ -44,13 +44,13 @@ public:
 			console->AddVariable("Terrain.Seed", mySeed);
 
 
-			console->AddVariable("Terrain.octives", GameInfo::ourHeightInfo.octives);
-			console->AddVariable("Terrain.amplitude", GameInfo::ourHeightInfo.amplitude);
-			console->AddVariable("Terrain.frequency", GameInfo::ourHeightInfo.frequency);
-			console->AddVariable("Terrain.scale", GameInfo::ourHeightInfo.theScale);
-			console->AddVariable("Terrain.persistance", GameInfo::ourHeightInfo.persistance);
-			console->AddVariable("Terrain.lacunarity", GameInfo::ourHeightInfo.lacunarity);
-			console->AddVariable("Terrain.terrainHeight", GameInfo::ourHeightInfo.terrainHeight);
+			console->AddVariable("Terrain.Octives", GameInfo::ourHeightInfo.octives);
+			console->AddVariable("Terrain.Amplitude", GameInfo::ourHeightInfo.amplitude);
+			console->AddVariable("Terrain.Frequency", GameInfo::ourHeightInfo.frequency);
+			console->AddVariable("Terrain.Scale", GameInfo::ourHeightInfo.theScale);
+			console->AddVariable("Terrain.Persistance", GameInfo::ourHeightInfo.persistance);
+			console->AddVariable("Terrain.Lacunarity", GameInfo::ourHeightInfo.lacunarity);
+			console->AddVariable("Terrain.TerrainHeight", GameInfo::ourHeightInfo.terrainHeight);
 		}
 
 

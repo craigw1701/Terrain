@@ -5,19 +5,26 @@
 static std::string TrimWhitespace(std::string aString)
 {
 	std::string s = aString;
-	while (s.find(' ') == 0)
+	int startIndex = 0;
+	int endIndex = aString.size();
+	for (int i = 0; i < endIndex; i++)
 	{
-		s = s.substr(1);
+		if (aString[i] == ' ' || aString[i] == '=')
+			startIndex = i + 1;
+		else
+			break;
 	}
-
-	while (s.rfind(' ') == s.size() - 1)
+	
+	for (int i = endIndex; i >= startIndex; i--)
 	{
-		s = s.substr(0, s.size() - 1);
+		if (aString[i] == ' ' || aString[i] == '=')
+			endIndex = i;
+		else
+			break;
+	}	
 
-		if (s.size() == 0)
-			return s;
-	}
-	return s;
+	return aString.substr(startIndex, endIndex - startIndex);
+
 }
 
 static std::string ToLower(std::string aString)

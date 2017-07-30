@@ -26,12 +26,15 @@ public:
 	static HeightInfo ourHeightInfo;
 	static vec3 ourFogColour;
 
+
 	static float ourDeltaTime;
-	static float ourDayNightTime;
+	static float ourDayNightBrightness;
+	static float ourDayNightSpeed;
+	static float ourTimeInHours;
+
 	static int ourScreenWidth;
 	static int ourScreenHeight;
 	static float ourWaterHeight;
-	static float ourDayNightSpeed;
 	static GLFWwindow* ourWindow;
 	static bool ourWindowIsFocused;
 	static bool ourIsShowingCursor;

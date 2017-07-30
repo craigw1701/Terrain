@@ -7,12 +7,15 @@
 
 GameInfo::HeightInfo GameInfo::ourHeightInfo;
 vec3 GameInfo::ourFogColour = vec3(0.5f, 0.5f, 0.5f);
+
 float GameInfo::ourDeltaTime = 0.0f;
-float GameInfo::ourDayNightTime = 0.0f;
+float GameInfo::ourDayNightBrightness = 0.0f;
+float GameInfo::ourDayNightSpeed = 1.0f;
+float GameInfo::ourTimeInHours = 12.0f;
+
 int GameInfo::ourScreenWidth = 1024;
 int GameInfo::ourScreenHeight = 768;
 float GameInfo::ourWaterHeight = -20;
-float GameInfo::ourDayNightSpeed = 0.0f;
 GLFWwindow* GameInfo::ourWindow = nullptr;
 bool GameInfo::ourWindowIsFocused = true;
 bool GameInfo::ourIsShowingCursor = true;

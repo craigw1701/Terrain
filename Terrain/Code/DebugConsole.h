@@ -17,7 +17,6 @@ using std::unique_ptr;
 using std::vector;
 using std::map;
 
-
 enum class DebugConsoleVarType
 {
 	BOOL,
@@ -26,17 +25,35 @@ enum class DebugConsoleVarType
 	VEC3,
 };
 
+struct DebugConsoleVarTypeUnion
+{
+	union 
+	{
+		bool myBool;
+		int myInt;
+		float myFloat;
+		vec3 myVec3;
+	};
+
+	DebugConsoleVarType myType;
+	DebugConsoleVarTypeUnion(bool aBool = false) : myBool(aBool), myType(DebugConsoleVarType::BOOL) {}
+	DebugConsoleVarTypeUnion(float aFloat) : myFloat(aFloat), myType(DebugConsoleVarType::FLOAT) {}
+	DebugConsoleVarTypeUnion(int anInt) : myInt(anInt), myType(DebugConsoleVarType::INT) {}
+	DebugConsoleVarTypeUnion(vec3 aVec3) : myVec3(aVec3), myType(DebugConsoleVarType::VEC3) {}
+};
+
+
 class DebugConsoleVar
 {
 	void* myVariablePtr;
 	std::string myName;
-	DebugConsoleVarType myType;
+	DebugConsoleVarTypeUnion myType;
 	int myIndex;
 
 	std::string BuildReply(std::string const& aReply);
 public:
 	DebugConsoleVar() {}
-	DebugConsoleVar(const char* aName, void* aVariable, DebugConsoleVarType aVarType, int aIndex)
+	DebugConsoleVar(const char* aName, void* aVariable, DebugConsoleVarTypeUnion aVarType, int aIndex)
 		: myName(aName)
 		, myVariablePtr(aVariable)
 		, myType(aVarType)
@@ -49,6 +66,7 @@ public:
 
 	bool Set(std::vector<std::string> someParams);
 	bool Get(std::string& aReturnedString);
+	bool Reset();
 
 	// TODO:CW add callback
 	// TODO:CW Support ranges
@@ -59,6 +77,8 @@ class DebugConsole
 	DebugConsole();
 	
 	static unique_ptr<DebugConsole> ourInstance;
+
+	
 public:
 	~DebugConsole();
 
@@ -79,11 +99,15 @@ public:
 
 	unique_ptr<GUITexture> myGUITexture;
 
-	void AddVariable(const char* aName, bool& aBool) { AddVariable(&aBool, DebugConsoleVarType::BOOL, aName); }
-	void AddVariable(const char* aName, int& anInt) { AddVariable(&anInt, DebugConsoleVarType::INT, aName); }
-	void AddVariable(const char* aName, float& aFloat) { AddVariable(&aFloat, DebugConsoleVarType::FLOAT, aName); }
-	void AddVariable(const char* aName, vec3& aVec3) { AddVariable(&aVec3, DebugConsoleVarType::VEC3, aName); }
+	void AddVariable(const char* aName, bool& aBool);
+	void AddVariable(const char* aName, int& anInt);
+	void AddVariable(const char* aName, float& aFloat);
+	void AddVariable(const char* aName, vec3& aVec3);
 	
+	bool ResetVariables();
+	bool SaveVariables(const char* aFileName);
+	bool LoadVariables(const char* aFileName);
+
 private:
 	struct DebugCommandData
 	{
@@ -92,7 +116,7 @@ private:
 		std::function<std::string(std::vector<std::string>)> myFunc;
 		//DebugConsole::DebugConsoleCommandFunc myFunc;
 	};
-	void AddVariable(void* aVar, DebugConsoleVarType aType, const char* aName);
+	void AddVariable(void* aVar, DebugConsoleVarTypeUnion aType, const char* aName);
 
 	bool myIsActive = false;
 	unique_ptr<GUIText> myCurrentText;
